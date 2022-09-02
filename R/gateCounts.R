@@ -44,7 +44,7 @@ yearMonthAnalyzed <- c("20215",
                        "20224")
 
 
-test <- gateCountsFY2022 %>%
+rbs1FloorNORTH <- gateCountsFY2022 %>%
   dplyr::mutate(month = Date %>%
                   lubridate::ymd() %>%
                   lubridate::month()) %>%
@@ -56,8 +56,65 @@ test <- gateCountsFY2022 %>%
   dplyr::select("Robarts 1st floor NORTH") %>%
   unlist() %>%
   as.numeric() %>%
-  sum(na.rm = TRUE)
+  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  sum(na.rm = TRUE) %>%
+  round(digits = 0) # 48740
+
+
+rbs1FloorSOUTH <- gateCountsFY2022 %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Robarts 1st floor SOUTH") %>%
+  unlist() %>%
+  as.numeric() %>%
+  as_tibble() %>%
+  # replace values less 0 with 0
+  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  sum(na.rm = TRUE) %>%
+  round(digits = 0) # 27658
 
 
 
+rbsP4Ele <- gateCountsFY2022 %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Robarts 2nd floor P4 elevator") %>%
+  unlist() %>%
+  as.numeric() %>%
+  as_tibble() %>%
+  # replace values less 0 with 0
+  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  sum(na.rm = TRUE) %>%
+  round(digits = 0) # 1258
+
+
+rbs2Main <- gateCountsFY2022 %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Robarts 2nd Floor - MAIN") %>%
+  unlist() %>%
+  as.numeric() %>%
+  as_tibble() %>%
+  # replace values less 0 with 0
+  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  sum(na.rm = TRUE) %>%
+  round(digits = 0) # 617060
 
