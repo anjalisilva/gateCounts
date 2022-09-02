@@ -118,3 +118,22 @@ rbs2Main <- gateCountsFY2022 %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 617060
 
+# Gerstein
+# March 10-11 is questionable
+gersteinCounts <- gateCountsFY2022 %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Gerstein") %>%
+  unlist() %>%
+  as.numeric() %>%
+  as_tibble() %>%
+  # replace values less 0 with 0
+  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  sum(na.rm = TRUE) %>%
+  round(digits = 0) # 191482
