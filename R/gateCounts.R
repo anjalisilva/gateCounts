@@ -21,6 +21,7 @@ library("ggplot2")
 # install.packages("writexl")
 library("writexl")
 library("lubridate")
+library("stringr")
 
 ##### Take initial circulations from Alma for 2022 ####
 
@@ -187,5 +188,14 @@ for (i in seq(along = xValue)) {
 
 # check scenarios
 # if value is negative, then counter reset or entry typo
-# if
+# if NA values, can you add average
+
+
+unlist(collectValue)
+paste(is.na(collectValue), collapse=" ")
+str_locate_all(string = paste(is.na(collectValue), collapse=" "),
+           pattern = c("TRUE FALSE TRUE"))
+
+str_locate_all(string = paste(is.na(collectValue), collapse=" "),
+               pattern = c("TRUE FALSE FALSE TRUE"))
 
