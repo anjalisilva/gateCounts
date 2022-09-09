@@ -56,9 +56,12 @@ rbs1FloorNORTH <- gateCountsFY2022 %>%
   dplyr::select("Robarts 1st floor NORTH") %>%
   unlist() %>%
   as.numeric() %>%
-  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  as_tibble() %>%
+  # replace values less 0 with 0
+  dplyr::mutate(dplyr::across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 48740
+
 
 
 rbs1FloorSOUTH <- gateCountsFY2022 %>%
@@ -75,7 +78,7 @@ rbs1FloorSOUTH <- gateCountsFY2022 %>%
   as.numeric() %>%
   as_tibble() %>%
   # replace values less 0 with 0
-  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  dplyr::mutate(dplyr::across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 27658
 
@@ -95,7 +98,7 @@ rbsP4Ele <- gateCountsFY2022 %>%
   as.numeric() %>%
   as_tibble() %>%
   # replace values less 0 with 0
-  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  dplyr::mutate(dplyr::across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 1258
 
@@ -114,7 +117,7 @@ rbs2Main <- gateCountsFY2022 %>%
   as.numeric() %>%
   as_tibble() %>%
   # replace values less 0 with 0
-  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  dplyr::mutate(dplyr::across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 617060
 
@@ -134,6 +137,55 @@ gersteinCounts <- gateCountsFY2022 %>%
   as.numeric() %>%
   as_tibble() %>%
   # replace values less 0 with 0
-  mutate(across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
+  dplyr::mutate(dplyr::across(where(is.numeric), function(x) ifelse(x < 0, 0, x))) %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 191482
+
+##### Analyze Raw counts ####
+# 9 Sept 2022
+
+gateCountsFY2022raw <- readxl::read_excel("UTL Daily Exit Counts WITH CALCS  Apr2020 with corrected calculations_AS_svd1Sept2022.xlsx",
+                                       sheet = 1)
+dim(gateCountsFY2022raw) #  3167   14
+glimpse(gateCountsFY2022raw)
+
+FYanalyzed <- c("2021", "2022")
+yearMonthAnalyzed <- c("20215",
+                       "20216",
+                       "20217",
+                       "20218",
+                       "20219",
+                       "202110",
+                       "202111",
+                       "202112",
+                       "20221",
+                       "20222",
+                       "20223",
+                       "20224")
+
+
+rbs1FloorNORTH <- gateCountsFY2022raw %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Robarts 1st floor NORTH") %>%
+  unlist() %>%
+  as.numeric() %>%
+  as_tibble()
+
+xValue <- 2:nrow(rbs1FloorNORTH)
+collectValue <- vector(mode = "numeric", length = length(xValue))
+for (i in seq(along = xValue)) {
+  print(i)
+  collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] - rbs1FloorNORTH[i, ]) / 2)
+}
+
+# check scenarios
+# if value is negative, then counter reset or entry typo
+# if
+
