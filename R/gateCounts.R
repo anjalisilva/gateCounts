@@ -194,7 +194,8 @@ collectValue <- vector(mode = "numeric", length = length(xValue))
 # FALSE  TRUE
 # 39   325
 
-for (i in seq(along = xValue)) {
+# for (i in seq(along = xValue)) {
+for (i in 318:319) {
   if(gateType == "Two-way") {
     collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                 rbs1FloorNORTH[i, ]) / 2)
@@ -210,20 +211,26 @@ for (i in seq(along = xValue)) {
         if((is.na(rbs1FloorNORTH[i - 1, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 1, ]) != 0)) {
           collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                       rbs1FloorNORTH[i - 1, ]) / 2)
+          cat("\n i - 1 collectValue[i] = ",  unlist(collectValue[i]))
         } else if ((is.na(rbs1FloorNORTH[i - 2, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 2, ]) != 0)) {
           collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                       rbs1FloorNORTH[i - 2, ]) / 2)
+          cat("\n i - 2 collectValue[i] = ",  unlist(collectValue[i]))
         } else if ((is.na(rbs1FloorNORTH[i - 3, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 3, ]) != 0)) {
           collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                       rbs1FloorNORTH[i - 3, ]) / 2)
+          cat("\n i - 3 collectValue[i] = ",  unlist(collectValue[i]))
         } else if ((is.na(rbs1FloorNORTH[i - 4, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 4, ]) != 0)) {
         collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                     rbs1FloorNORTH[i - 4, ]) / 2)
+          cat("\n i - 4 collectValue[i] = ",  unlist(collectValue[i]))
         } else if ((is.na(rbs1FloorNORTH[i - 5, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 5, ]) != 0)) {
           collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                       rbs1FloorNORTH[i - 5, ]) / 2)
+          cat("\n i - 5 collectValue[i] = ",  unlist(collectValue[i]))
         } else {
           collectValue[i] <- NA # i.e., if one of the first values with
+          cat("\n NA option collectValue[i] = ",  unlist(collectValue[i]))
         } # no preceding entry with a numeric value
       }
     }
