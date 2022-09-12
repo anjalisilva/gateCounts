@@ -147,8 +147,11 @@ gersteinCounts <- gateCountsFY2022 %>%
 
 gateCountsFY2022raw <- readxl::read_excel("UTL Daily Exit Counts WITH CALCS  Apr2020 with corrected calculations_AS_svd1Sept2022.xlsx",
                                        sheet = 1)
-dim(gateCountsFY2022raw) #  3167   14
+dim(gateCountsFY2022raw) #  4507   14
 glimpse(gateCountsFY2022raw)
+
+gateType <- "Two-way" # then needs to divide by two
+# "One-way"
 
 FYanalyzed <- c("2021", "2022")
 yearMonthAnalyzed <- c("20215",
@@ -164,7 +167,7 @@ yearMonthAnalyzed <- c("20215",
                        "20223",
                        "20224")
 
-
+# Obtain data for year and month of FY2022
 rbs1FloorNORTH <- gateCountsFY2022raw %>%
   dplyr::mutate(month = Date %>%
                   lubridate::ymd() %>%
@@ -181,9 +184,51 @@ rbs1FloorNORTH <- gateCountsFY2022raw %>%
 
 xValue <- 2:nrow(rbs1FloorNORTH)
 collectValue <- vector(mode = "numeric", length = length(xValue))
+# Initially:
+# table(is.na(collectValue))
+# FALSE  TRUE
+# 32   332
+
+# Later
+# table(is.na(collectValue))
+# FALSE  TRUE
+# 39   325
+
 for (i in seq(along = xValue)) {
-  print(i)
-  collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] - rbs1FloorNORTH[i, ]) / 2)
+  if(gateType == "Two-way") {
+    collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                rbs1FloorNORTH[i, ]) / 2)
+
+    # If an NA, then check if the i + 1 or i is NA
+    if(is.na(collectValue[i]) == TRUE) {
+      cat("\n", i, " Entered checking \n")
+      # If i + 1 is NA = will not be addressed
+
+      # If i is NA, and it is not the very first count of FY
+      if((is.na(rbs1FloorNORTH[i, ]) == TRUE) && (i >= 2)) {
+        # find the first number in the past that is not NA
+        if((is.na(rbs1FloorNORTH[i - 1, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 1, ]) != 0)) {
+          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                      rbs1FloorNORTH[i - 1, ]) / 2)
+        } else if ((is.na(rbs1FloorNORTH[i - 2, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 2, ]) != 0)) {
+          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                      rbs1FloorNORTH[i - 2, ]) / 2)
+        } else if ((is.na(rbs1FloorNORTH[i - 3, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 3, ]) != 0)) {
+          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                      rbs1FloorNORTH[i - 3, ]) / 2)
+        } else if ((is.na(rbs1FloorNORTH[i - 4, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 4, ]) != 0)) {
+        collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                    rbs1FloorNORTH[i - 4, ]) / 2)
+        } else if ((is.na(rbs1FloorNORTH[i - 5, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 5, ]) != 0)) {
+          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                      rbs1FloorNORTH[i - 5, ]) / 2)
+        } else {
+          collectValue[i] <- NA # i.e., if one of the first values with
+        } # no preceding entry with a numeric value
+      }
+    }
+  }
+
 }
 
 # check scenarios
