@@ -196,48 +196,64 @@ gersteinCounts <- gateCountsFY2022raw %>%
   unlist() %>%
   as.numeric()
 
-
+# 1. Gate type based calculation
+# 2. Check counts for counter max value or typo (i.e., a negative count)
+# 3. Check counts for NA values
 
 gateCountAdjustment <- function(vectorCounts,
-                                gateType = "Two-way",
+                                gateType = "One-way",
                                 counterMaxValue = 999999) {
   # Check input arguments
-  if(is.vector(vectorCounts) == FALSE ||
+  if(is.vector(vectorCounts) == FALSE &&
      tibble::is_tibble(vectorCounts) == FALSE) {
      stop("\n vectorCounts should be a numeric vector or tibble")
   }
 
-  if(typeof(vectorCounts) != "double" ||
+  if(typeof(vectorCounts) != "double" &&
      typeof(vectorCounts) != "integer") {
     stop("\n vectorCounts should be a numeric vector or tibble")
   }
 
   if(is.vector(vectorCounts) == TRUE) {
-    tibbleCounts <- as_tibble(vectorCounts) }
+    tibbleCounts <- as_tibble(vectorCounts)
+  }
 
+
+  # Begin calculations
   # Empty vector to capture visitor counts via calculation
-  collectValue <- vector(mode = "numeric", length = nrow(tibbleCounts))
+  collectValue <- rep(NA, times = nrow(tibbleCounts))
 
   # Loop for obtaining visitor counts
   for (i in c(1:nrow(tibbleCounts))) {
+      # 1. Gate type based calculation
+
       if(gateType == "Two-way") {
-        collectValue[i] <- ceiling((tibbleCounts[i + 1, ] -
-                                      tibbleCounts[i, ]) / 2)
-        } else if(gateType == "One-way") {
-          collectValue[i] <- ceiling((tibbleCounts[i + 1, ] -
-                                        tibbleCounts[i, ]))
-        }
-
-
-        cat("\n Calc", i+1, "minus", i, "is:",
+        collectValue[i + 1] <- ceiling((tibbleCounts[i + 1, ] -
+                                        tibbleCounts[i, ]) / 2)
+        cat("\n Calc (", i+1, "minus", i, ")/2 is:",
             unlist(tibbleCounts[i + 1, ]),
             "-", unlist(tibbleCounts[i, ]),
-            " = ", unlist(collectValue[i]), "\n")
+            " = ", unlist(collectValue[i + 1]), "\n")
 
+        # 2. Check counts for counter max value or typo
+        if(purrr::is_integer(collectValue[i + 1]) && collectValue[i + 1] < 0) {
+            # detecting if a counter max issue
+            # If that is the case value/counterMax should be close to 1
+            if((tibbleCounts[i, ] / counterMaxValue) >= 0.8) {
+              collectValue[i + 1] <- (ceiling((counterMaxValue - tibbleCounts[i, ] / 2))) +
+                                     (ceiling((tibbleCounts[i + 1, ] - 0 / 2)))
+
+            } else if((tibbleCounts[i, ] / counterMaxValue) < 0.8) {
+              # In this case, likely a typo from user entering data
+              collectValue[i + 1] <- NA
+            }
+        }
+
+        # 3. Check counts for NA values
         # If an NA, then check if the i + 1 or i is NA
-        if(is.na(collectValue[i]) == TRUE) {
+        if(is.na(collectValue[i + 1]) == TRUE) {
 
-          # If i+1 is NA, will not be addressed
+          # If tibbleCounts[i+1, ] is NA, will not be addressed
 
           # If i is NA, and it is not the very first entry in loop
           if((is.na(tibbleCounts[i, ]) == TRUE) && (i >= 2)) {
@@ -253,15 +269,67 @@ gateCountAdjustment <- function(vectorCounts,
               # Pick the most recent numeric count to subtract from
                recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE),
                                   na.rm = TRUE)
-               collectValue[i] <- ceiling((tibbleCounts[i + 1, ] -
+               collectValue[i + 1] <- ceiling((tibbleCounts[i + 1, ] -
                                              tibbleCounts[i - recentCountPlace, ]) / 2)
-               cat("\n Adjuted value to be", unlist(collectValue[i]), "\n")
+               cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")
             } else {
-              collectValue[i] <- NA # i.e., if one of the first values with
-              cat("\n NA option collectValue[i] = ",  unlist(collectValue[i]), "\n")
+              collectValue[i + 1] <- NA # i.e., if one of the first values with
+              cat("\n NA option collectValue[i + 1] = ",  unlist(collectValue[i + 1]), "\n")
              }
            }
           }
+      } else if(gateType == "One-way") {
+        collectValue[i + 1] <- ceiling((tibbleCounts[i + 1, ] -
+                                      tibbleCounts[i, ]))
+        cat("\n Calc", i+1, "minus", i, "is:",
+            unlist(tibbleCounts[i + 1, ]),
+            "-", unlist(tibbleCounts[i, ]),
+            " = ", unlist(collectValue[i + 1]), "\n")
+
+        # 2. Check counts for counter max value or typo
+        if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
+          # detecting if a counter max issue
+          # If that is the case value/counterMax should be close to 1
+          if((tibbleCounts[i, ] / counterMaxValue) >= 0.8) {
+            collectValue[i + 1] <- (counterMaxValue - tibbleCounts[i, ]) +
+                                    tibbleCounts[i + 1, ]
+
+          } else if((tibbleCounts[i, ] / counterMaxValue) < 0.8) {
+            # In this case, likely a typo from user entering data
+            collectValue[i + 1] <- NA
+          }
+        }
+
+        # 3. Check counts for NA values
+        # If an NA, then check if the i + 1 or i is NA
+        if(is.na(collectValue[i + 1]) == TRUE) {
+
+          # If tibbleCounts[i+1, ] is NA, will not be addressed
+
+          # If i is NA, and it is not the very first entry in loop
+          if((is.na(tibbleCounts[i, ]) == TRUE) && (i >= 2)) {
+
+            # Check back on all past values to see if any numeric values
+            # Otherwise no point in performing analysis
+            # This would be i-c(1:(i-1))
+
+            if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
+              cat("\n Previous 10 values are NA \n")
+            } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
+              # See how many past counts have numeric values
+              # Pick the most recent numeric count to subtract from
+              recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE),
+                                      na.rm = TRUE)
+              collectValue[i + 1] <- (tibbleCounts[i + 1, ] -
+                                      tibbleCounts[i - recentCountPlace, ])
+              cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")
+            } else {
+              collectValue[i + 1] <- NA # i.e., if one of the first values with
+              cat("\n NA option collectValue[i + 1] = ",  unlist(collectValue[i + 1]), "\n")
+            }
+          }
+        }
+
       }
     }
 
@@ -269,8 +337,14 @@ gateCountAdjustment <- function(vectorCounts,
   # Calculations based on visitor counts
   sumValue <- sum(unlist(collectValue), na.rm = TRUE)
 
-}
+  returnValues <- list(countSum = sumValue,
+                       individualCounts = unlist(collectValue))
+  class(returnValues) <- c("GateCounts")
 
+  return(returnValues)
+}
+outPut<- gateCountAdjustment(vectorCounts = gersteinCounts)
+write.csv(outPut$individualCounts, file = "gateCounts.csv")
 
 # check scenarios
 # if value is negative, then counter reset or entry typo
