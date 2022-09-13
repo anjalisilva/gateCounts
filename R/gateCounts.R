@@ -182,60 +182,95 @@ rbs1FloorNORTH <- gateCountsFY2022raw %>%
   as.numeric() %>%
   as_tibble()
 
-collectValue <- vector(mode = "numeric", length = nrow(rbs1FloorNORTH))
-# Initially:
-# table(is.na(collectValue))
-# FALSE  TRUE
-# 32   332
+# Obtain another set of data for FY2022
+gersteinCounts <- gateCountsFY2022raw %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Gerstein") %>%
+  unlist() %>%
+  as.numeric()
 
-# Later
-# table(is.na(collectValue))
-# FALSE  TRUE
-# 39   326
 
-# for (i in seq(along = xValue)) {
-for (i in c(1:nrow(rbs1FloorNORTH))) {
-  if(gateType == "Two-way") {
-    collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                rbs1FloorNORTH[i, ]) / 2)
 
-    cat("\n Calc", i+1, "minus", i, "is:",
-        unlist(rbs1FloorNORTH[i + 1, ]),
-        "-", unlist(rbs1FloorNORTH[i, ]),
-        " = ", unlist(collectValue[i]), "\n")
+gateCountAdjustment <- function(vectorCounts,
+                                gateType = "Two-way",
+                                counterMaxValue = 999999) {
+  # Check input arguments
+  if(is.vector(vectorCounts) == FALSE ||
+     tibble::is_tibble(vectorCounts) == FALSE) {
+     stop("\n vectorCounts should be a numeric vector or tibble")
+  }
 
-    # If an NA, then check if the i + 1 or i is NA
-    if(is.na(collectValue[i]) == TRUE) {
+  if(typeof(vectorCounts) != "double" ||
+     typeof(vectorCounts) != "integer") {
+    stop("\n vectorCounts should be a numeric vector or tibble")
+  }
 
-      # If i+1 is NA, will not be addressed
+  if(is.vector(vectorCounts) == TRUE) {
+    tibbleCounts <- as_tibble(vectorCounts) }
 
-      # If i is NA, and it is not the very first count of FY
-      if((is.na(rbs1FloorNORTH[i, ]) == TRUE) && (i >= 2)) {
-        # Check back on all past values to see if any numeric values
-        # Otherwise no point in performing analysis
-        # This would be i-c(1:(i-1))
+  # Empty vector to capture visitor counts via calculation
+  collectValue <- vector(mode = "numeric", length = nrow(tibbleCounts))
 
-        if(all(is.na(rbs1FloorNORTH[i-c(1:(i-1)), ])) == TRUE) {
-          cat("\n Previous 10 values are NA \n")
-        } else if(all(is.na(rbs1FloorNORTH[i-c(1:(i-1)), ])) == FALSE) {
-          # See how many past counts have numeric values
-          # Pick the most recent numeric count to subtract from
-           recentCountPlace <- min(which(is.na(rbs1FloorNORTH[i-c(1:(i-1)), ]) == FALSE),
-                              na.rm = TRUE)
-           collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                         rbs1FloorNORTH[i - recentCountPlace, ]) / 2)
-           cat("\n Adjuted value to be", unlist(collectValue[i]), "\n")
-        } else {
-          collectValue[i] <- NA # i.e., if one of the first values with
-          cat("\n NA option collectValue[i] = ",  unlist(collectValue[i]), "\n")
+  # Loop for obtaining visitor counts
+  for (i in c(1:nrow(tibbleCounts))) {
+      if(gateType == "Two-way") {
+        collectValue[i] <- ceiling((tibbleCounts[i + 1, ] -
+                                      tibbleCounts[i, ]) / 2)
+        } else if(gateType == "One-way") {
+          collectValue[i] <- ceiling((tibbleCounts[i + 1, ] -
+                                        tibbleCounts[i, ]))
         }
+
+
+        cat("\n Calc", i+1, "minus", i, "is:",
+            unlist(tibbleCounts[i + 1, ]),
+            "-", unlist(tibbleCounts[i, ]),
+            " = ", unlist(collectValue[i]), "\n")
+
+        # If an NA, then check if the i + 1 or i is NA
+        if(is.na(collectValue[i]) == TRUE) {
+
+          # If i+1 is NA, will not be addressed
+
+          # If i is NA, and it is not the very first entry in loop
+          if((is.na(tibbleCounts[i, ]) == TRUE) && (i >= 2)) {
+
+            # Check back on all past values to see if any numeric values
+            # Otherwise no point in performing analysis
+            # This would be i-c(1:(i-1))
+
+            if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
+              cat("\n Previous 10 values are NA \n")
+            } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
+              # See how many past counts have numeric values
+              # Pick the most recent numeric count to subtract from
+               recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE),
+                                  na.rm = TRUE)
+               collectValue[i] <- ceiling((tibbleCounts[i + 1, ] -
+                                             tibbleCounts[i - recentCountPlace, ]) / 2)
+               cat("\n Adjuted value to be", unlist(collectValue[i]), "\n")
+            } else {
+              collectValue[i] <- NA # i.e., if one of the first values with
+              cat("\n NA option collectValue[i] = ",  unlist(collectValue[i]), "\n")
+             }
+           }
+          }
       }
     }
-  }
+
+
+  # Calculations based on visitor counts
+  sumValue <- sum(unlist(collectValue), na.rm = TRUE)
 
 }
 
-write.csv(data.frame(unlist(collectValue)))
 
 # check scenarios
 # if value is negative, then counter reset or entry typo
