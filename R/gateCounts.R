@@ -182,8 +182,7 @@ rbs1FloorNORTH <- gateCountsFY2022raw %>%
   as.numeric() %>%
   as_tibble()
 
-xValue <- 2:nrow(rbs1FloorNORTH)
-collectValue <- vector(mode = "numeric", length = length(xValue))
+collectValue <- vector(mode = "numeric", length = nrow(rbs1FloorNORTH))
 # Initially:
 # table(is.na(collectValue))
 # FALSE  TRUE
@@ -192,51 +191,51 @@ collectValue <- vector(mode = "numeric", length = length(xValue))
 # Later
 # table(is.na(collectValue))
 # FALSE  TRUE
-# 39   325
+# 39   326
 
 # for (i in seq(along = xValue)) {
-for (i in 318:319) {
+for (i in c(1:nrow(rbs1FloorNORTH))) {
   if(gateType == "Two-way") {
     collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
                                 rbs1FloorNORTH[i, ]) / 2)
 
+    cat("\n Calc", i+1, "minus", i, "is:",
+        unlist(rbs1FloorNORTH[i + 1, ]),
+        "-", unlist(rbs1FloorNORTH[i, ]),
+        " = ", unlist(collectValue[i]), "\n")
+
     # If an NA, then check if the i + 1 or i is NA
     if(is.na(collectValue[i]) == TRUE) {
-      cat("\n", i, " Entered checking \n")
-      # If i + 1 is NA = will not be addressed
+
+      # If i+1 is NA, will not be addressed
 
       # If i is NA, and it is not the very first count of FY
       if((is.na(rbs1FloorNORTH[i, ]) == TRUE) && (i >= 2)) {
-        # find the first number in the past that is not NA
-        if((is.na(rbs1FloorNORTH[i - 1, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 1, ]) != 0)) {
-          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                      rbs1FloorNORTH[i - 1, ]) / 2)
-          cat("\n i - 1 collectValue[i] = ",  unlist(collectValue[i]))
-        } else if ((is.na(rbs1FloorNORTH[i - 2, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 2, ]) != 0)) {
-          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                      rbs1FloorNORTH[i - 2, ]) / 2)
-          cat("\n i - 2 collectValue[i] = ",  unlist(collectValue[i]))
-        } else if ((is.na(rbs1FloorNORTH[i - 3, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 3, ]) != 0)) {
-          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                      rbs1FloorNORTH[i - 3, ]) / 2)
-          cat("\n i - 3 collectValue[i] = ",  unlist(collectValue[i]))
-        } else if ((is.na(rbs1FloorNORTH[i - 4, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 4, ]) != 0)) {
-        collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                    rbs1FloorNORTH[i - 4, ]) / 2)
-          cat("\n i - 4 collectValue[i] = ",  unlist(collectValue[i]))
-        } else if ((is.na(rbs1FloorNORTH[i - 5, ]) != TRUE) && (nrow(rbs1FloorNORTH[i - 5, ]) != 0)) {
-          collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
-                                      rbs1FloorNORTH[i - 5, ]) / 2)
-          cat("\n i - 5 collectValue[i] = ",  unlist(collectValue[i]))
+        # Check back on all past values to see if any numeric values
+        # Otherwise no point in performing analysis
+        # This would be i-c(1:(i-1))
+
+        if(all(is.na(rbs1FloorNORTH[i-c(1:(i-1)), ])) == TRUE) {
+          cat("\n Previous 10 values are NA \n")
+        } else if(all(is.na(rbs1FloorNORTH[i-c(1:(i-1)), ])) == FALSE) {
+          # See how many past counts have numeric values
+          # Pick the most recent numeric count to subtract from
+           recentCountPlace <- min(which(is.na(rbs1FloorNORTH[i-c(1:(i-1)), ]) == FALSE),
+                              na.rm = TRUE)
+           collectValue[i] <- ceiling((rbs1FloorNORTH[i + 1, ] -
+                                         rbs1FloorNORTH[i - recentCountPlace, ]) / 2)
+           cat("\n Adjuted value to be", unlist(collectValue[i]), "\n")
         } else {
           collectValue[i] <- NA # i.e., if one of the first values with
-          cat("\n NA option collectValue[i] = ",  unlist(collectValue[i]))
-        } # no preceding entry with a numeric value
+          cat("\n NA option collectValue[i] = ",  unlist(collectValue[i]), "\n")
+        }
       }
     }
   }
 
 }
+
+write.csv(data.frame(unlist(collectValue)))
 
 # check scenarios
 # if value is negative, then counter reset or entry typo
