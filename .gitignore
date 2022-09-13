@@ -2,3 +2,5 @@
 .DS_Store
 .Rbuildignore
 .Rproj.user
+/slides
+\slides
