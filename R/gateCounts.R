@@ -215,8 +215,8 @@ gateCountAdjustment <- function(vectorCounts,
     tibbleCounts <- vectorCounts
   }
 
-  if(typeof(unlist(vectorCounts)) != "double" &&
-     typeof(unlist(vectorCounts)) != "integer") {
+  if(typeof(unlist(tibbleCounts)) != "double" &&
+     typeof(unlist(tibbleCounts)) != "integer") {
     stop("\n vectorCounts should be a numeric vector or tibble")
   }
 
@@ -226,11 +226,10 @@ gateCountAdjustment <- function(vectorCounts,
   collectValue <- rep(NA, times = nrow(tibbleCounts))
 
   # Loop for obtaining visitor counts
-  for (i in c(1:nrow(vectorCounts))) {
+  for (i in c(1:nrow(tibbleCounts))) {
       # 1. Gate type based calculation
 
-        collectValue[i + 1] <- ceiling((tibbleCounts[i + 1, ] -
-                                      tibbleCounts[i, ]))
+        collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
         cat("\n Calc", i+1, "minus", i, "is:",
             unlist(tibbleCounts[i + 1, ]),
@@ -248,6 +247,7 @@ gateCountAdjustment <- function(vectorCounts,
           } else if((tibbleCounts[i, ] / counterMaxValue) < 0.8) {
             # In this case, likely a typo from user entering data
             collectValue[i + 1] <- NA
+            tibbleCounts[i + 1, ] <- NA
           }
         }
 
@@ -284,24 +284,25 @@ gateCountAdjustment <- function(vectorCounts,
       }
 
 
-  if(gateType == "Two-way") {
-    collectValue <- floor(collectValue/2)
-  }
-
-
   # Calculations based on visitor counts
   sumValue <- sum(unlist(collectValue), na.rm = TRUE)
 
+  if(gateType == "Two-way") {
+    sumValue <- ceiling(sumValue / 2)
+  }
+
   returnValues <- list(countSum = sumValue,
-                       individualCounts = unlist(collectValue))
+                       individualDailyCounts = unlist(collectValue),
+                       gateType = gateType)
   class(returnValues) <- c("GateCounts")
 
   return(returnValues)
 }
-outPut<- gateCountAdjustment(vectorCounts = rbs1FloorNORTH, gateType = "Two-way")
+outPut<- gateCountAdjustment(vectorCounts = gersteinCounts,
+                             gateType = "One-way")
 
 outPut$countSum # 141371
-write.csv(outPut$individualCounts, file = "gateCounts.csv")
+write.csv(outPut$individualDailyCounts, file = "gateCountsGerstein.csv")
 
 # check scenarios
 # if value is negative, then counter reset or entry typo
