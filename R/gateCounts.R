@@ -209,13 +209,15 @@ gateCountAdjustment <- function(vectorCounts,
      stop("\n vectorCounts should be a numeric vector or tibble")
   }
 
-  if(typeof(vectorCounts) != "double" &&
-     typeof(vectorCounts) != "integer") {
-    stop("\n vectorCounts should be a numeric vector or tibble")
-  }
-
   if(is.vector(vectorCounts) == TRUE) {
     tibbleCounts <- as_tibble(vectorCounts)
+  } else {
+    tibbleCounts <- vectorCounts
+  }
+
+  if(typeof(unlist(vectorCounts)) != "double" &&
+     typeof(unlist(vectorCounts)) != "integer") {
+    stop("\n vectorCounts should be a numeric vector or tibble")
   }
 
 
@@ -224,7 +226,7 @@ gateCountAdjustment <- function(vectorCounts,
   collectValue <- rep(NA, times = nrow(tibbleCounts))
 
   # Loop for obtaining visitor counts
-  for (i in c(1:nrow(tibbleCounts))) {
+  for (i in c(1:nrow(vectorCounts))) {
       # 1. Gate type based calculation
 
       if(gateType == "Two-way") {
@@ -343,7 +345,7 @@ gateCountAdjustment <- function(vectorCounts,
 
   return(returnValues)
 }
-outPut<- gateCountAdjustment(vectorCounts = gersteinCounts)
+outPut<- gateCountAdjustment(vectorCounts = rbs1FloorNORTH, gateType = "One-way")
 write.csv(outPut$individualCounts, file = "gateCounts.csv")
 
 # check scenarios
