@@ -208,7 +208,7 @@ gateCountAdjustment <- function(rawGateCounts,
   collectValue <- rep(NA, times = nrow(tibbleCounts))
 
   # Loop for obtaining visitor counts
-   for (i in c(140:150)) { # for testing purposes
+   for (i in c(140:154)) { # for testing purposes
   # for (i in c(1:nrow(tibbleCounts))) {
       # 1. Gate type based calculation
 
@@ -381,7 +381,7 @@ rbsP4Counts <- gateCountAdjustment(
   rawGateCounts = rbsP4,
   gateType = "Bidirectional",
   gatecounterMaxValue = 999999)
-rbsP4Counts$countSum # 2614
+rbsP4Counts$countSum # 502
 write.csv(ceiling(unlist(rbsP4Counts$individualDailyCounts)/2),
           file = "rbsP4Counts.csv")
 
