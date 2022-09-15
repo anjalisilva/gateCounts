@@ -142,59 +142,8 @@ gersteinCounts <- gateCountsFY2022 %>%
   sum(na.rm = TRUE) %>%
   round(digits = 0) # 191482
 
-##### Analyze Raw counts ####
+##### Write raw counts function####
 # 9 Sept 2022
-
-gateCountsFY2022raw <- readxl::read_excel("UTL Daily Exit Counts WITH CALCS  Apr2020 with corrected calculations_AS_svd1Sept2022.xlsx",
-                                       sheet = 1)
-dim(gateCountsFY2022raw) #  4507   14
-glimpse(gateCountsFY2022raw)
-
-gateType <- "Two-way" # then needs to divide by two
-# "One-way"
-
-FYanalyzed <- c("2021", "2022")
-yearMonthAnalyzed <- c("20215",
-                       "20216",
-                       "20217",
-                       "20218",
-                       "20219",
-                       "202110",
-                       "202111",
-                       "202112",
-                       "20221",
-                       "20222",
-                       "20223",
-                       "20224")
-
-# Obtain data for year and month of FY2022
-rbs1FloorNORTH <- gateCountsFY2022raw %>%
-  dplyr::mutate(month = Date %>%
-                  lubridate::ymd() %>%
-                  lubridate::month()) %>%
-  dplyr::mutate(year = Date %>%
-                  lubridate::ymd() %>%
-                  lubridate::year()) %>%
-  dplyr::mutate(yearMonth = paste0(year,month)) %>%
-  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
-  dplyr::select("Robarts 1st floor NORTH") %>%
-  unlist() %>%
-  as.numeric() %>%
-  as_tibble()
-
-# Obtain another set of data for FY2022
-gersteinCounts <- gateCountsFY2022raw %>%
-  dplyr::mutate(month = Date %>%
-                  lubridate::ymd() %>%
-                  lubridate::month()) %>%
-  dplyr::mutate(year = Date %>%
-                  lubridate::ymd() %>%
-                  lubridate::year()) %>%
-  dplyr::mutate(yearMonth = paste0(year,month)) %>%
-  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
-  dplyr::select("Gerstein") %>%
-  unlist() %>%
-  as.numeric()
 
 # 1. Gate type based calculation
 # 2. Check counts for counter max value or typo (i.e., a negative count)
@@ -302,18 +251,59 @@ outPut<- gateCountAdjustment(vectorCounts = gersteinCounts,
                              gateType = "One-way")
 
 outPut$countSum # 141371
-write.csv(outPut$individualDailyCounts, file = "gateCountsGerstein.csv")
-
-# check scenarios
-# if value is negative, then counter reset or entry typo
-# if NA values, can you add average
+#write.csv(outPut$individualDailyCounts, file = "gateCountsGerstein.csv")
 
 
-unlist(collectValue)
-paste(is.na(collectValue), collapse=" ")
-str_locate_all(string = paste(is.na(collectValue), collapse=" "),
-           pattern = c("TRUE FALSE TRUE"))
+##### Analyze using raw counts function ####
 
-str_locate_all(string = paste(is.na(collectValue), collapse=" "),
-               pattern = c("TRUE FALSE FALSE TRUE"))
+# 15 Sept 2022
+gateCountsFY2022raw <- readxl::read_excel("UTL Daily Exit Counts WITH CALCS  Apr2020 with corrected calculations_AS_svd1Sept2022.xlsx",
+                                          sheet = 1)
+dim(gateCountsFY2022raw) #  4507   14
+glimpse(gateCountsFY2022raw)
 
+gateType <- "Two-way" # then needs to divide by two
+# "One-way"
+
+FYanalyzed <- c("2021", "2022")
+yearMonthAnalyzed <- c("20215",
+                       "20216",
+                       "20217",
+                       "20218",
+                       "20219",
+                       "202110",
+                       "202111",
+                       "202112",
+                       "20221",
+                       "20222",
+                       "20223",
+                       "20224")
+
+# Obtain data for year and month of FY2022
+rbs1FloorNORTH <- gateCountsFY2022raw %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Robarts 1st floor NORTH") %>%
+  unlist() %>%
+  as.numeric() %>%
+  as_tibble()
+
+# Obtain another set of data for FY2022
+gersteinCounts <- gateCountsFY2022raw %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Gerstein") %>%
+  unlist() %>%
+  as.numeric()
