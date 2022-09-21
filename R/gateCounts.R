@@ -208,8 +208,8 @@ gateCountAdjustment <- function(rawGateCounts,
   collectValue <- rep(NA, times = nrow(tibbleCounts))
 
   # Loop for obtaining visitor counts
-   for (i in c(140:154)) { # for testing purposes
-  # for (i in c(1:nrow(tibbleCounts))) {
+  # for (i in c(140:154)) { # for testing purposes
+   for (i in c(1:nrow(tibbleCounts))) {
       # 1. Gate type based calculation
 
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
@@ -333,8 +333,7 @@ rbs1FloorNORTH <- gateCountsFY2022raw %>%
   dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
   dplyr::select("Robarts 1st floor NORTH") %>%
   unlist() %>%
-  as.numeric() %>%
-  as_tibble()
+  as.numeric()
 dim(rbs1FloorNORTH) # 365   1
 class(rbs1FloorNORTH)
 is.vector(rbs1FloorNORTH) # TRUE
@@ -365,6 +364,7 @@ rbs1FloorSOUTHcount <- gateCountAdjustment(
   gatecounterMaxValue = 999999)
 rbs1FloorSOUTHcount$countSum # 51240
 
+
 rbsP4 <- gateCountsFY2022raw %>%
   dplyr::mutate(month = Date %>%
                   lubridate::ymd() %>%
@@ -381,9 +381,30 @@ rbsP4Counts <- gateCountAdjustment(
   rawGateCounts = rbsP4,
   gateType = "Bidirectional",
   gatecounterMaxValue = 999999)
-rbsP4Counts$countSum # 502
+rbsP4Counts$countSum # 1760
+rbsP4Counts$individualDailyCounts
 write.csv(ceiling(unlist(rbsP4Counts$individualDailyCounts)/2),
           file = "rbsP4Counts.csv")
+
+
+rbs2Main <- gateCountsFY2022raw %>%
+  dplyr::mutate(month = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::month()) %>%
+  dplyr::mutate(year = Date %>%
+                  lubridate::ymd() %>%
+                  lubridate::year()) %>%
+  dplyr::mutate(yearMonth = paste0(year,month)) %>%
+  dplyr::filter(yearMonth %in% yearMonthAnalyzed) %>%
+  dplyr::select("Robarts 2nd Floor - MAIN")
+dim(rbs2Main) # 365   1
+
+rbs2MainCounts <- gateCountAdjustment(
+  rawGateCounts = rbs2Main,
+  gateType = "Bidirectional",
+  gatecounterMaxValue = 999999)
+rbs2MainCounts$countSum # 945675
+
 
 # Obtain another set of data for FY2022
 gersteinCounts <- gateCountsFY2022raw %>%
