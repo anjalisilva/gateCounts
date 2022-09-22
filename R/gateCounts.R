@@ -2,7 +2,14 @@
 #'
 #' A function that calculates cumulative gate counts, provided a numeric
 #' vector or a tibble containing values of raw daily gate counts. The
-#' function adjusts for
+#' function adjusts for several factors outlined under details.
+#'
+#' @details The function requires directionality of the gates for which
+#'    which the counts are provided (called gate type). If unidirectional
+#'    no adjustments are done. If bidirectional, the cumulative sum at
+#'    the end will be divided by two. Testing has shown that this method
+#'    of dividing at the end will help reduce issues with inflated counts
+#'    that result from division of daily counts by two and rounding up.
 #'
 #' @param loglikelihood A negative value of class "numeric" indicating
 #'    the log-likelihood.
