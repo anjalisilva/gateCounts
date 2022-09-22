@@ -383,8 +383,8 @@ rbsP4Counts <- gateCountAdjustment(
   gatecounterMaxValue = 999999)
 rbsP4Counts$countSum # 1760
 rbsP4Counts$individualDailyCounts
-write.csv(ceiling(unlist(rbsP4Counts$individualDailyCounts)/2),
-          file = "rbsP4Counts.csv")
+#write.csv(ceiling(unlist(rbsP4Counts$individualDailyCounts)/2),
+#          file = "rbsP4Counts.csv")
 
 
 rbs2Main <- gateCountsFY2022raw %>%
@@ -428,8 +428,6 @@ gersteinCountOput <- gateCountAdjustment(
   gateType = "Unidirectional",
   gatecounterMaxValue = 999999)
 gersteinCountOput$countSum # 289917
-
-
 
 
 rbs1FloorSOUTHcount <- gateCountAdjustment(
