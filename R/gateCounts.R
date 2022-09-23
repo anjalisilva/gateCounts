@@ -16,45 +16,33 @@
 #'    In the case of counter reset, the 'gatecounterMaxValue' argument
 #'    provided by the user will be used to calculate the corrected value.
 #'    In the case of a lower value being entered compared to previous day,
-#'    the negative value will be replaced by NA. For next new day, the count
-#'    is calculated by the numeric value previously reported, that must
-#'    be higher than current value.
+#'    the negative value will be replaced by NA. For next new date, the
+#'    count is calculated by the numeric value previously reported, that
+#'    must be higher than current value. The function also ensure counts
+#'    for empty cells (when the count was forgotten to be reported) are
+#'    accounted for. All scenarios are explained with images on the tutorial.
 #'
-#' @param loglikelihood A negative value of class "numeric" indicating
-#'    the log-likelihood.
-#' @param nClusters A positive integer indicating the number of clusters.
-#'    Default value is 2.
-#' @param dimensionality A positive integer indicating the dimensionality of dataset.
-#' @param observations A positive integer indicating the number of observations.
-#' @param probability A vector indicating the probability of each cluster. The
-#'    vector should sum to 1.
+#' @param rawGateCounts A numeric vector of length corresponding to days or
+#     a tibble of dimensions days x 1, containing values of raw daily gate
+#     counts. Here days is the number of days for which raw gate counts
+#'    are present.
+#' @param gateType A character string with options "Unidirectional" or
+#     "Bidirectional", to indicate gate type. If the gate is one-way only, then
+#     enter "Unidirectional". If the gate permits visitors in and out, then
+#     enter "Bidirectional". Bidirectional selection will lead to count sum
+#     being divided by two. The default value is "Unidirectional".
+#' @param gatecounterMaxValue A numeric value greater than 0 indicating the
+#'    gate counter max value, before it is reset. The default value is 999,999.
 #'
 #' @return Returns an S3 object of class InfCriteria with results.
 #' \itemize{
-#'   \item BICresults - A value of class "numeric" indicating BIC value.
-#'   \item AICresults - A value of class "numeric" indicating AIC value.
-#'   \item ICLresults - A value of class "numeric" indicating ICL value.
+#'   \item adjustedCountSum - A value of class "numeric" indicating BIC value.
+#'   \item unadjustedDailyCounts - A value of class "numeric" indicating AIC value.
+#'   \item gateType - A value of class "numeric" indicating ICL value.
 #' }
 #'
 #' @examples
 
-# Function
-# 1. Gate type based calculation
-# 2. Check counts for counter max value reset
-# 3. Check counts for typo (i.e., a gate count less than previous day)
-# 3. Check counts for NA values and adjust based on previous numeric count
-
-# Arguments
-# rawGateCounts: A numeric vector of length corresponding to days or a tibble
-#                of dimensions days x 1, containing values of raw daily gate counts.
-#                Here days is the number of days for which raw gate counts are present.
-# gateType: A character string with options "Unidirectional" or "Bidirectional",
-#           to indicate gate type. If the gate is one-way only, then enter
-#           "Unidirectional". If the gate permits visitors in and out, then
-#           enter "Bidirectional". Bidirectional selection will lead to count
-#           sum being divided by two. The default value is "Unidirectional".
-# gatecounterMaxValue: A numeric value greater than 0 indicating the gate counter
-#                      max value, before it is reset. The default value is 999,999.
 
 gateCountAdjustment <- function(rawGateCounts,
                                 gateType = "Unidirectional",
@@ -182,10 +170,25 @@ gateCountAdjustment <- function(rawGateCounts,
     sumValue <- ceiling(sumValue / 2)
   }
 
-  returnValues <- list(countSum = sumValue,
-                       individualDailyCounts = unlist(collectValue),
+  returnValues <- list(adjustedCountSum = sumValue,
+                       unadjustedDailyCounts = unlist(collectValue),
                        gateType = gateType)
   class(returnValues) <- c("GateCounts")
+
+  # S4 object doesn't work
+  # setClass("GateCounts", slots = c(adjustedCountSum = "numeric",
+  #                                  unadjustedDailyCounts = "numeric",
+  #                                  gateType = "character"))
+
+  # returnValues <- new("GateCounts")
+
+  # returnValues@adjustedCountSum <- sumValue
+  # returnValues@unadjustedDailyCounts <- unlist(collectValue)
+  # returnValues@gateType <- gateType
+  # or
+  # returnValues <- new("GateCounts", adjustedCountSum = sumValue,
+  #                     unadjustedDailyCounts = unlist(collectValue),
+  #                     gateType = gateType)
 
   return(returnValues)
 }
