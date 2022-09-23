@@ -27,22 +27,33 @@
 #     counts. Here days is the number of days for which raw gate counts
 #'    are present.
 #' @param gateType A character string with options "Unidirectional" or
-#     "Bidirectional", to indicate gate type. If the gate is one-way only, then
-#     enter "Unidirectional". If the gate permits visitors in and out, then
-#     enter "Bidirectional". Bidirectional selection will lead to count sum
-#     being divided by two. The default value is "Unidirectional".
+#     "Bidirectional", to indicate gate type. If the gate is one-way only,
+#     then enter "Unidirectional". If the gate permits visitors in and out,
+#     then enter "Bidirectional". Bidirectional selection will lead to
+#     count sum being divided by two. The default value is "Unidirectional".
 #' @param gatecounterMaxValue A numeric value greater than 0 indicating the
-#'    gate counter max value, before it is reset. The default value is 999,999.
+#'    gate counter max value, before it is reset. The default value is
+#'    999,999.
 #'
 #' @return Returns an S3 object of class InfCriteria with results.
 #' \itemize{
-#'   \item adjustedCountSum - Sum of daily gate counts for the period, adjusted
-#'         issues mentioned under details.
-#'   \item unadjustedDailyCounts - A value of class "numeric" indicating AIC value.
-#'   \item gateType - A value of class "numeric" indicating ICL value.
+#'   \item adjustedCountSum - Sum of daily gate counts for the period,
+#'         adjusted for issues mentioned under details. If gateType was
+#'         "Bidirectional", the final resulting number would be divided
+#'         by two.
+#'   \item unadjustedDailyCounts - A vector of daily counts, not adjusted
+#'         for gate type. If "Bidirectional" gate type, then would need to
+#'         sum this vector and divide by two at the end.
+#'   \item gateType - Original gate type provided by the user, "Bidirectional"
+#'         or "Unidirectional".
 #' }
 #'
 #' @examples
+rbs1FloorNORTHcount <- gateCountAdjustment(
+  rawGateCounts = rbs1FloorNORTH,
+  gateType = "Bidirectional",
+  gatecounterMaxValue = 999999)
+rbs1FloorNORTHcount$countSum # 70686
 
 
 gateCountAdjustment <- function(rawGateCounts,
@@ -190,7 +201,6 @@ gateCountAdjustment <- function(rawGateCounts,
   # returnValues <- new("GateCounts", adjustedCountSum = sumValue,
   #                     unadjustedDailyCounts = unlist(collectValue),
   #                     gateType = gateType)
-
   return(returnValues)
 }
 
