@@ -5,11 +5,20 @@
 #' function adjusts for several factors outlined under details.
 #'
 #' @details The function requires directionality of the gates for which
-#'    which the counts are provided (called gate type). If unidirectional
+#'    the daily counts are provided (called gate type). If unidirectional
 #'    no adjustments are done. If bidirectional, the cumulative sum at
 #'    the end will be divided by two. Testing has shown that this method
-#'    of dividing at the end will help reduce issues with inflated counts
-#'    that result from division of daily counts by two and rounding up.
+#'    of dividing at the end will help reduce issues with counts
+#'    that result from division of daily counts by two and rounding up or
+#'    down. Further, negative counts can result during calculation if
+#'    the counter has reset or if a lower value has been entered compared
+#'    to previous day. This function attempts to correct for both scenarios.
+#'    In the case of counter reset, the 'gatecounterMaxValue' argument
+#'    provided by the user will be used to calculate the corrected value.
+#'    In the case of a lower value being entered compared to previous day,
+#'    the negative value will be replaced by NA. For next new day, the count
+#'    is calculated by the numeric value previously reported, that must
+#'    be higher than current value.
 #'
 #' @param loglikelihood A negative value of class "numeric" indicating
 #'    the log-likelihood.
