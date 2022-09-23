@@ -36,7 +36,8 @@
 #'
 #' @return Returns an S3 object of class InfCriteria with results.
 #' \itemize{
-#'   \item adjustedCountSum - A value of class "numeric" indicating BIC value.
+#'   \item adjustedCountSum - Sum of daily gate counts for the period, adjusted
+#'         issues mentioned under details.
 #'   \item unadjustedDailyCounts - A value of class "numeric" indicating AIC value.
 #'   \item gateType - A value of class "numeric" indicating ICL value.
 #' }
