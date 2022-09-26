@@ -5,7 +5,7 @@ library(shinyalert)
 ui <- fluidPage(
 
   # App title ----
-  titlePanel(tags$h1(tags$b("MPLNClust:"),"Mixtures of MPLN for Clustering via Variational-EM")),
+  titlePanel(tags$h1(tags$b("gateCounts:"),"Calculates Cumulative Gate Counts")),
 
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -13,11 +13,14 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
 
-      tags$p("Description: This is a simple Shiny App that is part of the MPLNClust package.
-             Most of the functions available via the package are made
-             available with Shiny App. The MPLNClust is an R package for performing
-             clustering using mixtures of multivariate Poisson-log normal
-             (MPLN) distribution provided a count dataset."),
+      tags$p("Description: This is a simple Shiny App that is part of the
+             gateCounts package. Functions available via the package are made
+             available with Shiny App. The gateCounts is an R package for
+             calculating cumulative gate counts, provided a numeric vector or
+             a tibble containing values of raw daily gate counts. It adjusts
+             for several factors outlined under package details. The function
+             was developed to improve current methodologies for calculating
+             cumulative gate counts."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -36,30 +39,19 @@ ui <- fluidPage(
       shinyalert::useShinyalert(),  # Set up shinyalert
       uiOutput("tab2"),
       actionButton(inputId = "data1",
-                   label = "Dataset 1 Details"),
+                   label = "Data 1 Details"),
       uiOutput("tab1"),
       actionButton(inputId = "data2",
-                   label = "Dataset 2 Details"),
+                   label = "Data 2 Details"),
       fileInput(inputId = "file1",
-                label = "Select a count dataset to visualize. File should be in .csv format with rows corresponding to genes and columns to samples.",
+                label = "Select a gate count dataset for analysis. File should be in .csv format with rows corresponding to dates and column to daily raw gate counts.",
                 accept = c(".csv")),
-      textInput(inputId = "ngmin",
-                label = "Enter the minimum value of components or clusters, gmin:", "1"),
-      textInput(inputId = "ngmax",
-                label = "Enter the maximum value of components or clusters, gmax:", "2"),
-      selectInput(inputId = 'typeinitMethod',
-                  label = 'Select the initialization method, initMethod:',
-                  choices = c("kmeans",
-                              "random",
-                              "medoids",
-                              "clara",
-                              "fanny")),
-      textInput(inputId = "nInitIterations",
-                label = "Enter the number of initial iterations, nInitIterations:", "1"),
-      selectInput(inputId = 'typenormalize',
-                  label = 'Select whether to perform normalization or not:',
-                  choices = c("'Yes' ",
-                              "'No' ")),
+      selectInput(inputId = 'gateType',
+                  label = 'Select the gate type method:',
+                  choices = c("Unidirectional",
+                              "Bidirectional")),
+      textInput(inputId = "gatecounterMaxValue",
+                label = "Enter a numeric value greater than 0 indicating the gate counter max value, gatecounterMaxValue:", "999999"),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -79,14 +71,14 @@ ui <- fluidPage(
 
       # Output: Tabet
       tabsetPanel(type = "tabs",
-                  tabPanel("Pairs Plot of Dataset",
+                  tabPanel("Plot of Raw Data",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Pairs Plot of Log-transformed Count Dataset:"),
+                           h3("Plot of Raw Count Data:"),
                            br(),
                            plotOutput("pairsplot")),
                   tabPanel("Input Summary",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Summary of Count Dataset:"),
+                           h3("Summary of Input Data:"),
                            br(),
                            verbatimTextOutput("textOut")),
                   tabPanel("Cluster Results",
@@ -142,7 +134,7 @@ server <- function(input, output) {
 
 
   # Step I: save input csv as a reactive
-  matrixInput <- reactive({
+  dataInput <- reactive({
     if (! is.null(input$file1))
       as.matrix(read.csv(input$file1$datapath,
                          sep = ",",
@@ -155,14 +147,10 @@ server <- function(input, output) {
     withProgress(message = 'Clustering', value = 0, {
       # Number of times we'll go through the loop
 
-      MPLNClust::mplnVariational(
-        dataset = matrixInput(),
-        membership = "none",
-        gmin = as.numeric(input$ngmin),
-        gmax = as.numeric(input$ngmax),
-        initMethod = as.character(input$typeinitMethod),
-        nInitIterations = as.numeric(input$nInitIterations),
-        normalize = "Yes")
+      gateCountCumulative(
+        rawGateCounts = dataInput(),
+        gateType = as.character(input$gateType),
+        gatecounterMaxValue = as.numeric(input$gatecounterMaxValue))
 
     })
   })
@@ -519,20 +507,19 @@ server <- function(input, output) {
 
 
   # URLs for downloading data
-  url1 <- a("Example Dataset 2", href="https://raw.githubusercontent.com/anjalisilva/TestingPackage/master/inst/extdata/GeneCountsData2.csv")
+  url1 <- a("Example Data 2", href="https://raw.githubusercontent.com/anjalisilva/TestingPackage/master/inst/extdata/GeneCountsData2.csv")
   output$tab1 <- renderUI({
     tagList("Download:", url1)
   })
 
   observeEvent(input$data2, {
     # Show a modal when the button is pressed
-    shinyalert(title = "Example Dataset 2",
-               text = "An RNAseq experiment conductd using bean plants from 2016 in Canada. This dataset has n = 30 genes along rows and d = 3 conditions or samples along columns. Data was generated at the University of Guelph, Canada in 2016. To save the file (from Chrome), click on link, then right click, select 'Save As...' and then save as a .csv file.
-               Citation: Silva, A. (2020) TestingPackage: An Example R Package For BCB410H. Unpublished. URL https://github.com/anjalisilva/TestingPackage",
+    shinyalert(title = "Example Data 2",
+               text = "Gate count data simulated",
                type = "info")
   })
 
-  url2 <- a("Example Dataset 1", href="https://drive.google.com/file/d/1jMBTPpsBwaigjR3mO49AMYDxzjVnNiAv/view?usp=sharing")
+  url2 <- a("Example Data 1", href="https://drive.google.com/file/d/1jMBTPpsBwaigjR3mO49AMYDxzjVnNiAv/view?usp=sharing")
   output$tab2 <- renderUI({
     tagList("Download:", url2)
   })
