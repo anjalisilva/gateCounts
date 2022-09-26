@@ -16,8 +16,8 @@
 #'    In the case of counter reset, the 'gatecounterMaxValue' argument
 #'    provided by the user will be used to calculate the corrected value.
 #'    In the case of a lower value being entered compared to previous day,
-#'    the negative value will be replaced by NA. For next new date, the
-#'    count is calculated by the numeric value previously reported, that
+#'    the negative value will be replaced by NA. For next day, the count is
+#'    calculated by the numeric value previously reported prior to NA, that
 #'    must be higher than current value. The function also ensure counts
 #'    for empty cells (when the count was forgotten to be reported) are
 #'    accounted for. All scenarios are explained with images on the tutorial.
@@ -44,15 +44,23 @@
 #'   \item unadjustedDailyCounts - A vector of daily counts, not adjusted
 #'         for gate type. If "Bidirectional" gate type, then would need to
 #'         sum this vector and divide by two at the end.
-#'   \item gateType - Original gate type provided by the user, "Bidirectional"
-#'         or "Unidirectional".
+#'   \item gateType - Gate type for which counts are provided by the user.
 #' }
 #'
 #' @examples
+#' # Example 1:
+#' randomCounts <- c(sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 82, lambda = 100000)),
+#'                        200000, # max value
+#'                   sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 83, lambda = 100000)))
+#'
 rbs1FloorNORTHcount <- gateCountAdjustment(
-  rawGateCounts = rbs1FloorNORTH,
-  gateType = "Bidirectional",
-  gatecounterMaxValue = 999999)
+  rawGateCounts = randomCounts,
+  gateType = "Unidirectional",
+  gatecounterMaxValue = 200000)
 rbs1FloorNORTHcount$countSum # 70686
 
 
