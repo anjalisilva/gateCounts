@@ -223,11 +223,12 @@ gateCountAdjustment <- function(rawGateCounts,
                 #  }
                 #}
               }
-            cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")
+              if(printMessages == TRUE) {
+                cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")}
             } else {
               collectValue[i + 1] <- NA # i.e., if one of the first values with
               if(printMessages == TRUE) {
-              cat("\n NA option collectValue[i + 1] = ",
+                cat("\n NA option collectValue[i + 1] = ",
                   unlist(collectValue[i + 1]), "\n")}
             }
           }
@@ -241,6 +242,10 @@ gateCountAdjustment <- function(rawGateCounts,
 
   if(gateType == "Bidirectional") {
     sumValue <- ceiling(sumValue / 2)
+  }
+
+  if(printMessages == TRUE) {
+    cat("\n Cumulative sum for gate type", tolower(gateType), "is", sumValue, "\n")
   }
 
   returnValues <- list(adjustedCountSum = sumValue,

@@ -110,7 +110,8 @@ randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
 randomCountsSumEx3 <- gateCountAdjustment(
              rawGateCounts = randomCounts3,
              gateType = "Unidirectional",
-             gatecounterMaxValue = 200000)
+             gatecounterMaxValue = 200000,
+             printMessages = FALSE)
 
 
 
