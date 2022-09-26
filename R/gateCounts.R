@@ -66,6 +66,7 @@
 #'              rawGateCounts = randomCounts1,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
+#' randomCountsSumEx1$adjustedCountSum # access cumulative count
 #'
 #' # Example 2: Unidirectional gates with random NA values
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -86,6 +87,7 @@
 #'              rawGateCounts = randomCounts2,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
+#' randomCountsSumEx2$adjustedCountSum # access cumulative count
 #'
 #' # Example 3: Unidirectional gates with random entry errors
 #' randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -105,6 +107,7 @@
 #'              rawGateCounts = randomCounts3,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
+#' randomCountsSumEx3$adjustedCountSum # access cumulative count
 #'
 #' # Example 4: Bidirectional gates with NA values
 #' randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
@@ -125,6 +128,7 @@
 #'              rawGateCounts = randomCounts4,
 #'              gateType = "Bidirectional",
 #'              gatecounterMaxValue = 999999)
+#' randomCountsSumEx4$adjustedCountSum # access cumulative count
 #'
 #' @references
 #' Müller K, Wickham H (2022). _tibble: Simple Data Frames_. R
