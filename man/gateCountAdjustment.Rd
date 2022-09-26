@@ -7,7 +7,8 @@
 gateCountAdjustment(
   rawGateCounts,
   gateType = "Unidirectional",
-  gatecounterMaxValue = 999999
+  gatecounterMaxValue = 999999,
+  printMessages = TRUE
 )
 }
 \arguments{
@@ -59,18 +60,58 @@ The function requires directionality of the gates for which
 }
 \examples{
 # Example 1:
-randomCounts <- c(sort(rpois(n = 50, lambda = 100)),
+randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
                        200000, # max value
                   sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
-                  sort(rpois(n = 83, lambda = 100000)))
+                  sort(rpois(n = 50, lambda = 100000)))
 
-rbs1FloorNORTHcount <- gateCountAdjustment(
-             rawGateCounts = randomCounts,
+randomCountsSumEx1 <- gateCountAdjustment(
+             rawGateCounts = randomCounts1,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000)
-             rbs1FloorNORTHcount$countSum # 70686
+
+# Example 2:
+randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
+                  sort(rpois(n = 50, lambda = 1000)),
+                  sort(rpois(n = 82, lambda = 100000)),
+                       200000, # max value
+                  sort(rpois(n = 50, lambda = 100)),
+                  sort(rpois(n = 50, lambda = 1000)),
+                  sort(rpois(n = 50, lambda = 100000)))
+
+# randomly introduce NA and "Gate broken" entries
+randomPositions <- sample(x = c(1:length(randomCounts2)),
+                         size = 8, replace = FALSE)
+randomCounts2[randomPositions[1:4]] <- NA
+randomCounts2[randomPositions[5:8]] <- "Gate broken"
+
+randomCountsSumEx2 <- gateCountAdjustment(
+             rawGateCounts = randomCounts2,
+             gateType = "Unidirectional",
+             gatecounterMaxValue = 200000)
+
+# Example 3:
+randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
+                  sort(rpois(n = 50, lambda = 1000)),
+                  sort(rpois(n = 82, lambda = 100000)),
+                       200000, # max value
+                  sort(rpois(n = 50, lambda = 100)),
+                  sort(rpois(n = 50, lambda = 1000)),
+                  sort(rpois(n = 50, lambda = 100000)))
+
+# randomly introduce smaller counts
+randomPositions <- sample(x = c(1:length(randomCounts3)),
+                         size = 4, replace = FALSE)
+randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
+
+randomCountsSumEx3 <- gateCountAdjustment(
+             rawGateCounts = randomCounts3,
+             gateType = "Unidirectional",
+             gatecounterMaxValue = 200000)
+
+
 
 }

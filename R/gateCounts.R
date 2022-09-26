@@ -49,25 +49,66 @@
 #'
 #' @examples
 #' # Example 1:
-#' randomCounts <- c(sort(rpois(n = 50, lambda = 100)),
+#' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
 #'                        200000, # max value
 #'                   sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
-#'                   sort(rpois(n = 82, lambda = 100000)))
+#'                   sort(rpois(n = 50, lambda = 100000)))
 #'
-#' rbs1FloorNORTHcount <- gateCountAdjustment(
-#'              rawGateCounts = randomCounts,
+#' randomCountsSumEx1 <- gateCountAdjustment(
+#'              rawGateCounts = randomCounts1,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
-#'              rbs1FloorNORTHcount$countSum # 70686
+#'
+#' # Example 2:
+#' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 82, lambda = 100000)),
+#'                        200000, # max value
+#'                   sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 50, lambda = 100000)))
+#'
+#' # randomly introduce NA and "Gate broken" entries
+#' randomPositions <- sample(x = c(1:length(randomCounts2)),
+#'                          size = 8, replace = FALSE)
+#' randomCounts2[randomPositions[1:4]] <- NA
+#' randomCounts2[randomPositions[5:8]] <- "Gate broken"
+#'
+#' randomCountsSumEx2 <- gateCountAdjustment(
+#'              rawGateCounts = randomCounts2,
+#'              gateType = "Unidirectional",
+#'              gatecounterMaxValue = 200000)
+#'
+#' # Example 3:
+#' randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 82, lambda = 100000)),
+#'                        200000, # max value
+#'                   sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 50, lambda = 100000)))
+#'
+#' # randomly introduce smaller counts
+#' randomPositions <- sample(x = c(1:length(randomCounts3)),
+#'                          size = 4, replace = FALSE)
+#' randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
+#'
+#' randomCountsSumEx3 <- gateCountAdjustment(
+#'              rawGateCounts = randomCounts3,
+#'              gateType = "Unidirectional",
+#'              gatecounterMaxValue = 200000)
+#'
+#'
 #'
 #' @export
 #' @import tibble
 gateCountAdjustment <- function(rawGateCounts,
                                 gateType = "Unidirectional",
-                                gatecounterMaxValue = 999999) {
+                                gatecounterMaxValue = 999999,
+                                printMessages = TRUE) {
   # Check input arguments
   if(gateType != "Bidirectional" && gateType != "Unidirectional") {
     stop("\n gateType argument can only take on values Bidirectional
@@ -89,12 +130,12 @@ gateCountAdjustment <- function(rawGateCounts,
 
   # Converting to numeric vector or tibble
   if(is.vector(rawGateCounts) == TRUE) {
-    tibbleCounts <- tibble::as_tibble(as.numeric(rawGateCounts))
+    tibbleCounts <- suppressWarnings(tibble::as_tibble(as.numeric(rawGateCounts)))
   } else if (tibble::is_tibble(rawGateCounts) == TRUE) {
-    tibbleCounts <- rawGateCounts %>%
+    tibbleCounts <- suppressWarnings(rawGateCounts %>%
       unlist() %>%
       as.numeric() %>%
-      tibble::as_tibble()
+      tibble::as_tibble())
   } else {
     stop("\n rawGateCounts should be a numeric vector or tibble")
   }
@@ -110,29 +151,36 @@ gateCountAdjustment <- function(rawGateCounts,
   collectValue <- rep(NA, times = nrow(tibbleCounts))
 
   # Loop for obtaining visitor counts
-  # for (i in c(140:154)) { # for testing purposes
    for (i in c(1:(nrow(tibbleCounts) - 1))) {
       # 1. Gate type based calculation
 
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
+        if(printMessages == TRUE) {
         cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
             unlist(tibbleCounts[i + 1, ]),
             "-", unlist(tibbleCounts[i, ]),
-            " = ", unlist(collectValue[i + 1]), "\n")
+            " = ", unlist(collectValue[i + 1]), "\n")}
 
         # 2. Check counts for counter max value or typo
+        # If not NA and less than zero, then TRUE
         if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
           # detecting if a counter max issue
           # If that is the case value/counterMax should be close to 1
           if((tibbleCounts[i, ] / gatecounterMaxValue) >= 0.8) {
             collectValue[i + 1] <- (gatecounterMaxValue - tibbleCounts[i, ]) +
                                     tibbleCounts[i + 1, ]
+            if(printMessages == TRUE) {
+            cat("\n The value is negative, due to counter reset,
+                so new count is fixed to ", unlist(collectValue[i + 1]), "\n")}
 
           } else if((tibbleCounts[i, ] / gatecounterMaxValue) < 0.8) {
             # In this case, likely a typo from user entering data
             collectValue[i + 1] <- NA
             tibbleCounts[i + 1, ] <- NA
+            if(printMessages == TRUE) {
+            cat("\n The value is negative, likely due to a error with,
+                entering, so adjusted to ", unlist(collectValue[i + 1]), "\n")}
           }
         }
 
@@ -149,7 +197,8 @@ gateCountAdjustment <- function(rawGateCounts,
             # Otherwise no point in performing analysis
             # This would be i-c(1:(i-1))
             if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
-              cat("\n No previous count with numeric value present. \n")
+              if(printMessages == TRUE) {
+              cat("\n No previous count with numeric value present. \n")}
             } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
               # See how many past counts have numeric values
               # Pick the most recent numeric count to subtract from
@@ -159,7 +208,8 @@ gateCountAdjustment <- function(rawGateCounts,
                                       tibbleCounts[i - recentCountPlace, ])
               # After adjustment check if a negative value, in case typo
               if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
-                cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")
+                if(printMessages == TRUE) {
+                cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")}
                 # resetCounter <- 0
                 # while(! resetCounter) {
                 # for(j in 1:length(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE))) {
@@ -176,7 +226,9 @@ gateCountAdjustment <- function(rawGateCounts,
             cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")
             } else {
               collectValue[i + 1] <- NA # i.e., if one of the first values with
-              cat("\n NA option collectValue[i + 1] = ",  unlist(collectValue[i + 1]), "\n")
+              if(printMessages == TRUE) {
+              cat("\n NA option collectValue[i + 1] = ",
+                  unlist(collectValue[i + 1]), "\n")}
             }
           }
         }
