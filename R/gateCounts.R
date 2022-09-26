@@ -57,13 +57,14 @@
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 83, lambda = 100000)))
 #'
-rbs1FloorNORTHcount <- gateCountAdjustment(
-  rawGateCounts = randomCounts,
-  gateType = "Unidirectional",
-  gatecounterMaxValue = 200000)
-rbs1FloorNORTHcount$countSum # 70686
-
-
+#' rbs1FloorNORTHcount <- gateCountAdjustment(
+#'              rawGateCounts = randomCounts,
+#'              gateType = "Unidirectional",
+#'              gatecounterMaxValue = 200000)
+#'              rbs1FloorNORTHcount$countSum # 70686
+#'
+#' @export
+#' @import tibble
 gateCountAdjustment <- function(rawGateCounts,
                                 gateType = "Unidirectional",
                                 gatecounterMaxValue = 999999) {
