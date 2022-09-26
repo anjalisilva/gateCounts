@@ -55,7 +55,7 @@
 #'                        200000, # max value
 #'                   sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
-#'                   sort(rpois(n = 83, lambda = 100000)))
+#'                   sort(rpois(n = 82, lambda = 100000)))
 #'
 #' rbs1FloorNORTHcount <- gateCountAdjustment(
 #'              rawGateCounts = randomCounts,
@@ -111,12 +111,12 @@ gateCountAdjustment <- function(rawGateCounts,
 
   # Loop for obtaining visitor counts
   # for (i in c(140:154)) { # for testing purposes
-   for (i in c(1:nrow(tibbleCounts))) {
+   for (i in c(1:(nrow(tibbleCounts) - 1))) {
       # 1. Gate type based calculation
 
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
-        cat("\n Calc", i+1, "minus", i, "is:",
+        cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
             unlist(tibbleCounts[i + 1, ]),
             "-", unlist(tibbleCounts[i, ]),
             " = ", unlist(collectValue[i + 1]), "\n")
