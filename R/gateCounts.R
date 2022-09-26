@@ -2,7 +2,9 @@
 #'
 #' A function that calculates cumulative gate counts, provided a numeric
 #' vector or a tibble containing values of raw daily gate counts. The
-#' function adjusts for several factors outlined under details.
+#' function adjusts for several factors outlined under details. The
+#' function was developed to improve current methodologies for calculating
+#' cumulative gate counts.
 #'
 #' @details The function requires directionality of the gates for which
 #'    the daily counts are provided (called gate type). If unidirectional
@@ -34,6 +36,9 @@
 #' @param gatecounterMaxValue A numeric value greater than 0 indicating the
 #'    gate counter max value, before it is reset. The default value is
 #'    999,999.
+#' @param printMessages An logical indicating TRUE or FALSE as to whether
+#'    progress messages should be printed. The default value is TRUE. Setting
+#'    to FALSE will remove messages from being shown.
 #'
 #' @return Returns an S3 object of class InfCriteria with results.
 #' \itemize{
@@ -48,7 +53,7 @@
 #' }
 #'
 #' @examples
-#' # Example 1:
+#' # Example 1: Unidirectional gates with daily counts
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
@@ -57,12 +62,12 @@
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
 #'
-#' randomCountsSumEx1 <- gateCountAdjustment(
+#' randomCountsSumEx1 <- gateCountCumulative(
 #'              rawGateCounts = randomCounts1,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #'
-#' # Example 2:
+#' # Example 2: Unidirectional gates with random NA values
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
@@ -77,12 +82,12 @@
 #' randomCounts2[randomPositions[1:4]] <- NA
 #' randomCounts2[randomPositions[5:8]] <- "Gate broken"
 #'
-#' randomCountsSumEx2 <- gateCountAdjustment(
+#' randomCountsSumEx2 <- gateCountCumulative(
 #'              rawGateCounts = randomCounts2,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #'
-#' # Example 3:
+#' # Example 3: Unidirectional gates with random entry errors
 #' randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
@@ -96,16 +101,42 @@
 #'                          size = 4, replace = FALSE)
 #' randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
 #'
-#' randomCountsSumEx3 <- gateCountAdjustment(
+#' randomCountsSumEx3 <- gateCountCumulative(
 #'              rawGateCounts = randomCounts3,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #'
+#' # Example 4: Bidirectional gates with NA values
+#' randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
+#'                   sort(rpois(n = 50, lambda = 400000)),
+#'                   sort(rpois(n = 82, lambda = 800000)),
+#'                        999999, # max value
+#'                   sort(rpois(n = 50, lambda = 10000)),
+#'                   sort(rpois(n = 50, lambda = 450000)),
+#'                   sort(rpois(n = 50, lambda = 850000)))
 #'
+#' # randomly introduce NA and "Gate broken" entries
+#' randomPositions <- sample(x = c(1:length(randomCounts2)),
+#'                          size = 8, replace = FALSE)
+#' randomCounts4[randomPositions[1:4]] <- NA
+#' randomCounts4[randomPositions[5:8]] <- "Gate broken"
+#'
+#' randomCountsSumEx4 <- gateCountCumulative(
+#'              rawGateCounts = randomCounts4,
+#'              gateType = "Bidirectional",
+#'              gatecounterMaxValue = 999999)
+#'
+#' @references
+#' Müller K, Wickham H (2022). _tibble: Simple Data Frames_. R
+#' package version 3.1.8, \href{https://CRAN.R-project.org/package=tibble}{Link}.
+#'
+#' Google. (2022, February 14). Cleaning up gate count statistics.
+#' Google Groups. Retrieved September 26, 2022,
+#' \href{https://groups.google.com/a/arl.org/g/arl-assess/c/JQyllZN4gaE}{Link}.
 #'
 #' @export
 #' @import tibble
-gateCountAdjustment <- function(rawGateCounts,
+gateCountCumulative <- function(rawGateCounts,
                                 gateType = "Unidirectional",
                                 gatecounterMaxValue = 999999,
                                 printMessages = TRUE) {
@@ -245,7 +276,7 @@ gateCountAdjustment <- function(rawGateCounts,
   }
 
   if(printMessages == TRUE) {
-    cat("\n Cumulative sum for gate type", tolower(gateType), "is", sumValue, "\n")
+    cat("\n Cumulative (adjusted) sum for gate type", tolower(gateType), "is", sumValue, "\n")
   }
 
   returnValues <- list(adjustedCountSum = sumValue,
@@ -270,4 +301,5 @@ gateCountAdjustment <- function(rawGateCounts,
   return(returnValues)
 }
 
+# END
 
