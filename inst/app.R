@@ -50,7 +50,7 @@ ui <- fluidPage(
                   choices = c("Unidirectional",
                               "Bidirectional")),
       textInput(inputId = "gatecounterMaxValue",
-                label = "Enter a numeric value greater than 0 indicating the gate counter max value, gatecounterMaxValue:", "999999"),
+                label = "Enter a numeric value greater than 0 indicating the gate counter max value:", "999999"),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -80,19 +80,11 @@ ui <- fluidPage(
                            h3("Summary of Input Data Provided By User:"),
                            br(),
                            verbatimTextOutput("textOut")),
-                  tabPanel("Output Summary",
+                  tabPanel("Output Count",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Summary of Output Data, Cumulative Sum:"),
                            br(),
-                           verbatimTextOutput('clustering')),
-                  tabPanel("Information Criteria Plot",
-                           h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Results:"),
-                           br(),
-                           fluidRow(
-                             splitLayout(cellWidths = c("50%", "50%"), plotOutput('BICvalues'), plotOutput('ICLvalues')),
-                             splitLayout(cellWidths = c("50%", "50%"), plotOutput('AIC3values'), plotOutput('AICvalues')),
-                           ))
+                           verbatimTextOutput('calculating')),
       )
     )
   )
@@ -109,47 +101,47 @@ server <- function(input, output) {
   # Step I: save input csv as a reactive
   dataInput <- reactive({
     if (! is.null(input$file1))
-      as.vector(read.csv(input$file1$datapath,
+      read.csv(input$file1$datapath,
                          sep = ",",
                          header = FALSE,
-                         row.names = 1))
+                         row.names = 1)$V2
   })
-
 
   startcalculating <- eventReactive(eventExpr = input$button2, {
     withProgress(message = 'Calculating', value = 1, {
       # Number of times we'll go through the loop
 
       gateCountCumulative(
-        rawGateCounts = dataInput(),
+        rawGateCounts = as.vector(dataInput()),
         gateType = as.character(input$gateType),
-        gatecounterMaxValue = as.numeric(input$gatecounterMaxValue))
+        gatecounterMaxValue = as.numeric(input$gatecounterMaxValue),
+        printMessages = FALSE)
 
     })
   })
 
-  # Textoutput
+  # Textoutput - Raw data summary
   output$textOut <- renderPrint({
-    if (! is.null(startcalculating))
-      summary(startcalculating()$dataset)
+    if (! is.null(startcalculating()))
+      turnNumeric <- as.numeric(dataInput())
+      summary(turnNumeric)
   })
 
-  # Visualize
-  output$linplot <- renderPlot({
-    if (! is.null(startcalculating))
-      plot(startcalculating()$dataset, type = "l")
+  # Visualize raw counts
+  output$lineplot <- renderPlot({
+    if (! is.null(startcalculating()))
+      turnNumeric <- as.numeric(dataInput())
+      plot(turnNumeric, type = "l", lty=5, xlab = "day",
+           ylab = "raw daily counts", main = "Raw counts")
   })
 
 
   # Step II: calculating
   output$calculating <- renderText({
-    if (! is.null(startcalculating))
-
-    aa <- paste("Cumulative adjusted sum is:", startcalculating()$adjustedCountSum,
-                "for gate type ", startcalculating()$adjustedCountSum, "\n")
-
-    paste(aa)
+    if (! is.null(startcalculating()))
+      startcalculating()$adjustedCountSum
   })
+
 
 
   # URLs for downloading data
