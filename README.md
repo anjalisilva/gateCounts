@@ -214,4 +214,4 @@ issues](https://github.com/anjalisilva/gateCounts).
 
 ## Acknowledgments
 
-- This work done at University of Toronto, Ontario, Canada
+- This work was done at University of Toronto, Ontario, Canada.

@@ -189,4 +189,4 @@ A BibTeX entry for LaTeX users is
 
 ## Acknowledgments
 
-* This work done at University of Toronto, Ontario, Canada
+* This work was done at University of Toronto, Ontario, Canada.
