@@ -183,14 +183,21 @@ A BibTeX entry for LaTeX users is
 
 ## Package References
 
+- [Phillips, J. (2016). Determining Gate Count Reliability in a Library
+  Setting. *Evidence Based Library and Information Practice*
+  19.](https://journals.library.ualberta.ca/eblip/index.php/EBLIP/article/view/27884/20745)
+
 - [Perera, D. and J. M. Nykolaiszyn (2022). Designing an open-source
   application to record library gate counts in response to COVID-19.
   *Journal of Access Services*
   19.](https://www.tandfonline.com/doi/abs/10.1080/15367967.2022.2046006?journalCode=wjas20)
 
-- [Phillips, J. (2016). Determining Gate Count Reliability in a Library
-  Setting. *Evidence Based Library and Information Practice*
-  19.](https://journals.library.ualberta.ca/eblip/index.php/EBLIP/article/view/27884/20745)
+- [Müller, K. and H. Wickham (2022). *tibble: Simple Data Frames*. R
+  package version 3.1.8.](https://CRAN.R-project.org/package=tibble)
+
+- [Google. (2022, February 14). Cleaning up gate count statistics.
+  Google Groups. Retrieved September 26,
+  2022.](https://groups.google.com/a/arl.org/g/arl-assess/c/JQyllZN4gaE)
 
 ## Maintainer
 

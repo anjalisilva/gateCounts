@@ -130,6 +130,8 @@
 #'              gatecounterMaxValue = 999999)
 #' randomCountsSumEx4$adjustedCountSum # access cumulative count
 #'
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
+#'
 #' @references
 #' Müller K, Wickham H (2022). _tibble: Simple Data Frames_. R
 #' package version 3.1.8, \href{https://CRAN.R-project.org/package=tibble}{Link}.

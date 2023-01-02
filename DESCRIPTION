@@ -1,12 +1,17 @@
 Package: gateCounts
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Calculates Cumulative Visitor Counts Provided Raw Daily Gate Counts
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Authors@R: c(
+    person("Anjali", "Silva", email = "anjali@alumni.uoguelph.ca", role = c("aut", "cre")))
+Maintainer: Anjali Silva <anjali@alumni.uoguelph.ca>
+Description: Calculate cumulative visitor counts, provided raw daily
+    gate counts, gate directionality and gate counter maximum value.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.4.0)
+Imports: 
+   shiny,
+   shinyalert
 RoxygenNote: 7.2.2

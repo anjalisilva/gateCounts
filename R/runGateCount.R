@@ -12,7 +12,7 @@
 #' shinyGateCount()
 #' }
 #'
-#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @references
 #' Müller K, Wickham H (2022). _tibble: Simple Data Frames_. R

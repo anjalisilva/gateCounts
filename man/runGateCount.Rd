@@ -30,5 +30,5 @@ Google Groups. Retrieved September 26, 2022,
 \href{https://groups.google.com/a/arl.org/g/arl-assess/c/JQyllZN4gaE}{Link}.
 }
 \author{
-Anjali Silva, \email{a.silva@utoronto.ca}
+Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 }

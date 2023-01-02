@@ -1,11 +1,12 @@
 library(shiny)
+library(shinyalert)
 
 
 # Define UI for random distribution app ----
 ui <- fluidPage(
 
   # App title ----
-  titlePanel(tags$h1(tags$b("gateCounts:"),"Calculates Cumulative Gate Counts")),
+  titlePanel(tags$h1(tags$b("gateCounts:"),"Calculates Cumulative Visitor Counts Using Daily Gate Counts")),
 
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -154,7 +155,7 @@ server <- function(input, output) {
                random numbers from R Poisson model, rpois. To read more about the function
                see ?rpois in R. Here, the gate counter maximum is assumed 999,999 and gate
                maybe treated either unidirectional or bidirectional. Data was generated
-               in September, 2022. To save the file, go to the Shiny app screen, clink
+               in September, 2022. To save the file, go to the Shiny app screen, click
                link, then click 'Download' from the top right side.",
                type = "info")
   })
