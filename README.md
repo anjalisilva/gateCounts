@@ -20,10 +20,11 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 
 ## Description
 
-`gateCounts` is an R package for calculating cumulative gate counts,
-provided raw daily gate counts and gate directionality. The package was
-developed to improve current methodologies for calculating cumulative
-gate counts.
+`gateCounts` is an R package for calculating cumulative visitor counts,
+provided raw daily gate counts, gate directionality and gate counter
+maximum value. The package was developed for calculating cumulative gate
+counts in libraries. However, the methods can be applied to calculate
+cumulative visitor counts from any setting.
 
 ## Installation
 
@@ -50,41 +51,82 @@ ls("package:gateCounts")
 ```
 
 `gateCounts` package contains 2 functions. The *gateCountCumulative*
-function calculates cumulative gate counts, provided a numeric vector or
-a tibble containing values of raw daily gate counts. The Shiny app
-employing *gateCountCumulative* could be run and results could be
-visualized using *runGateCount*. For more information, see details
+function calculates cumulative visitor counts, provided a numeric vector
+or a tibble containing values of raw daily gate counts. The Shiny app
+employing *gateCountCumulative* function could be run and results could
+be visualized using *runGateCount()*. For more information, see details
 section below.
-
-An overview of the package is illustrated below:
-
-<div style="text-align:center">
-
-<img src="inst/extdata/Overview_mixMVPLN.png" width="800" height="450"/>
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
 
 ## Details
 
 ### Introduction
 
-`gateCounts` is an R package for calculating cumulative gate counts,
-provided raw daily gate counts and gate directionality. The package was
-developed to improve current methodologies for calculating cumulative
-gate counts. If gates are bidirectional, the cumulative sum calculated
-will be divided by two. Testing has shown that this method of dividing
-at the end of calculation will help reduce issues with gate counts that
-result from division of daily counts by two and rounding up or down.
-Further, negative counts can result during calculation if the counter
-has reset or if a lower value has been entered compared to previous day.
-The package attempts to correct for both scenarios. The package also
-ensures that counts for empty cells, when the daily count was forgotten
-to be reported, are accounted for.
+`gateCounts` is an R package for calculating cumulative visitor counts,
+provided raw daily gate counts, gate directionality, and gate counter
+maximum value. The package was developed to improve methodologies for
+calculating cumulative visitor counts.
+
+Negative visitor counts can result from calculation if the gate counter
+has reset. This package attempts to correct for this.
+
+<div style="text-align:center">
+
+<img src="inst/extdata/1.png" width="800" height="450"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+Negative visitor counts can also result from a lower gate count value
+has been entered compared to previous day. This package attempts to
+correct for this.
+
+<div style="text-align:center">
+
+<img src="inst/extdata/2.png" width="800" height="450"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+The package attempts to account for when the daily gate count has been
+forgotten to be reported. This method doesn’t assign counts for missed
+days, but rather adjust for cumulative visitor count sum.
+
+<div style="text-align:center">
+
+<img src="inst/extdata/3.png" width="800" height="450"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+The package checks for any possible non-numeric characters (e.g.,
+“turned off”, “Diag 5”, “Diag 9”, “closed”, “Clean filter”), then
+adjusts for visitor count by taking past reported gate counts.
+
+<div style="text-align:center">
+
+<img src="inst/extdata/4.png" width="800" height="450"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+
+If gates are bidirectional, the cumulative visitor sum calculated will
+be divided by two. Testing has shown that this method of dividing at the
+end of calculation will help reduce issues with visitor counts that
+result from division of daily gate counts by two and rounding up or
+down.
 
 ## Shiny App
 
