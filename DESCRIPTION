@@ -7,11 +7,12 @@ Authors@R: c(
 Maintainer: Anjali Silva <anjali@alumni.uoguelph.ca>
 Description: Calculate cumulative visitor counts, provided raw daily
     gate counts, gate directionality and gate counter maximum value.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.4.0)
 Imports: 
    shiny,
-   shinyalert
+   shinyalert,
+   tibble
 RoxygenNote: 7.2.2
