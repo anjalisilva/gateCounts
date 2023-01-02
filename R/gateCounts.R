@@ -1,10 +1,10 @@
-#' Calculates Cumulative Gate Counts
+#' Calculates Cumulative Daily Visitor Counts From Gate Counts
 #'
-#' A function that calculates cumulative gate counts, provided a numeric
+#' A function that calculates cumulative visitor counts, provided a numeric
 #' vector or a tibble containing values of raw daily gate counts. The
-#' function adjusts for several factors outlined under details. The
-#' function was developed to improve current methodologies for calculating
-#' cumulative gate counts.
+#' function adjusts for several factors outlined under details (see README
+#' file for examples). This function was developed to improve current
+#' methodologies for calculating cumulative gate counts.
 #'
 #' @details The function requires directionality of the gates for which
 #'    the daily counts are provided (called gate type). If unidirectional
