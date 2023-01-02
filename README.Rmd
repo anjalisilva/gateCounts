@@ -63,6 +63,7 @@ ls("package:gateCounts")
 ### Introduction
 `gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. The package was developed to improve methodologies for calculating cumulative visitor counts. 
 
+### Issues
 Negative visitor counts can result from calculation if the gate counter has reset. This package attempts to correct for this.
 
 <div style="text-align:center">
@@ -111,7 +112,7 @@ The package checks for any  possible non-numeric characters (e.g., "turned off",
 
 <div style="text-align:left">
 
-
+### Directionality
 If gates are bidirectional, the cumulative visitor sum calculated will be divided by two. Testing has shown that this method of dividing at the end of calculation will help reduce issues with visitor counts that result from division of daily gate counts by two and rounding up or down.
 
 <div style="text-align:center">

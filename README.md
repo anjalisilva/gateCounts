@@ -67,6 +67,8 @@ provided raw daily gate counts, gate directionality, and gate counter
 maximum value. The package was developed to improve methodologies for
 calculating cumulative visitor counts.
 
+### Issues
+
 Negative visitor counts can result from calculation if the gate counter
 has reset. This package attempts to correct for this.
 
@@ -122,6 +124,7 @@ adjusts for visitor count by taking past reported gate counts.
 
 <div style="text-align:left">
 
+### Directionality
 
 If gates are bidirectional, the cumulative visitor sum calculated will
 be divided by two. Testing has shown that this method of dividing at the
