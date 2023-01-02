@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # gateCounts
-Calculates Cumulative Gate Counts Provided Raw Daily Gate Counts
+Calculates Cumulative Visitor Counts Provided Raw Daily Gate Counts
 
 <!-- badges: start -->
 [![GitHub
@@ -29,7 +29,7 @@ count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
 <!-- badges: end -->
 
 ## Description
-`gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality and gate counter maximum value. The package was developed for calculating cumulative gate counts in libraries. However, the methods can be applied to calculate cumulative visitor counts from any setting. 
+`gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality and gate counter maximum value. The package was developed for calculating cumulative visitor counts in libraries using daily gate counts. However, the package can be applied to calculate cumulative visitor counts from any setting. 
 
 
 ## Installation
@@ -113,6 +113,16 @@ The package checks for any  possible non-numeric characters (e.g., "turned off",
 
 
 If gates are bidirectional, the cumulative visitor sum calculated will be divided by two. Testing has shown that this method of dividing at the end of calculation will help reduce issues with visitor counts that result from division of daily gate counts by two and rounding up or down.
+
+<div style="text-align:center">
+
+<img src="inst/extdata/5.png" width="650" height="300"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
 
 ## Shiny App  
 
