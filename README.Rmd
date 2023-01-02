@@ -18,12 +18,12 @@ Calculates Cumulative Visitor Counts Provided Raw Daily Gate Counts
 
 <!-- badges: start -->
 [![GitHub
-issues](https://img.shields.io/github/issues/anjalisilva/mixMVPLN)](https://github.com/anjalisilva/mixMVPLN/issues)
+issues](https://img.shields.io/github/issues/anjalisilva/gateCounts)](https://github.com/anjalisilva/gateCounts/issues)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 ![GitHub language
-count](https://img.shields.io/github/languages/count/anjalisilva/mixMVPLN)
+count](https://img.shields.io/github/languages/count/anjalisilva/gateCounts)
 ![GitHub commit activity
-(branch)](https://img.shields.io/github/commit-activity/y/anjalisilva/mixMVPLN/master)
+(branch)](https://img.shields.io/github/commit-activity/y/anjalisilva/gateCounts/master)
 
 <!-- https://shields.io/category/license -->
 <!-- badges: end -->
