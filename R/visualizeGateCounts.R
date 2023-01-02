@@ -31,6 +31,26 @@
 #' \href{https://groups.google.com/a/arl.org/g/arl-assess/c/JQyllZN4gaE}{Link}.
 #'
 #' @examples
+#' set.seed(1234)
+#' # Example 1: Unidirectional gates with daily counts
+#' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 82, lambda = 100000)),
+#'                        200000, # max value
+#'                   sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 1000)),
+#'                   sort(rpois(n = 50, lambda = 100000)))
+#'
+#' randomCountsSumEx1 <- gateCountCumulative(
+#'              rawGateCounts = randomCounts1,
+#'              gateType = "Unidirectional",
+#'              gatecounterMaxValue = 200000)
+#' randomCountsSumEx1$adjustedCountSum # access cumulative count
+#' # Cumulative (adjusted) sum for gate type unidirectional is 300618
+#' visOne <- gateCountsVisualize(
+#'              rawGateCounts = randomCounts1,
+#'              gateType = "Unidirectional",
+#'              unadjustedDailyCounts = randomCountsSumEx1$unadjustedDailyCounts)
 #'
 #' @export
 #' @import tibble
@@ -53,8 +73,25 @@ gateCountsVisualize <- function(rawGateCounts,
          or Unidirectional")
   }
 
-  plot(rawGateCounts, type = "l", lty=5, xlab = "day",
-       ylab = "raw daily counts", main = "Raw gate counts")
+
+  if(gateType == "Unidirectional") {
+    par(mfrow=c(2,2))
+    plot(rawGateCounts, type = "l", lty = 5, xlab = "day",
+         ylab = "Daily gate counts", main = "Raw Unidirectional Gate Counts")
+    plot(unadjustedDailyCounts, type = "l", lty = 5, xlab = "day",
+         ylab = "Daily visitor counts",
+         main = "Visitor Counts Adjusted for Unidirectional Gate")
+  } else {
+    par(mfrow=c(1, 2))
+    plot(rawGateCounts, type = "l", lty = 5, xlab = "day",
+         ylab = "Daily gate counts", main = "Raw Bidirectional Gate Counts")
+    unadjustedDailyCounts2 <- ceiling(unadjustedDailyCounts / 2)
+    plot(unadjustedDailyCounts2, type = "l", lty = 5, xlab = "day",
+         ylab = "Approx. daily visitor counts",
+         main = "Visitor Counts Adjusted for Bidirectional Gate")
+
+  }
+  return(NULL)
 }
 
 

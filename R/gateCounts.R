@@ -53,6 +53,7 @@
 #' }
 #'
 #' @examples
+#' set.seed(1234)
 #' # Example 1: Unidirectional gates with daily counts
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
@@ -67,7 +68,7 @@
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #' randomCountsSumEx1$adjustedCountSum # access cumulative count
-#' # Cumulative (adjusted) sum for gate type unidirectional is 300, 687
+#' # Cumulative (adjusted) sum for gate type unidirectional is 300618
 #'
 #'
 #' # Example 2: Unidirectional gates with random NA values
@@ -90,7 +91,7 @@
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #' randomCountsSumEx2$adjustedCountSum # access cumulative count
-#' # Cumulative (adjusted) sum for gate type unidirectional is 100742
+#' # Cumulative (adjusted) sum for gate type unidirectional is 300777
 #'
 #'
 #' # Example 3: Unidirectional gates with random entry errors
@@ -112,7 +113,8 @@
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #' randomCountsSumEx3$adjustedCountSum # access cumulative count
-#' # Cumulative (adjusted) sum for gate type unidirectional is 300,670
+#' # Cumulative (adjusted) sum for gate type unidirectional is 300673
+#'
 #'
 #' # Example 4: Bidirectional gates with NA values
 #' randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
@@ -134,7 +136,7 @@
 #'              gateType = "Bidirectional",
 #'              gatecounterMaxValue = 999999)
 #' randomCountsSumEx4$adjustedCountSum # access cumulative count
-#' # Cumulative (adjusted) sum for gate type bidirectional is 920930
+#' # Cumulative (adjusted) sum for gate type bidirectional is 921027
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
