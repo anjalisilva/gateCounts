@@ -155,10 +155,10 @@ gateCounts::runGateCount()
 
 ## Tutorials
 
-For tutorials, refer to the vignette:
+For tutorials, refer to the vignette: currently under construction.
 
 ``` r
-browseVignettes("gateCounts")
+browseVignettes("gateCounts") 
 ```
 
 ## Citation for Package
