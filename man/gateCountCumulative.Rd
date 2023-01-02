@@ -79,6 +79,8 @@ randomCountsSumEx1 <- gateCountCumulative(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000)
 randomCountsSumEx1$adjustedCountSum # access cumulative count
+# Cumulative (adjusted) sum for gate type unidirectional is 300, 687
+
 
 # Example 2: Unidirectional gates with random NA values
 randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -100,6 +102,8 @@ randomCountsSumEx2 <- gateCountCumulative(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000)
 randomCountsSumEx2$adjustedCountSum # access cumulative count
+# Cumulative (adjusted) sum for gate type unidirectional is 100742
+
 
 # Example 3: Unidirectional gates with random entry errors
 randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -120,6 +124,7 @@ randomCountsSumEx3 <- gateCountCumulative(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000)
 randomCountsSumEx3$adjustedCountSum # access cumulative count
+# Cumulative (adjusted) sum for gate type unidirectional is 300,670
 
 # Example 4: Bidirectional gates with NA values
 randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
@@ -141,6 +146,7 @@ randomCountsSumEx4 <- gateCountCumulative(
              gateType = "Bidirectional",
              gatecounterMaxValue = 999999)
 randomCountsSumEx4$adjustedCountSum # access cumulative count
+# Cumulative (adjusted) sum for gate type bidirectional is 920930
 
 }
 \references{
