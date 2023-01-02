@@ -167,14 +167,14 @@ browseVignettes("gateCounts")
 citation("gateCounts")
 ```
 
-Silva, A. (2022). Calculates Cumulative Gate Counts Provided Raw Daily
-Gate Counts. Unpublished.
+Silva, A. (2022). R package for Calculation of Cumulative Visitor Counts
+Provided Raw Daily Gate Counts. Unpublished.
 
 ``` r
 A BibTeX entry for LaTeX users is
 
   @misc{,
-    title = {Calculates Cumulative Gate Counts Provided Raw Daily Gate Counts},
+    title = {R package for Calculation of Cumulative Visitor Counts Provided Raw Daily Gate Counts},
     author = {A. Silva},
     year = {2022},
     url = {https://github.com/anjalisilva/gateCounts},
