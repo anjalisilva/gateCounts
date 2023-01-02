@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: c(
     person("Anjali", "Silva", email = "anjali@alumni.uoguelph.ca", role = c("aut", "cre")))
 Maintainer: Anjali Silva <anjali@alumni.uoguelph.ca>
-Description: Calculate cumulative visitor counts, provided raw daily
+Description: Calculates cumulative visitor counts, provided raw daily
     gate counts, gate directionality and gate counter maximum value.
 License: MIT + file LICENSE
 Encoding: UTF-8
