@@ -130,7 +130,7 @@ server <- function(input, output) {
     if (! is.null(startcalculating()))
       turnNumeric <- as.numeric(dataInput())
       plot(turnNumeric, type = "l", lty=5, xlab = "day",
-           ylab = "raw daily counts", main = "Raw counts")
+           ylab = "raw daily counts", main = "Raw gate counts")
   })
 
 
