@@ -67,7 +67,7 @@ Negative visitor counts can result from calculation if the gate counter has rese
 
 <div style="text-align:center">
 
-<img src="inst/extdata/1.png" width="600" height="300"/>
+<img src="inst/extdata/1.png" width="650" height="300"/>
 
 <div style="text-align:left">
 

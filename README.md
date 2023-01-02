@@ -71,7 +71,7 @@ has reset. This package attempts to correct for this.
 
 <div style="text-align:center">
 
-<img src="inst/extdata/1.png" width="600" height="300"/>
+<img src="inst/extdata/1.png" width="650" height="300"/>
 
 <div style="text-align:left">
 
