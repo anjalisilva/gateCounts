@@ -79,7 +79,7 @@ Negative visitor counts can also result from a lower gate count value has been e
 
 <div style="text-align:center">
 
-<img src="inst/extdata/2.png" width="800" height="450"/>
+<img src="inst/extdata/2.png" width="650" height="300"/>
 
 <div style="text-align:left">
 
@@ -91,7 +91,7 @@ The package attempts to account for when the daily gate count has been forgotten
 
 <div style="text-align:center">
 
-<img src="inst/extdata/3.png" width="800" height="450"/>
+<img src="inst/extdata/3.png" width="650" height="300"/>
 
 <div style="text-align:left">
 
@@ -103,7 +103,7 @@ The package checks for any  possible non-numeric characters (e.g., "turned off",
 
 <div style="text-align:center">
 
-<img src="inst/extdata/4.png" width="800" height="450"/>
+<img src="inst/extdata/4.png" width="650" height="300"/>
 
 <div style="text-align:left">
 

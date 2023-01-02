@@ -85,7 +85,7 @@ correct for this.
 
 <div style="text-align:center">
 
-<img src="inst/extdata/2.png" width="800" height="450"/>
+<img src="inst/extdata/2.png" width="650" height="300"/>
 
 <div style="text-align:left">
 
@@ -99,7 +99,7 @@ days, but rather adjust for cumulative visitor count sum.
 
 <div style="text-align:center">
 
-<img src="inst/extdata/3.png" width="800" height="450"/>
+<img src="inst/extdata/3.png" width="650" height="300"/>
 
 <div style="text-align:left">
 
@@ -113,7 +113,7 @@ adjusts for visitor count by taking past reported gate counts.
 
 <div style="text-align:center">
 
-<img src="inst/extdata/4.png" width="800" height="450"/>
+<img src="inst/extdata/4.png" width="650" height="300"/>
 
 <div style="text-align:left">
 
