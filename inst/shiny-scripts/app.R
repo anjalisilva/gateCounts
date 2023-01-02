@@ -39,9 +39,6 @@ ui <- fluidPage(
       uiOutput("tab2"),
       actionButton(inputId = "data1",
                    label = "Data 1 Details"),
-      uiOutput("tab1"),
-      actionButton(inputId = "data2",
-                   label = "Data 2 Details"),
       fileInput(inputId = "file1",
                 label = "Select a gate count dataset for analysis. Important: The file should be in .csv format with rows corresponding to dates and only one column, containing daily raw gate counts. There should be no header.",
                 accept = c(".csv")),
@@ -145,15 +142,9 @@ server <- function(input, output) {
 
 
   # URLs for downloading data
-  url1 <- a("Example Data 2", href="https://raw.githubusercontent.com/anjalisilva/TestingPackage/master/inst/extdata/GeneCountsData2.csv")
-  output$tab1 <- renderUI({
-    tagList("Download:", url1)
-  })
-
-
-  url2 <- a("Example Data 1", href="https://drive.google.com/file/d/1jMBTPpsBwaigjR3mO49AMYDxzjVnNiAv/view?usp=sharing")
+  url1 <- a("Example Data 1", href="https://drive.google.com/file/d/1HcjsdN6RvMys0-hdSJCgecV0yZvvIRWi/view?usp=sharing")
   output$tab2 <- renderUI({
-    tagList("Download:", url2)
+    tagList("Download:", url1)
   })
 
   observeEvent(input$data1, {
@@ -161,20 +152,10 @@ server <- function(input, output) {
     shinyalert(title = "Example Data 1",
                text = "This is a simulated data 1 for daily gate counts generated using
                random numbers from R Poisson model, rpois. To read more about the function
-               see ?rpois in R. Data was generated in September, 2022. To save the file,
-               go to the Shiny app screen, clink link, then click 'Download' from the
-               top right side.",
-               type = "info")
-  })
-
-  observeEvent(input$data2, {
-    # Show a modal when the button is pressed
-    shinyalert(title = "Example Data 2",
-               text = "This is a simulated data 2 for daily gate counts generated using
-               random numbers from R Poisson model, rpois. To read more about the function
-               see ?rpois in R. Data was generated in September, 2022. To save the file,
-               go to the Shiny app screen, clink link, then click 'Download' from the
-               top right side.",
+               see ?rpois in R. Here, the gate counter maximum is assumed 999,999 and gate
+               maybe treated either unidirectional or bidirectional. Data was generated
+               in September, 2022. To save the file, go to the Shiny app screen, clink
+               link, then click 'Download' from the top right side.",
                type = "info")
   })
 

@@ -24,7 +24,7 @@
 #'
 #' @export
 #' @importFrom shiny runApp
-shinyGateCount <- function() {
+runGateCount <- function() {
   appDir <- system.file("shiny-scripts",
                         package = "gateCounts")
   shiny::runApp(appDir, display.mode = "normal")
