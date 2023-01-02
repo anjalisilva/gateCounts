@@ -22,11 +22,16 @@ for gate directionality. This would be the 'unadjustedDailyCounts'
 output from gateCounts::gateCountCumulative() function in this package.}
 }
 \value{
-Returns a dotted plot of cumulative daily visitor counts and raw gate count.
+Returns a dotted plot of cumulative daily visitor counts and
+   raw gate count. Important: the counts may not reflect daily counts,
+   rather adjusted visitor count as of the day. See README file examples
+   for details.
 }
 \description{
-A function that permit to create a line plot showing cumulative
-visitor counts and raw gate counts.
+A function that permit to create a line plot showing visitor
+counts and raw gate counts by day. Important: the counts may
+not reflect daily counts, rather adjusted visitor count as
+of the day. See README file examples for details.
 }
 \examples{
 set.seed(1234)
@@ -44,11 +49,40 @@ randomCountsSumEx1 <- gateCountCumulative(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000)
 randomCountsSumEx1$adjustedCountSum # access cumulative count
-# Cumulative (adjusted) sum for gate type unidirectional is 300618
+
+# Visualize counts from Example 1
 visOne <- gateCountsVisualize(
              rawGateCounts = randomCounts1,
              gateType = "Unidirectional",
              unadjustedDailyCounts = randomCountsSumEx1$unadjustedDailyCounts)
+
+# Example 2: Bidirectional gates with NA values
+randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
+                  sort(rpois(n = 50, lambda = 400000)),
+                  sort(rpois(n = 82, lambda = 800000)),
+                       999999, # max value
+                  sort(rpois(n = 50, lambda = 10000)),
+                  sort(rpois(n = 50, lambda = 450000)),
+                  sort(rpois(n = 50, lambda = 850000)))
+
+# randomly introduce NA and "Gate broken" entries
+randomPositions <- sample(x = c(1:length(randomCounts4)),
+                         size = 8, replace = FALSE)
+randomCounts4[randomPositions[1:4]] <- NA
+randomCounts4[randomPositions[5:8]] <- "Gate broken"
+
+randomCountsSumEx4 <- gateCountCumulative(
+             rawGateCounts = randomCounts4,
+             gateType = "Bidirectional",
+             gatecounterMaxValue = 999999)
+randomCountsSumEx4$adjustedCountSum # access cumulative count
+
+# Visualize counts from Example 2
+visTwo <- gateCountsVisualize(
+             rawGateCounts = as.numeric(randomCounts4),
+             gateType = "Bidirectional",
+             unadjustedDailyCounts = randomCountsSumEx4$unadjustedDailyCounts)
+
 
 }
 \references{

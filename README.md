@@ -58,6 +58,18 @@ employing *gateCountCumulative* function could be run and results could
 be visualized using *runGateCount()*. For more information, see details
 section below.
 
+An overview of the package is illustrated below:
+
+<div style="text-align:center">
+
+<img src="inst/extdata/OverviewImage.png" width="650" height="300"/>
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
+<div style="text-align:left">
+
 ## Details
 
 ### Introduction

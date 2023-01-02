@@ -126,7 +126,7 @@
 #'                   sort(rpois(n = 50, lambda = 850000)))
 #'
 #' # randomly introduce NA and "Gate broken" entries
-#' randomPositions <- sample(x = c(1:length(randomCounts2)),
+#' randomPositions <- sample(x = c(1:length(randomCounts4)),
 #'                          size = 8, replace = FALSE)
 #' randomCounts4[randomPositions[1:4]] <- NA
 #' randomCounts4[randomPositions[5:8]] <- "Gate broken"
