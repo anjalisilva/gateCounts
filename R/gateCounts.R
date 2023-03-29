@@ -150,6 +150,7 @@
 #'
 #' @export
 #' @import tibble
+#' @import magrittr
 gateCountCumulative <- function(rawGateCounts,
                                 gateType = "Unidirectional",
                                 gatecounterMaxValue = 999999,

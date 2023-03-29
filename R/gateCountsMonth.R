@@ -53,6 +53,14 @@
 #' }
 #'
 #' @examples
+ testing <- readr::read_csv("~/Desktop/R/Packages/gateCounts/slides/SampleData/randomCounts4.csv",
+                     col_names = FALSE)
+ testing$X1 <- lubridate::dmy(testing$X1)
+ testing$X2 <- as.numeric(testing$X2)
+ head(testing)
+ rawGateCounts <- testing
+
+#'
 #' set.seed(1234)
 #' # Example 1: Unidirectional gates with daily counts
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -175,7 +183,7 @@ gateCountCumulative <- function(rawGateCounts,
 
   # Converting to numeric vector or tibble
   if(is.vector(rawGateCounts) == TRUE) {
-    tibbleCounts <- suppressWarnings(tibble::as_tibble(as.numeric(rawGateCounts)))
+    tibbleCounts <- suppressWarnings(tibble::as_tibble(as.numeric(unlist(rawGateCounts[, 2]))))
   } else if (tibble::is_tibble(rawGateCounts) == TRUE) {
     tibbleCounts <- suppressWarnings(rawGateCounts %>%
       unlist() %>%
@@ -284,6 +292,12 @@ gateCountCumulative <- function(rawGateCounts,
 
   # Calculations based on visitor counts
   sumValue <- sum(unlist(collectValue), na.rm = TRUE)
+  rawGateCountsEdited <- rawGateCounts %>%
+    tibble::add_column(visitorCount = unlist(collectValue)) %>%
+    tibble::add_column(month = lubridate::month(rawGateCounts$X1)) %>%
+    tibble::add_column(year = lubridate::year(rawGateCounts$X1)) %>%
+    dplyr::group_by(month, year) %>%
+    dplyr::summarise(sum = sum(visitorCount, na.rm = TRUE))
 
   if(gateType == "Bidirectional") {
     sumValue <- ceiling(sumValue / 2)
