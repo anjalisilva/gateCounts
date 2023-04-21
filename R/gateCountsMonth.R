@@ -53,13 +53,6 @@
 #' }
 #'
 #' @examples
- testing <- readr::read_csv("~/Desktop/R/Packages/gateCounts/slides/SampleData/randomCounts4.csv",
-                     col_names = FALSE)
- testing$X1 <- lubridate::dmy(testing$X1)
- testing$X2 <- as.numeric(testing$X2)
- head(testing)
- rawGateCounts <- testing
-
 #'
 #' set.seed(1234)
 #' # Example 1: Unidirectional gates with daily counts
@@ -158,6 +151,7 @@
 #'
 #' @export
 #' @import tibble
+#' @import tidyverse
 gateCountCumulative <- function(rawGateCounts,
                                 gateType = "Unidirectional",
                                 gatecounterMaxValue = 999999,
@@ -181,59 +175,51 @@ gateCountCumulative <- function(rawGateCounts,
      stop("\n rawGateCounts should be a numeric vector or tibble")
   }
 
-  # Converting to numeric vector or tibble
-  if(is.vector(rawGateCounts) == TRUE) {
-    tibbleCounts <- suppressWarnings(tibble::as_tibble(as.numeric(unlist(rawGateCounts[, 2]))))
-  } else if (tibble::is_tibble(rawGateCounts) == TRUE) {
-    tibbleCounts <- suppressWarnings(rawGateCounts %>%
-      unlist() %>%
-      as.numeric() %>%
-      tibble::as_tibble())
-  } else {
-    stop("\n rawGateCounts should be a numeric vector or tibble")
-  }
+  # convert gate counts to numeric values and save as tibble
+  tibbleCounts <- rawGateCounts %>%
+    dplyr::mutate(gateCounts = as.numeric(X2)) %>%
+    dplyr::pull(gateCounts)
 
-  if(typeof(unlist(tibbleCounts)) != "double" &&
-     typeof(unlist(tibbleCounts)) != "integer") {
-    stop("\n rawGateCounts should be a numeric vector or tibble")
-  }
-
+  tibbleCounts <- tibble(tibbleCounts)
 
   # Begin calculations
   # Empty vector to capture visitor counts via calculation
-  collectValue <- rep(NA, times = nrow(tibbleCounts))
+  collectValue <- rep(NA, times = nrow(rawGateCounts))
 
   # Loop for obtaining visitor counts
-   for (i in c(1:(nrow(tibbleCounts) - 1))) {
+   for (i in c(1:(nrow(rawGateCounts) - 1))) {
       # 1. Gate type based calculation
 
-        collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
+        collectValue[i + 1] <- tibbleCounts[i + 1] - tibbleCounts[i]
 
         if(printMessages == TRUE) {
-        cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
-            unlist(tibbleCounts[i + 1, ]),
-            "-", unlist(tibbleCounts[i, ]),
-            " = ", unlist(collectValue[i + 1]), "\n")}
+          # cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
+          #  unlist(tibbleCounts[i + 1]),
+          #  "-", unlist(tibbleCounts[i]),
+          #  " = ", unlist(collectValue[i + 1]), "\n")
+        }
 
         # 2. Check counts for counter max value or typo
         # If not NA and less than zero, then TRUE
         if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
           # detecting if a counter max issue
           # If that is the case value/counterMax should be close to 1
-          if((tibbleCounts[i, ] / gatecounterMaxValue) >= 0.8) {
-            collectValue[i + 1] <- (gatecounterMaxValue - tibbleCounts[i, ]) +
-                                    tibbleCounts[i + 1, ]
+          if((tibbleCounts[i] / gatecounterMaxValue) >= 0.8) {
+            collectValue[i + 1] <- (gatecounterMaxValue - tibbleCounts[i ]) +
+                                    tibbleCounts[i + 1 ]
             if(printMessages == TRUE) {
-            cat("\n The value is negative, due to counter reset,
-                so new count is fixed to ", unlist(collectValue[i + 1]), "\n")}
+             # cat("\n The value is negative, due to counter reset,
+             #    so new count is fixed to ", unlist(collectValue[i + 1]), "\n")
+            }
 
-          } else if((tibbleCounts[i, ] / gatecounterMaxValue) < 0.8) {
+          } else if((tibbleCounts[i ] / gatecounterMaxValue) < 0.8) {
             # In this case, likely a typo from user entering data
             collectValue[i + 1] <- NA
             tibbleCounts[i + 1, ] <- NA
             if(printMessages == TRUE) {
-            cat("\n The value is negative, likely due to a error with,
-                entering, so adjusted to ", unlist(collectValue[i + 1]), "\n")}
+              # cat("\n The value is negative, likely due to a error with,
+              #  entering, so adjusted to ", unlist(collectValue[i + 1]), "\n")}
+            }
           }
         }
 
@@ -241,35 +227,37 @@ gateCountCumulative <- function(rawGateCounts,
         # If an NA, then check if the i + 1 or i is NA
         if(is.na(collectValue[i + 1]) == TRUE) {
 
-          # If tibbleCounts[i+1, ] is NA, will not be addressed
+          # If tibbleCounts[i+1] is NA, will not be addressed
 
           # If i is NA, and it is not the very first entry in loop
-          if((is.na(tibbleCounts[i, ]) == TRUE) && (i >= 2)) {
+          if((is.na(tibbleCounts[i]) == TRUE) && (i >= 2)) {
 
             # Check back on all past values to see if any numeric values
             # Otherwise no point in performing analysis
             # This would be i-c(1:(i-1))
-            if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
+            if(all(is.na(tibbleCounts[i-c(1:(i-1))])) == TRUE) {
               if(printMessages == TRUE) {
-              cat("\n No previous count with numeric value present. \n")}
-            } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
+              # cat("\n No previous count with numeric value present. \n")
+              }
+            } else if(all(is.na(tibbleCounts[i-c(1:(i-1)) ])) == FALSE) {
               # See how many past counts have numeric values
               # Pick the most recent numeric count to subtract from
-              recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE),
+              recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)) ]) == FALSE),
                                       na.rm = TRUE)
-              collectValue[i + 1] <- (tibbleCounts[i + 1, ] -
-                                      tibbleCounts[i - recentCountPlace, ])
+              collectValue[i + 1] <- (tibbleCounts[i + 1 ] -
+                                      tibbleCounts[i - recentCountPlace ])
               # After adjustment check if a negative value, in case typo
               if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
                 if(printMessages == TRUE) {
-                cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")}
+                  # cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")
+                }
                 # resetCounter <- 0
                 # while(! resetCounter) {
                 # for(j in 1:length(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE))) {
                   # if negative subtract from previous value
-                  tibbleCounts[i + 1, ] <- collectValue[i + 1] <- NA # adjust mistake to NA
-                #  collectValue[i + 1] <- (tibbleCounts[i + 1, ] -
-                #                            tibbleCounts[i - recentCountPlace - j, ])
+                  tibbleCounts[i + 1] <- collectValue[i + 1] <- NA # adjust mistake to NA
+                #  collectValue[i + 1] <- (tibbleCounts[i + 1 ] -
+                #                            tibbleCounts[i - recentCountPlace - j ])
                 #  if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] >= 0)) {
                 #    resetCounter <- 1
                 #   }
@@ -277,38 +265,53 @@ gateCountCumulative <- function(rawGateCounts,
                 #}
               }
               if(printMessages == TRUE) {
-                cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")}
+                # cat("\n Adjuted value to be", unlist(collectValue[i + 1]), "\n")
+                }
             } else {
               collectValue[i + 1] <- NA # i.e., if one of the first values with
               if(printMessages == TRUE) {
-                cat("\n NA option collectValue[i + 1] = ",
-                  unlist(collectValue[i + 1]), "\n")}
+                # cat("\n NA option collectValue[i + 1] = ",
+                #  unlist(collectValue[i + 1]), "\n")}
             }
           }
         }
 
-      }
+        }
+
+   }
 
 
   # Calculations based on visitor counts
-  sumValue <- sum(unlist(collectValue), na.rm = TRUE)
+  # Cumulative count
+  cumulativeCount <- sum(unlist(collectValue), na.rm = TRUE)
+
+  # Summarize daily values
   rawGateCountsEdited <- rawGateCounts %>%
     tibble::add_column(visitorCount = unlist(collectValue)) %>%
-    tibble::add_column(month = lubridate::month(rawGateCounts$X1)) %>%
-    tibble::add_column(year = lubridate::year(rawGateCounts$X1)) %>%
+    tibble::add_column(date = lubridate::dmy(rawGateCounts$X1))
+
+  dailyVisitorCount <- rawGateCountsEdited %>%
+    tibble::add_column(month = lubridate::month(rawGateCountsEdited$date)) %>%
+    tibble::add_column(year = lubridate::year(rawGateCountsEdited$date)) %>%
+    dplyr::select(date, month, year, visitorCount)
+
+  if(gateType == "Bidirectional") {
+    cumulativeCount <- ceiling(cumulativeCount / 2)
+    dailyVisitorCount <- round(dailyVisitorCount$visitorCount / 2, 0)
+    if(printMessages == TRUE) {
+      cat("\n Cumulative (adjusted) sum for gate type", tolower(gateType), ".")
+    }
+  }
+
+  # summarizing by monthly count
+  monthlyVisitorCount <- dailyVisitorCount %>%
     dplyr::group_by(month, year) %>%
     dplyr::summarise(sum = sum(visitorCount, na.rm = TRUE))
 
-  if(gateType == "Bidirectional") {
-    sumValue <- ceiling(sumValue / 2)
-  }
 
-  if(printMessages == TRUE) {
-    cat("\n Cumulative (adjusted) sum for gate type", tolower(gateType), "is", sumValue, "\n")
-  }
-
-  returnValues <- list(adjustedCountSum = sumValue,
-                       unadjustedDailyCounts = unlist(collectValue),
+  returnValues <- list(cumulativeCount = cumulativeCount,
+                       dailyCounts = dailyVisitorCount,
+                       monthlyCounts = monthlyVisitorCount,
                        gateType = gateType)
   class(returnValues) <- c("GateCounts")
 

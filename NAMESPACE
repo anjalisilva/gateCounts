@@ -3,5 +3,7 @@
 export(gateCountCumulative)
 export(gateCountsVisualize)
 export(runGateCount)
+import(magrittr)
 import(tibble)
+import(tidyverse)
 importFrom(shiny,runApp)
