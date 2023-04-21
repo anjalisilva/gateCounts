@@ -152,7 +152,7 @@
 #' @export
 #' @import tibble
 #' @import tidyverse
-gateCountCumulative <- function(rawGateCounts,
+gateCountCumulative2 <- function(rawGateCounts,
                                 gateType = "Unidirectional",
                                 gatecounterMaxValue = 999999,
                                 printMessages = TRUE) {
@@ -190,12 +190,12 @@ gateCountCumulative <- function(rawGateCounts,
    for (i in c(1:(nrow(rawGateCounts) - 1))) {
       # 1. Gate type based calculation
 
-        collectValue[i + 1] <- tibbleCounts[i + 1] - tibbleCounts[i]
+        collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
         if(printMessages == TRUE) {
           # cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
-          #  unlist(tibbleCounts[i + 1]),
-          #  "-", unlist(tibbleCounts[i]),
+          #  unlist(tibbleCounts[i + 1], ),
+          #  "-", unlist(tibbleCounts[i], ),
           #  " = ", unlist(collectValue[i + 1]), "\n")
         }
 
@@ -204,15 +204,15 @@ gateCountCumulative <- function(rawGateCounts,
         if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
           # detecting if a counter max issue
           # If that is the case value/counterMax should be close to 1
-          if((tibbleCounts[i] / gatecounterMaxValue) >= 0.8) {
-            collectValue[i + 1] <- (gatecounterMaxValue - tibbleCounts[i ]) +
-                                    tibbleCounts[i + 1 ]
+          if((tibbleCounts[i, ] / gatecounterMaxValue) >= 0.8) {
+            collectValue[i + 1] <- (gatecounterMaxValue - tibbleCounts[i, ]) +
+                                    tibbleCounts[i + 1, ]
             if(printMessages == TRUE) {
              # cat("\n The value is negative, due to counter reset,
              #    so new count is fixed to ", unlist(collectValue[i + 1]), "\n")
             }
 
-          } else if((tibbleCounts[i ] / gatecounterMaxValue) < 0.8) {
+          } else if((tibbleCounts[i, ] / gatecounterMaxValue) < 0.8) {
             # In this case, likely a typo from user entering data
             collectValue[i + 1] <- NA
             tibbleCounts[i + 1, ] <- NA
@@ -227,25 +227,25 @@ gateCountCumulative <- function(rawGateCounts,
         # If an NA, then check if the i + 1 or i is NA
         if(is.na(collectValue[i + 1]) == TRUE) {
 
-          # If tibbleCounts[i+1] is NA, will not be addressed
+          # If tibbleCounts[i+1, ] is NA, will not be addressed
 
           # If i is NA, and it is not the very first entry in loop
-          if((is.na(tibbleCounts[i]) == TRUE) && (i >= 2)) {
+          if((is.na(tibbleCounts[i, ]) == TRUE) && (i >= 2)) {
 
             # Check back on all past values to see if any numeric values
             # Otherwise no point in performing analysis
             # This would be i-c(1:(i-1))
-            if(all(is.na(tibbleCounts[i-c(1:(i-1))])) == TRUE) {
+            if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
               if(printMessages == TRUE) {
               # cat("\n No previous count with numeric value present. \n")
               }
-            } else if(all(is.na(tibbleCounts[i-c(1:(i-1)) ])) == FALSE) {
+            } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
               # See how many past counts have numeric values
               # Pick the most recent numeric count to subtract from
-              recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)) ]) == FALSE),
+              recentCountPlace <- min(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE),
                                       na.rm = TRUE)
-              collectValue[i + 1] <- (tibbleCounts[i + 1 ] -
-                                      tibbleCounts[i - recentCountPlace ])
+              collectValue[i + 1] <- (tibbleCounts[i + 1, ] -
+                                      tibbleCounts[i - recentCountPlace, ])
               # After adjustment check if a negative value, in case typo
               if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
                 if(printMessages == TRUE) {
@@ -255,9 +255,9 @@ gateCountCumulative <- function(rawGateCounts,
                 # while(! resetCounter) {
                 # for(j in 1:length(which(is.na(tibbleCounts[i-c(1:(i-1)), ]) == FALSE))) {
                   # if negative subtract from previous value
-                  tibbleCounts[i + 1] <- collectValue[i + 1] <- NA # adjust mistake to NA
-                #  collectValue[i + 1] <- (tibbleCounts[i + 1 ] -
-                #                            tibbleCounts[i - recentCountPlace - j ])
+                  tibbleCounts[i + 1, ] <- collectValue[i + 1] <- NA # adjust mistake to NA
+                #  collectValue[i + 1] <- (tibbleCounts[i + 1, ] -
+                #                            tibbleCounts[i - recentCountPlace - j, ])
                 #  if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] >= 0)) {
                 #    resetCounter <- 1
                 #   }
@@ -291,9 +291,11 @@ gateCountCumulative <- function(rawGateCounts,
     tibble::add_column(date = lubridate::dmy(rawGateCounts$X1))
 
   dailyVisitorCount <- rawGateCountsEdited %>%
+    tibble::add_column(day = lubridate::day(rawGateCountsEdited$date)) %>%
     tibble::add_column(month = lubridate::month(rawGateCountsEdited$date)) %>%
+    tibble::add_column(monthAbb = lubridate::month(rawGateCountsEdited$date, label = TRUE)) %>%
     tibble::add_column(year = lubridate::year(rawGateCountsEdited$date)) %>%
-    dplyr::select(date, month, year, visitorCount)
+    dplyr::select(date, day, month, monthAbb, year, visitorCount)
 
   if(gateType == "Bidirectional") {
     cumulativeCount <- ceiling(cumulativeCount / 2)
@@ -305,30 +307,36 @@ gateCountCumulative <- function(rawGateCounts,
 
   # summarizing by monthly count
   monthlyVisitorCount <- dailyVisitorCount %>%
-    dplyr::group_by(month, year) %>%
-    dplyr::summarise(sum = sum(visitorCount, na.rm = TRUE))
+    dplyr::group_by(month, monthAbb, year) %>%
+    dplyr::summarise(totalVisitorCount = sum(visitorCount, na.rm = TRUE))
 
+  leastBusiestDay <- dailyVisitorCount %>%
+    ungroup() %>%
+    dplyr::filter(visitorCount == min(visitorCount, na.rm = TRUE))
+
+  leastBusiestMonth <- monthlyVisitorCount %>%
+    ungroup() %>%
+    dplyr::filter(totalVisitorCount == min(totalVisitorCount, na.rm = TRUE))
+
+  busiestDay <- dailyVisitorCount %>%
+    ungroup() %>%
+    dplyr::filter(visitorCount == max(visitorCount, na.rm = TRUE))
+
+
+  busiestMonth <- monthlyVisitorCount %>%
+    ungroup() %>%
+    dplyr::filter(totalVisitorCount == max(totalVisitorCount, na.rm = TRUE))
 
   returnValues <- list(cumulativeCount = cumulativeCount,
                        dailyCounts = dailyVisitorCount,
                        monthlyCounts = monthlyVisitorCount,
-                       gateType = gateType)
+                       gateType = gateType,
+                       busiestMonth = busiestMonth,
+                       leastBusiestMonth = leastBusiestMonth,
+                       leastBusiestDay = leastBusiestDay,
+                       leastBusiestMonth = leastBusiestMonth)
   class(returnValues) <- c("GateCounts")
 
-  # S4 object doesn't work
-  # setClass("GateCounts", slots = c(adjustedCountSum = "numeric",
-  #                                  unadjustedDailyCounts = "numeric",
-  #                                  gateType = "character"))
-
-  # returnValues <- new("GateCounts")
-
-  # returnValues@adjustedCountSum <- sumValue
-  # returnValues@unadjustedDailyCounts <- unlist(collectValue)
-  # returnValues@gateType <- gateType
-  # or
-  # returnValues <- new("GateCounts", adjustedCountSum = sumValue,
-  #                     unadjustedDailyCounts = unlist(collectValue),
-  #                     gateType = gateType)
   return(returnValues)
 }
 

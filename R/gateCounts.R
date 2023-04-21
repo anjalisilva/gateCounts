@@ -274,8 +274,8 @@ gateCountCumulative <- function(rawGateCounts,
             } else {
               collectValue[i + 1] <- NA # i.e., if one of the first values with
               if(printMessages == TRUE) {
-                cat("\n NA option collectValue[i + 1] = ",
-                  unlist(collectValue[i + 1]), "\n")}
+                # cat("\n NA option collectValue[i + 1] = ",
+                #  unlist(collectValue[i + 1]), "\n")}
             }
           }
         }
@@ -315,6 +315,6 @@ gateCountCumulative <- function(rawGateCounts,
   #                     gateType = gateType)
   return(returnValues)
 }
-
+}
 # END
 
