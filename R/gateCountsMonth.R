@@ -25,11 +25,13 @@
 #'    for empty cells (when the count was forgotten to be reported) are
 #'    accounted for. All scenarios are explained with images on the tutorial.
 #'
-#' @param rawGateCounts A numeric vector or tibble, with number of rows
-#'    equalling to length of days and two columns, such that the dimension
-#'    is days x 2. Here days is the number of days for which raw gate counts
-#'    are present. First column must contain the date and second
-#'    column must contain the gate count reading for the given date.
+#' @param rawGateCounts A numeric vector or a tibble, with number of rows
+#'    equaling to length of days and columns equaling to two, such that
+#'    the dimension is: days x 2. Here days is the number of days for
+#'    which raw gate counts are present. First column must contain the
+#'    dates and should contain column name "dates". Dates must be in the
+#'    format of date-month-year. The second column must contain the gate
+#'    count reading for the given date and should be called "counts".
 #' @param gateType A character string with options "Unidirectional" or
 #     "Bidirectional", to indicate gate type. If the gate is one-way only,
 #     then enter "Unidirectional". If the gate permits visitors in and out,
@@ -75,8 +77,12 @@
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
 #'
-#' randomCountsSumEx1 <- gateCountCumulative(
-#'              rawGateCounts = randomCounts1,
+#'randomCounts1tibble <- tibble::tibble(
+#'                         dates = seq(lubridate::dmy('01-01-2022'), lubridate::dmy('31-12-2022'), by='1 day')[1:length(randomCounts1)],
+#'                         counts = randomCounts1)
+#'
+#' randomCountsSumEx1 <- gateCountSummary(
+#'              rawGateCounts =
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000)
 #' randomCountsSumEx1$adjustedCountSum # access cumulative count
@@ -188,7 +194,7 @@ gateCountSummary <- function(rawGateCounts,
 
   # convert gate counts to numeric values and save as tibble
   tibbleCounts <- rawGateCounts %>%
-    dplyr::mutate(gateCounts = as.numeric(X2)) %>%
+    dplyr::mutate(gateCounts = as.numeric(counts)) %>%
     dplyr::pull(gateCounts)
 
   tibbleCounts <- tibble(tibbleCounts)
@@ -198,7 +204,7 @@ gateCountSummary <- function(rawGateCounts,
   collectValue <- rep(NA, times = nrow(rawGateCounts))
 
   # Loop for obtaining visitor counts
-   for (i in c(1:(nrow(rawGateCounts) - 1))) {
+  for (i in c(1:(nrow(rawGateCounts) - 1))) {
       # 1. Gate type based calculation
 
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
@@ -299,7 +305,7 @@ gateCountSummary <- function(rawGateCounts,
   # Summarize daily values
   rawGateCountsEdited <- rawGateCounts %>%
     tibble::add_column(visitorCount = unlist(collectValue)) %>%
-    tibble::add_column(date = lubridate::dmy(rawGateCounts$X1))
+    tibble::add_column(date = lubridate::dmy(rawGateCounts$dates))
 
   dailyVisitorCount <- rawGateCountsEdited %>%
     tibble::add_column(day = lubridate::day(rawGateCountsEdited$date)) %>%
