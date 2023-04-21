@@ -1,10 +1,11 @@
-#' Calculates Cumulative Daily Visitor Counts From Gate Counts
+#' Calculates Visitor Count Summaries From Daily Gate Counts
 #'
-#' A function that calculates cumulative visitor counts, provided a numeric
-#' vector or a tibble containing values of raw daily gate counts. The
-#' function adjusts for several factors outlined under details (see README
+#' A function that calculates, daily, monthly and cumulative visitor
+#' counts, provided a numeric vector or a tibble containing values
+#' of raw daily gate counts with a specific format (see argument details).
+#' The function adjusts for several factors outlined under details (see README
 #' file for examples). This function was developed to improve current
-#' methodologies for calculating cumulative gate counts.
+#' methodologies for calculating visitor counts from gate counts.
 #'
 #' @details The function requires directionality of the gates for which
 #'    the daily counts are provided (called gate type). If unidirectional
@@ -24,10 +25,11 @@
 #'    for empty cells (when the count was forgotten to be reported) are
 #'    accounted for. All scenarios are explained with images on the tutorial.
 #'
-#' @param rawGateCounts A numeric vector of length corresponding to days or
-#     a tibble of dimensions days x 1, containing values of raw daily gate
-#     counts. Here days is the number of days for which raw gate counts
-#'    are present.
+#' @param rawGateCounts A numeric vector or tibble, with number of rows
+#'    equalling to length of days and two columns, such that the dimension
+#'    is days x 2. Here days is the number of days for which raw gate counts
+#'    are present. First column must contain the date and second
+#'    column must contain the gate count reading for the given date.
 #' @param gateType A character string with options "Unidirectional" or
 #     "Bidirectional", to indicate gate type. If the gate is one-way only,
 #     then enter "Unidirectional". If the gate permits visitors in and out,
@@ -42,14 +44,23 @@
 #'
 #' @return Returns an S3 object of class InfCriteria with results.
 #' \itemize{
-#'   \item adjustedCountSum - Sum of daily gate counts for the period,
+#'   \item cumulativeCount - Sum of daily gate counts for the period,
 #'         adjusted for issues mentioned under details. If gateType was
 #'         "Bidirectional", the final resulting number would be divided
 #'         by two.
-#'   \item unadjustedDailyCounts - A vector of daily counts, not adjusted
-#'         for gate type. If "Bidirectional" gate type, then would need to
-#'         sum this vector and divide by two at the end.
+#'   \item dailyCounts - Daily gate counts for the period, adjusted
+#'         for issues mentioned under details. If gateType was
+#'         "Bidirectional", the visitor count is divided by
+#'         two and ceiling() function from base R is applied.
+#'   \item monthlyCounts - Monthly gate counts for the period, adjusted
+#'         for issues mentioned under details.
 #'   \item gateType - Gate type for which counts are provided by the user.
+#'   \item busiestMonth - Month with the highest visitor count.
+#'   \item leastBusiestMonth - Month with the least visitor count.
+#'   \item busiestDay - Day with the highest visitor count. There
+#'         maybe multiple dates.
+#'   \item leastBusiestDay - Day with the lowest visitor count. There
+#'         maybe multiple dates.
 #' }
 #'
 #' @examples
@@ -152,7 +163,7 @@
 #' @export
 #' @import tibble
 #' @import tidyverse
-gateCountCumulative2 <- function(rawGateCounts,
+gateCountSummary <- function(rawGateCounts,
                                 gateType = "Unidirectional",
                                 gatecounterMaxValue = 999999,
                                 printMessages = TRUE) {
