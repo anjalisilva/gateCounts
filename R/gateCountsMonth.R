@@ -39,7 +39,7 @@
 #     count sum being divided by two. The default value is "Unidirectional".
 #' @param gatecounterMaxValue A numeric value greater than 0 indicating the
 #'    gate counter max value, before it is reset. The default value is
-#'    999,999.
+#'    999,999. This number is crucial for calculations.
 #' @param printMessages An logical indicating TRUE or FALSE as to whether
 #'    progress messages should be printed. The default value is TRUE. Setting
 #'    to FALSE will remove messages from being shown.
