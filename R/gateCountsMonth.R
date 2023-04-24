@@ -77,15 +77,26 @@
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
 #'
-#'randomCounts1tibble <- tibble::tibble(
-#'                         dates = seq(lubridate::dmy('01-01-2022'), lubridate::dmy('31-12-2022'), by='1 day')[1:length(randomCounts1)],
+#' randomCounts1tibble <- tibble::tibble(
+#'                         dates = seq(lubridate::dmy('01-01-2022'),
+#'                         lubridate::dmy('31-12-2022'),
+#'                         by='1 day')[1:length(randomCounts1)] %>%
+#'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts1)
 #'
+#' # check max value for gate counter maximum
+#' max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
+#'
 #' randomCountsSumEx1 <- gateCountSummary(
-#'              rawGateCounts =
+#'              rawGateCounts = randomCounts1tibble,
 #'              gateType = "Unidirectional",
-#'              gatecounterMaxValue = 200000)
-#' randomCountsSumEx1$adjustedCountSum # access cumulative count
+#'              gatecounterMaxValue = 200000,
+#'              printMessages = FALSE)
+#' randomCountsSumEx1$dailyCounts # access daily adjusted counts
+#' randomCountsSumEx1$monthlyCounts # access monthly adjusted counts
+#' randomCountsSumEx1$busiestMonth # busiest month
+#' randomCountsSumEx1$leastBusiestMonth # least busiest month
+#' randomCountsSumEx1$busiestDay # busiest day
 #' # Cumulative (adjusted) sum for gate type unidirectional is 300618
 #'
 #'
@@ -210,10 +221,10 @@ gateCountSummary <- function(rawGateCounts,
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
         if(printMessages == TRUE) {
-          # cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
-          #  unlist(tibbleCounts[i + 1], ),
-          #  "-", unlist(tibbleCounts[i], ),
-          #  " = ", unlist(collectValue[i + 1]), "\n")
+           cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
+            unlist(tibbleCounts[i + 1, ], ),
+            "-", unlist(tibbleCounts[i, ], ),
+            " = ", unlist(collectValue[i + 1]), "\n")
         }
 
         # 2. Check counts for counter max value or typo
@@ -221,12 +232,12 @@ gateCountSummary <- function(rawGateCounts,
         if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
           # detecting if a counter max issue
           # If that is the case value/counterMax should be close to 1
-          if((tibbleCounts[i, ] / gatecounterMaxValue) >= 0.8) {
+          if(((tibbleCounts[i, ] / gatecounterMaxValue)) >= 0.8) {
             collectValue[i + 1] <- (gatecounterMaxValue - tibbleCounts[i, ]) +
                                     tibbleCounts[i + 1, ]
             if(printMessages == TRUE) {
-             # cat("\n The value is negative, due to counter reset,
-             #    so new count is fixed to ", unlist(collectValue[i + 1]), "\n")
+              cat("\n The value is negative, due to counter reset,
+                 so new count is fixed to ", unlist(collectValue[i + 1]), "\n")
             }
 
           } else if((tibbleCounts[i, ] / gatecounterMaxValue) < 0.8) {
@@ -234,11 +245,12 @@ gateCountSummary <- function(rawGateCounts,
             collectValue[i + 1] <- NA
             tibbleCounts[i + 1, ] <- NA
             if(printMessages == TRUE) {
-              # cat("\n The value is negative, likely due to a error with,
-              #  entering, so adjusted to ", unlist(collectValue[i + 1]), "\n")}
+               cat("\n The value is negative, likely due to a error with,
+                entering, so adjusted to ", unlist(collectValue[i + 1]), "\n")
+              }
             }
           }
-        }
+
 
         # 3. Check counts for NA values
         # If an NA, then check if the i + 1 or i is NA
@@ -254,7 +266,7 @@ gateCountSummary <- function(rawGateCounts,
             # This would be i-c(1:(i-1))
             if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
               if(printMessages == TRUE) {
-              # cat("\n No previous count with numeric value present. \n")
+               cat("\n No previous count with numeric value present. \n")
               }
             } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
               # See how many past counts have numeric values
@@ -266,7 +278,7 @@ gateCountSummary <- function(rawGateCounts,
               # After adjustment check if a negative value, in case typo
               if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
                 if(printMessages == TRUE) {
-                  # cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")
+                   cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")
                 }
                 # resetCounter <- 0
                 # while(! resetCounter) {
@@ -287,15 +299,14 @@ gateCountSummary <- function(rawGateCounts,
             } else {
               collectValue[i + 1] <- NA # i.e., if one of the first values with
               if(printMessages == TRUE) {
-                # cat("\n NA option collectValue[i + 1] = ",
-                #  unlist(collectValue[i + 1]), "\n")}
+                 cat("\n NA option collectValue[i + 1, ] = ",
+                  unlist(collectValue[i + 1]), "\n")
+                }
             }
           }
         }
 
         }
-
-   }
 
 
   # Calculations based on visitor counts
@@ -351,7 +362,7 @@ gateCountSummary <- function(rawGateCounts,
                        busiestMonth = busiestMonth,
                        leastBusiestMonth = leastBusiestMonth,
                        leastBusiestDay = leastBusiestDay,
-                       leastBusiestMonth = leastBusiestMonth)
+                       busiestDay = busiestDay)
   class(returnValues) <- c("GateCounts")
 
   return(returnValues)

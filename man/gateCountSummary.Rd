@@ -92,8 +92,12 @@ randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 100000)))
 
 randomCounts1tibble <- tibble::tibble(
-                        dates = seq(lubridate::dmy('01-01-2022'), lubridate::dmy('31-12-2022'), by='1 day')[1:length(randomCounts1)],
+                        dates = seq(lubridate::dmy('01-01-2022'),
+                        lubridate::dmy('31-12-2022'),
+                        by='1 day')[1:length(randomCounts1)] \%>\%
+                        format('\%d-\%m-\%Y'),
                         counts = randomCounts1)
+
 
 randomCountsSumEx1 <- gateCountSummary(
              rawGateCounts =
