@@ -72,7 +72,7 @@
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
-#'                        200000, # max value
+#'                   200000, # max value
 #'                   sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
@@ -313,17 +313,19 @@ gateCountSummary <- function(rawGateCounts,
   # Cumulative count
   cumulativeCount <- sum(unlist(collectValue), na.rm = TRUE)
 
-  # Summarize daily values
+  # Summarize daily values by day, month, year
   rawGateCountsEdited <- rawGateCounts %>%
     tibble::add_column(visitorCount = unlist(collectValue)) %>%
     tibble::add_column(date = lubridate::dmy(rawGateCounts$dates))
 
   dailyVisitorCount <- rawGateCountsEdited %>%
     tibble::add_column(day = lubridate::day(rawGateCountsEdited$date)) %>%
+    tibble::add_column(weekDay = lubridate::wday(rawGateCountsEdited$date, label = TRUE)) %>%
+    tibble::add_column(week = lubridate::week(rawGateCountsEdited$date)) %>%
     tibble::add_column(month = lubridate::month(rawGateCountsEdited$date)) %>%
     tibble::add_column(monthAbb = lubridate::month(rawGateCountsEdited$date, label = TRUE)) %>%
     tibble::add_column(year = lubridate::year(rawGateCountsEdited$date)) %>%
-    dplyr::select(date, day, month, monthAbb, year, visitorCount)
+    dplyr::select(date, day, weekDay, week, month, monthAbb, year, visitorCount)
 
   if(gateType == "Bidirectional") {
     cumulativeCount <- ceiling(cumulativeCount / 2)
@@ -338,9 +340,15 @@ gateCountSummary <- function(rawGateCounts,
     dplyr::group_by(month, monthAbb, year) %>%
     dplyr::summarise(totalVisitorCount = sum(visitorCount, na.rm = TRUE))
 
+  # Busiest and least busiest day, week, month vs. visitor counts
   leastBusiestDay <- dailyVisitorCount %>%
     ungroup() %>%
     dplyr::filter(visitorCount == min(visitorCount, na.rm = TRUE))
+
+  leastBusiestWeek <- dailyVisitorCount %>%
+    ungroup() %>%
+    dplyr::filter(visitorCount == min(visitorCount, na.rm = TRUE)) %>%
+    dplyr::select(week, date, day, weekDay, month, monthAbb, year, visitorCount)
 
   leastBusiestMonth <- monthlyVisitorCount %>%
     ungroup() %>%
@@ -350,6 +358,10 @@ gateCountSummary <- function(rawGateCounts,
     ungroup() %>%
     dplyr::filter(visitorCount == max(visitorCount, na.rm = TRUE))
 
+  busiestWeek <- dailyVisitorCount %>%
+    ungroup() %>%
+    dplyr::filter(visitorCount == max(visitorCount, na.rm = TRUE)) %>%
+    dplyr::select(week, date, day, weekDay, month, monthAbb, year, visitorCount)
 
   busiestMonth <- monthlyVisitorCount %>%
     ungroup() %>%
@@ -361,6 +373,8 @@ gateCountSummary <- function(rawGateCounts,
                        gateType = gateType,
                        busiestMonth = busiestMonth,
                        leastBusiestMonth = leastBusiestMonth,
+                       busiestWeek = busiestWeek,
+                       leastBusiestWeek = leastBusiestWeek,
                        leastBusiestDay = leastBusiestDay,
                        busiestDay = busiestDay)
   class(returnValues) <- c("GateCounts")

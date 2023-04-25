@@ -24,7 +24,7 @@ count reading for the given date and should be called "counts".}
 
 \item{gatecounterMaxValue}{A numeric value greater than 0 indicating the
 gate counter max value, before it is reset. The default value is
-999,999.}
+999,999. This number is crucial for calculations.}
 
 \item{printMessages}{An logical indicating TRUE or FALSE as to whether
 progress messages should be printed. The default value is TRUE. Setting
@@ -86,7 +86,7 @@ set.seed(1234)
 randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
-                       200000, # max value
+                  200000, # max value
                   sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 50, lambda = 100000)))
@@ -98,12 +98,19 @@ randomCounts1tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts1)
 
+# check max value for gate counter maximum
+max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
 randomCountsSumEx1 <- gateCountSummary(
-             rawGateCounts =
+             rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
-             gatecounterMaxValue = 200000)
-randomCountsSumEx1$adjustedCountSum # access cumulative count
+             gatecounterMaxValue = 200000,
+             printMessages = FALSE)
+randomCountsSumEx1$dailyCounts # access daily adjusted counts
+randomCountsSumEx1$monthlyCounts # access monthly adjusted counts
+randomCountsSumEx1$busiestMonth # busiest month
+randomCountsSumEx1$leastBusiestMonth # least busiest month
+randomCountsSumEx1$busiestDay # busiest day
 # Cumulative (adjusted) sum for gate type unidirectional is 300618
 
 
