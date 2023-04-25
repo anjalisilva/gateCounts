@@ -333,17 +333,18 @@ gateCountSummary <- function(rawGateCounts,
     tibble::add_column(date = lubridate::dmy(rawGateCounts$dates))
 
   dailyVisitorCount <- rawGateCountsEdited %>%
+    dplyr::rename(gateCount = counts) %>%
     tibble::add_column(day = lubridate::day(rawGateCountsEdited$date)) %>%
     tibble::add_column(weekDay = lubridate::wday(rawGateCountsEdited$date, label = TRUE)) %>%
     tibble::add_column(week = lubridate::week(rawGateCountsEdited$date)) %>%
     tibble::add_column(month = lubridate::month(rawGateCountsEdited$date)) %>%
     tibble::add_column(monthAbb = lubridate::month(rawGateCountsEdited$date, label = TRUE)) %>%
     tibble::add_column(year = lubridate::year(rawGateCountsEdited$date)) %>%
-    dplyr::select(date, day, weekDay, week, month, monthAbb, year, visitorCount)
+    dplyr::select(date, gateCount, visitorCount, day, weekDay, week, month, monthAbb, year)
 
   if(gateType == "Bidirectional") {
     cumulativeCount <- ceiling(cumulativeCount / 2)
-    dailyVisitorCount <- round(dailyVisitorCount$visitorCount / 2, 0)
+    dailyVisitorCount$visitorCount <- round(dailyVisitorCount$visitorCount / 2, 0)
     if(printMessages == TRUE) {
       cat("\n Cumulative (adjusted) sum for gate type", tolower(gateType), ".")
     }
@@ -384,10 +385,12 @@ gateCountSummary <- function(rawGateCounts,
     ungroup() %>%
     dplyr::filter(totalVisitorCount == max(totalVisitorCount, na.rm = TRUE))
 
-  returnValues <- list(cumulativeCount = cumulativeCount,
-                       dailyCounts = dailyVisitorCount,
-                       monthlyCounts = monthlyVisitorCount,
-                       gateType = gateType,
+  returnValues <- list(gateType = gateType,
+                       gatecounterMaxValue = gatecounterMaxValue,
+                       cumulativeVisitorCount = cumulativeCount,
+                       dailyVisitorCounts = dailyVisitorCount,
+                       weeklyVisitorCounts = weeklyVisitorCount,
+                       monthlyVisitorCounts = monthlyVisitorCount,
                        busiestMonth = busiestMonth,
                        leastBusiestMonth = leastBusiestMonth,
                        busiestWeek = busiestWeek,

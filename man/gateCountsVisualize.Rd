@@ -4,22 +4,11 @@
 \alias{gateCountsVisualize}
 \title{Visualize Cumulative Daily Visitor Counts and Raw Gate Counts}
 \usage{
-gateCountsVisualize(
-  rawGateCounts,
-  gateType = "Unidirectional",
-  unadjustedDailyCounts
-)
+gateCountsVisualize(outputDailyCounts)
 }
 \arguments{
-\item{rawGateCounts}{A numeric vector of length corresponding to days or
+\item{outputDailyCounts}{A numeric vector of length corresponding to days or
 are present.}
-
-\item{gateType}{A character string with options "Unidirectional" or}
-
-\item{unadjustedDailyCounts}{A numeric vector of length corresponding to
-days, containing values of corrected daily visitor counts, not adjusted
-for gate directionality. This would be the 'unadjustedDailyCounts'
-output from gateCounts::gateCountCumulative() function in this package.}
 }
 \value{
 Returns a dotted plot of cumulative daily visitor counts and
@@ -39,22 +28,31 @@ set.seed(1234)
 randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
-                       200000, # max value
+                  200000, # max value
                   sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 50, lambda = 100000)))
 
-randomCountsSumEx1 <- gateCountCumulative(
-             rawGateCounts = randomCounts1,
+randomCounts1tibble <- tibble::tibble(
+                        dates = seq(lubridate::dmy('01-01-2022'),
+                        lubridate::dmy('31-12-2022'),
+                        by='1 day')[1:length(randomCounts1)] \%>\%
+                        format('\%d-\%m-\%Y'),
+                        counts = randomCounts1)
+
+# check max value for gate counter maximum
+max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
+
+randomCountsSumEx1 <- gateCountSummary(
+             rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
-             gatecounterMaxValue = 200000)
-randomCountsSumEx1$adjustedCountSum # access cumulative count
+             gatecounterMaxValue = 200000,
+             printMessages = FALSE)
+randomCountsSumEx1$dailyCounts # access daily adjusted counts
 
 # Visualize counts from Example 1
 visOne <- gateCountsVisualize(
-             rawGateCounts = randomCounts1,
-             gateType = "Unidirectional",
-             unadjustedDailyCounts = randomCountsSumEx1$unadjustedDailyCounts)
+             outputDailyCounts = randomCountsSumEx1)
 
 # Example 2: Bidirectional gates with NA values
 randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),

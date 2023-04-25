@@ -5,19 +5,10 @@
 #' not reflect daily counts, rather adjusted visitor count as
 #' of the day. See README file examples for details.
 #'
-#' @param rawGateCounts A numeric vector of length corresponding to days or
+#' @param outputDailyCounts A numeric vector of length corresponding to days or
 #     a tibble of dimensions days x 1, containing values of raw daily gate
 #     counts. Here days is the number of days for which raw gate counts
 #'    are present.
-#' @param gateType A character string with options "Unidirectional" or
-#     "Bidirectional", to indicate gate type. If the gate is one-way only,
-#     then enter "Unidirectional". If the gate permits visitors in and out,
-#     then enter "Bidirectional". Bidirectional selection will lead to
-#     count sum being divided by two. The default value is "Unidirectional".
-#' @param unadjustedDailyCounts A numeric vector of length corresponding to
-#'    days, containing values of corrected daily visitor counts, not adjusted
-#'    for gate directionality. This would be the 'unadjustedDailyCounts'
-#'    output from gateCounts::gateCountCumulative() function in this package.
 #'
 #' @return Returns a dotted plot of cumulative daily visitor counts and
 #'    raw gate count. Important: the counts may not reflect daily counts,
@@ -40,22 +31,31 @@
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
-#'                        200000, # max value
+#'                   200000, # max value
 #'                   sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
 #'
-#' randomCountsSumEx1 <- gateCountCumulative(
-#'              rawGateCounts = randomCounts1,
+#' randomCounts1tibble <- tibble::tibble(
+#'                         dates = seq(lubridate::dmy('01-01-2022'),
+#'                         lubridate::dmy('31-12-2022'),
+#'                         by='1 day')[1:length(randomCounts1)] %>%
+#'                         format('%d-%m-%Y'),
+#'                         counts = randomCounts1)
+#'
+#' # check max value for gate counter maximum
+#' max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
+#'
+#' randomCountsSumEx1 <- gateCountSummary(
+#'              rawGateCounts = randomCounts1tibble,
 #'              gateType = "Unidirectional",
-#'              gatecounterMaxValue = 200000)
-#' randomCountsSumEx1$adjustedCountSum # access cumulative count
+#'              gatecounterMaxValue = 200000,
+#'              printMessages = FALSE)
+#' randomCountsSumEx1$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 1
 #' visOne <- gateCountsVisualize(
-#'              rawGateCounts = randomCounts1,
-#'              gateType = "Unidirectional",
-#'              unadjustedDailyCounts = randomCountsSumEx1$unadjustedDailyCounts)
+#'              outputDailyCounts = randomCountsSumEx1)
 #'
 #' # Example 2: Bidirectional gates with NA values
 #' randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
@@ -86,44 +86,43 @@
 #'
 #'
 #' @export
-#' @import tibble
-gateCountsVisualize <- function(rawGateCounts,
-                                gateType = "Unidirectional",
-                                unadjustedDailyCounts) {
+#' @import ggplot2
+gateCountsVisualize <- function(outputDailyCounts) {
 
-  # Check input arguments
-  if(all(is.na(rawGateCounts) == TRUE)) {
-    stop("\n rawGateCounts doesn't contain numbers for calculation. ")
-  }
-
-  if(is.vector(rawGateCounts) == FALSE &&
-     tibble::is_tibble(rawGateCounts) == FALSE) {
-    stop("\n rawGateCounts should be a numeric vector or tibble")
-  }
-
-  if(gateType != "Bidirectional" && gateType != "Unidirectional") {
-    stop("\n gateType argument can only take on values Bidirectional
-         or Unidirectional")
-  }
+  # Daily count
+  dailyOuput <- outputDailyCounts$dailyVisitorCounts %>%
+  ggplot2::ggplot(aes(x = factor(day),
+                      y = visitorCount)) +
+    geom_bar(stat = "identity", width = 0.5) +
+    ggplot2::labs(y = "Visitor count", x = "Day") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 5),
+                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
+    ggplot2::facet_wrap(vars(monthAbb))
 
 
-  if(gateType == "Unidirectional") {
-    par(mfrow=c(1, 2))
-    plot(rawGateCounts, type = "l", lty = 5, xlab = "Day",
-         ylab = "Gate counts", main = "Unadjusted Unidirectional \n Gate Counts")
-    plot(unadjustedDailyCounts, type = "l", lty = 5, xlab = "Day",
-         ylab = "Visitor counts",
-         main = "Adjusted Visitor Counts \n for Unidirectional Gate")
-  } else {
-    par(mfrow=c(1, 2))
-    plot(rawGateCounts, type = "l", lty = 5, xlab = "Day",
-         ylab = "Gate counts", main = "Unadjusted Bidirectional \n Gate Counts")
-    unadjustedDailyCounts2 <- ceiling(unadjustedDailyCounts / 2)
-    plot(unadjustedDailyCounts2, type = "l", lty = 5, xlab = "Day",
-         ylab = "Approx. visitor counts",
-         main = "Adjusted Visitor Counts \n for Bidirectional Gate")
+  # Weekly count
+  weeklyOuput <- outputDailyCounts$weeklyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = factor(week),
+                        y = totalVisitorCount)) +
+    geom_bar(stat = "identity", width = 0.5) +
+    ggplot2::labs(y = "Visitor count", x = "Week") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(aspect.ratio = 0.3,
+                   text = element_text(size = 10),
+                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5))
 
-  }
+  # Monthly count
+  monthlyOuput <- outputDailyCounts$monthlyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = factor(monthAbb),
+                        y = factor(totalVisitorCount))) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::geom_text(aes(label = factor(totalVisitorCount)),
+              vjust=0) +
+    ggplot2::labs(y = "Visitor count", x = "Month", color = "Month") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(aspect.ratio = 0.4, text = element_text(size = 10))
+
   return(NULL)
 }
 
