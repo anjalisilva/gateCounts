@@ -97,7 +97,6 @@
 #' randomCountsSumEx1$busiestMonth # busiest month
 #' randomCountsSumEx1$leastBusiestMonth # least busiest month
 #' randomCountsSumEx1$busiestDay # busiest day
-#' # Cumulative (adjusted) sum for gate type unidirectional is 300618
 #'
 #'
 #' # Example 2: Unidirectional gates with random NA values
@@ -115,12 +114,27 @@
 #' randomCounts2[randomPositions[1:4]] <- NA
 #' randomCounts2[randomPositions[5:8]] <- "Gate broken"
 #'
-#' randomCountsSumEx2 <- gateCountCumulative(
-#'              rawGateCounts = randomCounts2,
+#' randomCounts2tibble <- tibble::tibble(
+#'                         dates = seq(lubridate::dmy('01-01-2022'),
+#'                         lubridate::dmy('31-12-2022'),
+#'                         by='1 day')[1:length(randomCounts2)] %>%
+#'                         format('%d-%m-%Y'),
+#'                         counts = randomCounts2)
+#'
+#' # check max value for gate counter maximum
+#' max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
+#'
+#' randomCountsSumEx2 <- gateCountSummary(
+#'              rawGateCounts = randomCounts2tibble,
 #'              gateType = "Unidirectional",
-#'              gatecounterMaxValue = 200000)
-#' randomCountsSumEx2$adjustedCountSum # access cumulative count
-#' # Cumulative (adjusted) sum for gate type unidirectional is 300777
+#'              gatecounterMaxValue = 200000,
+#'              printMessages = FALSE)
+#' randomCountsSumEx2$dailyCounts # access daily adjusted counts
+#' randomCountsSumEx2$monthlyCounts # access monthly adjusted counts
+#' randomCountsSumEx2$busiestMonth # busiest month
+#' randomCountsSumEx2$leastBusiestMonth # least busiest month
+#' randomCountsSumEx2$busiestDay # busiest day
+#'
 #'
 #'
 #' # Example 3: Unidirectional gates with random entry errors
@@ -335,6 +349,11 @@ gateCountSummary <- function(rawGateCounts,
     }
   }
 
+  # summarizing by weekly count
+  weeklyVisitorCount <- dailyVisitorCount %>%
+    dplyr::group_by(week, monthAbb, year) %>%
+    dplyr::summarise(totalVisitorCount = sum(visitorCount, na.rm = TRUE))
+
   # summarizing by monthly count
   monthlyVisitorCount <- dailyVisitorCount %>%
     dplyr::group_by(month, monthAbb, year) %>%
@@ -345,10 +364,9 @@ gateCountSummary <- function(rawGateCounts,
     ungroup() %>%
     dplyr::filter(visitorCount == min(visitorCount, na.rm = TRUE))
 
-  leastBusiestWeek <- dailyVisitorCount %>%
+  leastBusiestWeek <- weeklyVisitorCount %>%
     ungroup() %>%
-    dplyr::filter(visitorCount == min(visitorCount, na.rm = TRUE)) %>%
-    dplyr::select(week, date, day, weekDay, month, monthAbb, year, visitorCount)
+    dplyr::filter(totalVisitorCount == min(totalVisitorCount, na.rm = TRUE))
 
   leastBusiestMonth <- monthlyVisitorCount %>%
     ungroup() %>%
@@ -358,10 +376,9 @@ gateCountSummary <- function(rawGateCounts,
     ungroup() %>%
     dplyr::filter(visitorCount == max(visitorCount, na.rm = TRUE))
 
-  busiestWeek <- dailyVisitorCount %>%
+  busiestWeek <- weeklyVisitorCount %>%
     ungroup() %>%
-    dplyr::filter(visitorCount == max(visitorCount, na.rm = TRUE)) %>%
-    dplyr::select(week, date, day, weekDay, month, monthAbb, year, visitorCount)
+    dplyr::filter(totalVisitorCount == max(totalVisitorCount, na.rm = TRUE))
 
   busiestMonth <- monthlyVisitorCount %>%
     ungroup() %>%
