@@ -222,6 +222,12 @@ gateCountSummary <- function(rawGateCounts,
     dplyr::mutate(gateCounts = as.numeric(counts)) %>%
     dplyr::pull(gateCounts)
 
+  # check for error
+  if(max(tibbleCounts, na.rm = TRUE) > gatecounterMaxValue) {
+    stop("Gate count greater than gate counter max value is
+         present. This should not happpen. Correct and rerun.")
+  }
+
   tibbleCounts <- tibble(tibbleCounts)
 
   # Begin calculations
