@@ -99,7 +99,9 @@ gateCountsVisMonthly <- function(outputDailyCounts) {
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::geom_text(aes(label = factor(totalVisitorCount)),
               vjust=0) +
-    ggplot2::labs(y = "Visitor count", x = "Month", color = "Month") +
+    ggplot2::labs(y = "Visitor count", x = "Month", color = "Month",
+                  title = paste("Monthly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(aspect.ratio = 0.4, text = element_text(size = 10))
 

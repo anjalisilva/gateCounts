@@ -98,7 +98,9 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
     ggplot2::ggplot(aes(x = factor(week),
                         y = totalVisitorCount)) +
     geom_bar(stat = "identity", width = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Week") +
+    ggplot2::labs(y = "Visitor count", x = "Week",
+                  title = paste("Weekly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(aspect.ratio = 0.3,
                    text = element_text(size = 10),
