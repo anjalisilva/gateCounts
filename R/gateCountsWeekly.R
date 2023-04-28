@@ -92,17 +92,6 @@
 #' @import ggplot2
 gateCountsVisWeekly <- function(outputDailyCounts) {
 
-  # Daily count
-  dailyOuput <- outputDailyCounts$dailyVisitorCounts %>%
-  ggplot2::ggplot(aes(x = factor(day),
-                      y = visitorCount)) +
-    geom_bar(stat = "identity", width = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Day") +
-    ggplot2::theme_bw() +
-    ggplot2::theme(text = element_text(size = 5),
-                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
-    ggplot2::facet_wrap(vars(monthAbb))
-
 
   # Weekly count
   weeklyOuput <- outputDailyCounts$weeklyVisitorCounts %>%
@@ -115,18 +104,7 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
                    text = element_text(size = 10),
                    axis.text.x = element_text(angle=90,hjust=1,vjust=0.5))
 
-  # Monthly count
-  monthlyOuput <- outputDailyCounts$monthlyVisitorCounts %>%
-    ggplot2::ggplot(aes(x = factor(monthAbb),
-                        y = factor(totalVisitorCount))) +
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::geom_text(aes(label = factor(totalVisitorCount)),
-              vjust=0) +
-    ggplot2::labs(y = "Visitor count", x = "Month", color = "Month") +
-    ggplot2::theme_bw() +
-    ggplot2::theme(aspect.ratio = 0.4, text = element_text(size = 10))
-
-  return(NULL)
+  return(weeklyOuput)
 }
 
 
