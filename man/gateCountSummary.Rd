@@ -207,8 +207,8 @@ randomCountsSumEx4 <- gateCountCumulative(
              rawGateCounts = randomCounts4tibble,
              gateType = "Bidirectional",
              gatecounterMaxValue = 999999)
-randomCountsSumEx3$adjustedCountSum # access cumulative count
-randomCountsSumEx3$dailyCounts # access daily adjusted counts
+randomCountsSumEx4$adjustedCountSum # access cumulative count
+randomCountsSumEx4$dailyCounts # access daily adjusted counts
 
 
 

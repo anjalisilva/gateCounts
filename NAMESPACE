@@ -2,7 +2,8 @@
 
 export(gateCountSummary)
 export(gateCountsVisDaily)
-export(gateCountsVisualize)
+export(gateCountsVisMonthly)
+export(gateCountsVisWeekly)
 export(runGateCount)
 import(ggplot2)
 import(tibble)

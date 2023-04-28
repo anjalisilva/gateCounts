@@ -1,6 +1,7 @@
-#' Visualize Daily Visitor Counts
+#' Visualize Monthly Visitor Counts
 #'
-#' A function that permit to create a plot showing daily visitor counts.
+#' A function that permit to create a plot showing visitor
+#' counts by month.
 #'
 #' @param outputDailyCounts The output from running gateCounts::gateCountSummary()
 #'    function.
@@ -46,7 +47,7 @@
 #' randomCountsSumEx1$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 1
-#' visOne <- gateCountsVisDaily(
+#' visOne <- gateCountsVisMonthly(
 #'              outputDailyCounts = randomCountsSumEx1)
 #'
 #' # Example 2: Unidirectional gates with random NA values
@@ -82,27 +83,28 @@
 #' randomCountsSumEx2$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 2
-#' visTwo <- gateCountsVisDaily(
+#' visTwo <- gateCountsVisMonthly(
 #'              outputDailyCounts = randomCountsSumEx2)
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import ggplot2
-gateCountsVisDaily <- function(outputDailyCounts) {
+gateCountsVisMonthly <- function(outputDailyCounts) {
 
-  # Daily count
-  dailyOuput <- outputDailyCounts$dailyVisitorCounts %>%
-  ggplot2::ggplot(aes(x = factor(day),
-                      y = visitorCount)) +
-    geom_bar(stat = "identity", width = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Day") +
+  # Monthly count
+  monthlyOuput <- outputDailyCounts$monthlyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = factor(monthAbb),
+                        y = factor(totalVisitorCount))) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::geom_text(aes(label = factor(totalVisitorCount)),
+              vjust=0) +
+    ggplot2::labs(y = "Visitor count", x = "Month", color = "Month") +
     ggplot2::theme_bw() +
-    ggplot2::theme(text = element_text(size = 5),
-                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
-    ggplot2::facet_wrap(vars(monthAbb))
+    ggplot2::theme(aspect.ratio = 0.4, text = element_text(size = 10))
 
-  return(dailyOuput)
+  return(monthlyOuput)
 }
+
 
 # END
