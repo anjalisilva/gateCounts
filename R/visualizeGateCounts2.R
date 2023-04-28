@@ -10,8 +10,8 @@
 #     counts. Here days is the number of days for which raw gate counts
 #'    are present.
 #'
-#' @return Returns a dotted plot of cumulative daily visitor counts and
-#'    raw gate count. Important: the counts may not reflect daily counts,
+#' @return Returns plot of daily, weekly and monthly visitor counts.
+#'    Important: the counts may not reflect daily counts,
 #'    rather adjusted visitor count as of the day. See README file examples
 #'    for details.
 #'
@@ -84,6 +84,7 @@
 #'              gateType = "Bidirectional",
 #'              unadjustedDailyCounts = randomCountsSumEx4$unadjustedDailyCounts)
 #'
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import ggplot2
