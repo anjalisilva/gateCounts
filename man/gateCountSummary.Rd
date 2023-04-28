@@ -165,19 +165,27 @@ randomPositions <- sample(x = c(1:length(randomCounts3)),
                          size = 4, replace = FALSE)
 randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
 
+randomCounts3tibble <- tibble::tibble(
+                        dates = seq(lubridate::dmy('01-01-2022'),
+                        lubridate::dmy('31-12-2022'),
+                        by='1 day')[1:length(randomCounts3)] \%>\%
+                        format('\%d-\%m-\%Y'),
+                        counts = randomCounts3)
+
 randomCountsSumEx3 <- gateCountCumulative(
-             rawGateCounts = randomCounts3,
+             rawGateCounts = randomCounts3tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000)
 randomCountsSumEx3$adjustedCountSum # access cumulative count
-# Cumulative (adjusted) sum for gate type unidirectional is 300673
+randomCountsSumEx3$dailyCounts # access daily adjusted counts
+
 
 
 # Example 4: Bidirectional gates with NA values
 randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
                   sort(rpois(n = 50, lambda = 400000)),
                   sort(rpois(n = 82, lambda = 800000)),
-                       999999, # max value
+                  999999, # max value
                   sort(rpois(n = 50, lambda = 10000)),
                   sort(rpois(n = 50, lambda = 450000)),
                   sort(rpois(n = 50, lambda = 850000)))
@@ -188,12 +196,21 @@ randomPositions <- sample(x = c(1:length(randomCounts4)),
 randomCounts4[randomPositions[1:4]] <- NA
 randomCounts4[randomPositions[5:8]] <- "Gate broken"
 
+randomCounts4tibble <- tibble::tibble(
+                        dates = seq(lubridate::dmy('01-01-2022'),
+                        lubridate::dmy('31-12-2022'),
+                        by='1 day')[1:length(randomCounts4)] \%>\%
+                        format('\%d-\%m-\%Y'),
+                        counts = randomCounts)
+
 randomCountsSumEx4 <- gateCountCumulative(
-             rawGateCounts = randomCounts4,
+             rawGateCounts = randomCounts4tibble,
              gateType = "Bidirectional",
              gatecounterMaxValue = 999999)
-randomCountsSumEx4$adjustedCountSum # access cumulative count
-# Cumulative (adjusted) sum for gate type bidirectional is 921027
+randomCountsSumEx3$adjustedCountSum # access cumulative count
+randomCountsSumEx3$dailyCounts # access daily adjusted counts
+
+
 
 }
 \references{
