@@ -4,8 +4,16 @@
 #'
 #' @param outputDailyCounts The output from running gateCounts::gateCountSummary()
 #'    function.
+#' @param scaleBreakYAxisMin Numeric value indicating the minimum
+#'    in the range for a scale break to be introduced on y-axis.
+#'    The range requires both a minimum and maximum (next argument).
+#'    Default value is NA, so no scale break introduced on y-axis.
+#' @param scaleBreakYAxisMax Numeric value indicating the maximum
+#'    in the range for a scale break to be introduced on y-axis.
+#'    The range requires both a minimum (previous argument) and maximum.
+#'    Default value is NA, so no scale break introduced on y-axis.
 #'
-#' @return Returns plot of daily visitor counts.
+#' @return Returns three plots summarizing daily visitor counts.
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
@@ -89,7 +97,10 @@
 #'
 #' @export
 #' @import ggplot2
-gateCountsVisDaily <- function(outputDailyCounts) {
+#' @import ggbreak
+gateCountsVisDaily <- function(outputDailyCounts,
+                               scaleBreakYAxisMin = NA,
+                               scaleBreakYAxisMax = NA) {
 
   # Daily count
   dailyOuput <- outputDailyCounts$dailyVisitorCounts %>%
@@ -100,11 +111,62 @@ gateCountsVisDaily <- function(outputDailyCounts) {
                   title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
-    ggplot2::theme(text = element_text(size = 5),
+    ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
+    # ggbreak::scale_y_break(c(110000, 190000)) +
     ggplot2::facet_wrap(vars(monthAbb))
 
-  return(dailyOuput)
+  dailyOuputLine <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = day,
+                        y = visitorCount)) +
+    geom_line(linetype = "dashed", size = 0.3) +
+    geom_point(size = 0.5) +
+    ggplot2::labs(y = "Visitor count", x = "Day",
+                  title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggplot2::facet_wrap(vars(monthAbb))
+
+  if((is.na(scaleBreakYAxisMin)) == TRUE && (is.na(scaleBreakYAxisMax) == TRUE)) {
+    # trying to introduce scale break for y-axis
+
+    maxVal <- max(outputDailyCounts$dailyVisitorCounts$visitorCount,
+        na.rm = TRUE)
+    meanVal <- mean(outputDailyCounts$dailyVisitorCounts$visitorCount,
+        na.rm = TRUE)
+
+    # rangeYscaleBreak <- c(meanVal, maxVal)
+    rangeYscaleBreak <- c(0, 0)
+  } else {
+    rangeYscaleBreak <- c(scaleBreakYAxisMin,
+                          scaleBreakYAxisMax)
+  }
+
+  dailyOuputLine2 <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = day,
+                        y = visitorCount,
+                        group = monthAbb)) +
+    geom_line(linetype = "dashed",
+              size = 0.5,
+              aes(color = monthAbb)) +
+    geom_point(size = 0.5, aes(color = monthAbb)) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  color = "Month",
+                  title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggbreak::scale_y_break(rangeYscaleBreak) +
+    ggplot2::scale_color_brewer(palette = "Dark2")
+
+
+  return(list(dailyOuput = dailyOuput,
+           dailyOuputLine = dailyOuputLine,
+           dailyOuputLine2 = dailyOuputLine2))
 }
 
 # END

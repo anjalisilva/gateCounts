@@ -105,6 +105,8 @@ gateCountsVisMonthly <- function(outputDailyCounts) {
     ggplot2::theme_bw() +
     ggplot2::theme(aspect.ratio = 0.4, text = element_text(size = 10))
 
+
+
   return(monthlyOuput)
 }
 

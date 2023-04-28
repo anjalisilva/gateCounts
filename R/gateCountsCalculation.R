@@ -258,7 +258,7 @@ gateCountSummary <- function(rawGateCounts,
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
         if(printMessages == TRUE) {
-           cat("\n i = ", i, " Calc", i+1, "minus", i, "is:",
+           cat("\n Entry", i, "date ", rawGateCounts$dates[i+1], "minus", rawGateCounts$dates[i], "is:",
             unlist(tibbleCounts[i + 1, ], ),
             "-", unlist(tibbleCounts[i, ], ),
             " = ", unlist(collectValue[i + 1]), "\n")

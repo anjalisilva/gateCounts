@@ -4,14 +4,28 @@
 \alias{gateCountsVisDaily}
 \title{Visualize Daily Visitor Counts}
 \usage{
-gateCountsVisDaily(outputDailyCounts)
+gateCountsVisDaily(
+  outputDailyCounts,
+  scaleBreakYAxisMin = NA,
+  scaleBreakYAxisMax = NA
+)
 }
 \arguments{
 \item{outputDailyCounts}{The output from running gateCounts::gateCountSummary()
 function.}
+
+\item{scaleBreakYAxisMin}{Numeric value indicating the minimum
+in the range for a scale break to be introduced on y-axis.
+The range requires both a minimum and maximum (next argument).
+Default value is NA, so no scale break introduced on y-axis.}
+
+\item{scaleBreakYAxisMax}{Numeric value indicating the maximum
+in the range for a scale break to be introduced on y-axis.
+The range requires both a minimum (previous argument) and maximum.
+Default value is NA, so no scale break introduced on y-axis.}
 }
 \value{
-Returns plot of daily visitor counts.
+Returns three plots summarizing daily visitor counts.
 }
 \description{
 A function that permit to create a plot showing daily visitor counts.
