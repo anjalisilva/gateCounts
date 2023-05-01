@@ -96,17 +96,64 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
   # Weekly count
   weeklyOuput <- outputDailyCounts$weeklyVisitorCounts %>%
     ggplot2::ggplot(aes(x = factor(week),
-                        y = totalVisitorCount)) +
-    geom_bar(stat = "identity", width = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Week",
+                        y = totalVisitorCount,
+                        fill = monthAbb)) +
+    ggplot2::geom_bar(stat = "identity", width = 0.5) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Week",
+                  fill = "Month",
                   title = paste("Weekly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(aspect.ratio = 0.3,
                    text = element_text(size = 10),
-                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5))
+                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
+    ggplot2::scale_fill_manual(values = c('#a6cee3',
+                                          '#1f78b4',
+                                          '#b2df8a',
+                                          '#33a02c',
+                                          '#fb9a99',
+                                          '#e31a1c',
+                                          '#fdbf6f',
+                                          '#ff7f00',
+                                          '#cab2d6',
+                                          '#6a3d9a',
+                                          '#b15928',
+                                          '#dfc27d'))
 
-  return(weeklyOuput)
+
+
+  # Weekly log-transformed count
+  weeklyOuputLog <- outputDailyCounts$weeklyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = factor(week),
+                        y = log(totalVisitorCount + 1),
+                        fill = monthAbb)) +
+    ggplot2::geom_bar(stat = "identity", width = 0.5) +
+    ggplot2::labs(y = "Log-transformed visitor count",
+                  x = "Week",
+                  fill = "Month",
+                  title = paste("Weekly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(aspect.ratio = 0.3,
+                   text = element_text(size = 10),
+                   axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
+    ggplot2::scale_fill_manual(values = c('#a6cee3',
+                                  '#1f78b4',
+                                  '#b2df8a',
+                                  '#33a02c',
+                                  '#fb9a99',
+                                  '#e31a1c',
+                                  '#fdbf6f',
+                                  '#ff7f00',
+                                  '#cab2d6',
+                                  '#6a3d9a',
+                                  '#b15928',
+                                  '#dfc27d'))
+
+
+  return(list(weeklyOuput = weeklyOuput,
+              weeklyOuputLog = weeklyOuputLog))
 }
 
 
