@@ -93,6 +93,22 @@
 gateCountsVisWeekly <- function(outputDailyCounts) {
 
 
+  # set color palette
+  colorPaletteCustom <- c(
+    '#a6cee3',
+    '#1f78b4',
+    '#b2df8a',
+    '#33a02c',
+    '#c51b7d',
+    '#e31a1c',
+    '#fdbf6f',
+    '#ff7f00',
+    '#cab2d6',
+    '#6a3d9a',
+    '#b15928',
+    '#dfc27d')
+
+
   # Weekly count
   weeklyOuput <- outputDailyCounts$weeklyVisitorCounts %>%
     ggplot2::ggplot(aes(x = factor(week),
@@ -108,18 +124,7 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
     ggplot2::theme(aspect.ratio = 0.3,
                    text = element_text(size = 10),
                    axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
-    ggplot2::scale_fill_manual(values = c('#a6cee3',
-                                          '#1f78b4',
-                                          '#b2df8a',
-                                          '#33a02c',
-                                          '#fb9a99',
-                                          '#e31a1c',
-                                          '#fdbf6f',
-                                          '#ff7f00',
-                                          '#cab2d6',
-                                          '#6a3d9a',
-                                          '#b15928',
-                                          '#dfc27d'))
+    ggplot2::scale_fill_manual(values = colorPaletteCustom)
 
 
 
@@ -138,18 +143,7 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
     ggplot2::theme(aspect.ratio = 0.3,
                    text = element_text(size = 10),
                    axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
-    ggplot2::scale_fill_manual(values = c('#a6cee3',
-                                  '#1f78b4',
-                                  '#b2df8a',
-                                  '#33a02c',
-                                  '#fb9a99',
-                                  '#e31a1c',
-                                  '#fdbf6f',
-                                  '#ff7f00',
-                                  '#cab2d6',
-                                  '#6a3d9a',
-                                  '#b15928',
-                                  '#dfc27d'))
+    ggplot2::scale_fill_manual(values = colorPaletteCustom)
 
 
   return(list(weeklyOuput = weeklyOuput,

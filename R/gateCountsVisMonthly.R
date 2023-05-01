@@ -92,19 +92,39 @@
 #' @import ggplot2
 gateCountsVisMonthly <- function(outputDailyCounts) {
 
+  # set color palette
+  colorPaletteCustom <- c(
+  '#a6cee3',
+  '#1f78b4',
+  '#b2df8a',
+  '#33a02c',
+  '#c51b7d',
+  '#e31a1c',
+  '#fdbf6f',
+  '#ff7f00',
+  '#cab2d6',
+  '#6a3d9a',
+  '#b15928',
+  '#dfc27d')
+
   # Monthly count
+
   monthlyOuput <- outputDailyCounts$monthlyVisitorCounts %>%
-    ggplot2::ggplot(aes(x = factor(monthAbb),
-                        y = factor(totalVisitorCount))) +
+    ggplot2::ggplot(aes(x = monthAbb,
+                        y = totalVisitorCount,
+                        fill = monthAbb)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::geom_text(aes(label = factor(totalVisitorCount)),
               vjust=0) +
-    ggplot2::labs(y = "Visitor count", x = "Month", color = "Month",
+    ggplot2::scale_fill_manual(values = colorPaletteCustom) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Month",
+                  color = "Month",
+                  fill = "Month",
                   title = paste("Monthly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
-    ggplot2::theme(aspect.ratio = 0.4, text = element_text(size = 10))
-
+    ggplot2::theme(text = element_text(size = 10))
 
 
   return(monthlyOuput)
