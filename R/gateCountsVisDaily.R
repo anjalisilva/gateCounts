@@ -119,6 +119,7 @@ gateCountsVisDaily <- function(outputDailyCounts,
     # ggbreak::scale_y_break(c(110000, 190000)) +
     ggplot2::facet_wrap(vars(monthAbb))
 
+
   dailyOuputLine <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = day,
                         y = visitorCount)) +
@@ -151,10 +152,10 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::ggplot(aes(x = day,
                         y = visitorCount,
                         group = monthAbb)) +
-    geom_line(linetype = "dashed",
+    ggplot2::geom_line(linetype = "dashed",
               size = 0.5,
               aes(color = monthAbb)) +
-    geom_point(size = 0.5, aes(color = monthAbb)) +
+    ggplot2::geom_point(size = 0.5, aes(color = monthAbb)) +
     ggplot2::labs(y = "Visitor count",
                   x = "Day",
                   color = "Month",
@@ -163,7 +164,7 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    ggbreak::scale_y_break(rangeYscaleBreak) +
+    # ggbreak::scale_y_break(rangeYscaleBreak) +
     # ggplot2::scale_color_brewer(palette = "Paired")
     scale_color_manual(values=c('#a6cee3',
                                 '#1f78b4',
@@ -184,8 +185,8 @@ gateCountsVisDaily <- function(outputDailyCounts,
   dailyOuputLog <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = factor(day),
                         y = log(visitorCount + 1))) +
-    geom_bar(stat = "identity", width = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Day",
+    ggplot2::geom_bar(stat = "identity", width = 0.5) +
+    ggplot2::labs(y = "Log-transformed visitor count", x = "Day",
                   title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
@@ -199,7 +200,7 @@ gateCountsVisDaily <- function(outputDailyCounts,
                         y = log(visitorCount + 1))) +
     geom_line(linetype = "dashed", size = 0.3) +
     geom_point(size = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Day",
+    ggplot2::labs(y = "Log-transformed visitor count", x = "Day",
                   title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
@@ -207,15 +208,16 @@ gateCountsVisDaily <- function(outputDailyCounts,
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     ggplot2::facet_wrap(vars(monthAbb))
 
+
   dailyOuputLine2Log <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = day,
                         y = log(visitorCount + 1),
                         group = monthAbb)) +
-    geom_line(linetype = "dashed",
+    ggplot2::geom_line(linetype = "dashed",
               size = 0.5,
               aes(color = monthAbb)) +
-    geom_point(size = 0.5, aes(color = monthAbb)) +
-    ggplot2::labs(y = "Visitor count",
+    ggplot2::geom_point(size = 0.5, aes(color = monthAbb)) +
+    ggplot2::labs(y = "Log-transformed visitor count",
                   x = "Day",
                   color = "Month",
                   title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
@@ -223,9 +225,9 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    ggbreak::scale_y_break(rangeYscaleBreak) +
+    # annotation_logticks() +
     # ggplot2::scale_color_brewer(palette = "Paired")
-    scale_color_manual(values=c('#a6cee3',
+    scale_color_manual(values = c('#a6cee3',
                                 '#1f78b4',
                                 '#b2df8a',
                                 '#33a02c',
