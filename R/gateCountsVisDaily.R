@@ -13,7 +13,10 @@
 #'    The range requires both a minimum (previous argument) and maximum.
 #'    Default value is NA, so no scale break introduced on y-axis.
 #'
-#' @return Returns three plots summarizing daily visitor counts.
+#' @return Returns three plots summarizing daily visitor counts by
+#'    week, month and day. Another three plots are produced with
+#'    log-transformed counts to better visualize trends.
+#'
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
@@ -161,12 +164,88 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     ggbreak::scale_y_break(rangeYscaleBreak) +
-    ggplot2::scale_color_brewer(palette = "Dark2")
+    # ggplot2::scale_color_brewer(palette = "Paired")
+    scale_color_manual(values=c('#a6cee3',
+                                '#1f78b4',
+                                '#b2df8a',
+                                '#33a02c',
+                                '#fb9a99',
+                                '#e31a1c',
+                                '#fdbf6f',
+                                '#ff7f00',
+                                '#cab2d6',
+                                '#6a3d9a',
+                                '#b15928',
+                                '#dfc27d'))
+
+  ###
+  # Log-transforming to better visualize trends
+  # Daily count
+  dailyOuputLog <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = factor(day),
+                        y = log(visitorCount + 1))) +
+    geom_bar(stat = "identity", width = 0.5) +
+    ggplot2::labs(y = "Visitor count", x = "Day",
+                  title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    # ggbreak::scale_y_break(c(110000, 190000)) +
+    ggplot2::facet_wrap(vars(monthAbb))
+
+  dailyOuputLineLog <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = day,
+                        y = log(visitorCount + 1))) +
+    geom_line(linetype = "dashed", size = 0.3) +
+    geom_point(size = 0.5) +
+    ggplot2::labs(y = "Visitor count", x = "Day",
+                  title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggplot2::facet_wrap(vars(monthAbb))
+
+  dailyOuputLine2Log <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = day,
+                        y = log(visitorCount + 1),
+                        group = monthAbb)) +
+    geom_line(linetype = "dashed",
+              size = 0.5,
+              aes(color = monthAbb)) +
+    geom_point(size = 0.5, aes(color = monthAbb)) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  color = "Month",
+                  title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggbreak::scale_y_break(rangeYscaleBreak) +
+    # ggplot2::scale_color_brewer(palette = "Paired")
+    scale_color_manual(values=c('#a6cee3',
+                                '#1f78b4',
+                                '#b2df8a',
+                                '#33a02c',
+                                '#fb9a99',
+                                '#e31a1c',
+                                '#fdbf6f',
+                                '#ff7f00',
+                                '#cab2d6',
+                                '#6a3d9a',
+                                '#b15928',
+                                '#dfc27d'))
+
 
 
   return(list(dailyOuput = dailyOuput,
            dailyOuputLine = dailyOuputLine,
-           dailyOuputLine2 = dailyOuputLine2))
-}
+           dailyOuputLine2 = dailyOuputLine2,
+           dailyOuputLog = dailyOuputLog,
+           dailyOuputLineLog = dailyOuputLineLog,
+           dailyOuputLine2Log = dailyOuputLine2Log))
+ }
 
 # END

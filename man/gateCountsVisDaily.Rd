@@ -25,7 +25,9 @@ The range requires both a minimum (previous argument) and maximum.
 Default value is NA, so no scale break introduced on y-axis.}
 }
 \value{
-Returns three plots summarizing daily visitor counts.
+Returns three plots summarizing daily visitor counts by
+   week, month and day. Another three plots are produced with
+   log-transformed counts to better visualize trends.
 }
 \description{
 A function that permit to create a plot showing daily visitor counts.
