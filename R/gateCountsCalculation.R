@@ -378,6 +378,11 @@ gateCountSummary <- function(rawGateCounts,
                                       na.rm = TRUE)
               collectValue[i + 1] <- (tibbleCounts[i + 1, ] -
                                       tibbleCounts[i - recentCountPlace, ])
+              if(printMessages == TRUE) {
+                cat("\n The value is adjusted with last reported numeric value to:",
+                    unlist(collectValue[i + 1]), "\n")
+              }
+
               # After adjustment check if a negative value, in case typo
               if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
                 if(printMessages == TRUE) {
