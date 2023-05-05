@@ -129,7 +129,9 @@ gateCountsVisDaily <- function(outputDailyCounts,
                       y = visitorCount,
                       fill = monthAbb)) +
     geom_bar(stat = "identity", width = 0.5) +
-    ggplot2::labs(y = "Visitor count", x = "Day",
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  fill = "Month",
                   title = paste("Daily visitor counts for period of",
                                 range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to",
@@ -151,7 +153,9 @@ gateCountsVisDaily <- function(outputDailyCounts,
                        size = 0.5,
                        aes(color = monthAbb)) +
     geom_point(size = 0.5, aes(color = monthAbb)) +
-    ggplot2::labs(y = "Visitor count", x = "Day",
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  color = "Month",
                   title = paste("Daily visitor counts for period of",
                                 range(outputDailyCounts$dailyVisitorCounts$date)[1],
                                 "to",
