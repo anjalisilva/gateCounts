@@ -1,9 +1,11 @@
 #' Visualize Daily Visitor Counts
 #'
-#' A function that permit to create a plot showing daily visitor counts.
+#' A function that permit to create plots showing daily visitor counts. Plots
+#' include line
+#'
 #'
 #' @param outputDailyCounts The output from running gateCounts::gateCountSummary()
-#'    function.
+#'    function should be provided here. See examples.
 #' @param scaleBreakYAxisMin Numeric value indicating the minimum
 #'    in the range for a scale break to be introduced on y-axis.
 #'    The range requires both a minimum and maximum (next argument).
@@ -121,15 +123,17 @@ gateCountsVisDaily <- function(outputDailyCounts,
     '#dfc27d')
 
 
-  # Daily count
+  # Daily count bar plot
   dailyOuput <- outputDailyCounts$dailyVisitorCounts %>%
   ggplot2::ggplot(aes(x = factor(day),
                       y = visitorCount,
                       fill = monthAbb)) +
     geom_bar(stat = "identity", width = 0.5) +
     ggplot2::labs(y = "Visitor count", x = "Day",
-                  title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
@@ -138,38 +142,45 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::facet_wrap(vars(monthAbb))
 
 
-  # dailyOuputLine <- outputDailyCounts$dailyVisitorCounts %>%
-  #   ggplot2::ggplot(aes(x = day,
-  #                       y = visitorCount,
-  #                       group = monthAbb)) +
-  #   ggplot2::geom_line(linetype = "dashed",
-  #                      size = 0.5,
-  #                      aes(color = monthAbb)) +
-  #   geom_point(size = 0.5) +
-  #   ggplot2::labs(y = "Visitor count", x = "Day",
-  #                 title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-  #                               "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
-  #   ggplot2::theme_bw() +
-  #   ggplot2::theme(text = element_text(size = 10),
-  #                  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-  #   ggplot2::scale_fill_manual(values = colorPaletteCustom) +
-  #   ggplot2::facet_wrap(vars(monthAbb))
-  #
-  # if((is.na(scaleBreakYAxisMin)) == TRUE && (is.na(scaleBreakYAxisMax) == TRUE)) {
-  #   # trying to introduce scale break for y-axis
-  #
-  #   maxVal <- max(outputDailyCounts$dailyVisitorCounts$visitorCount,
-  #       na.rm = TRUE)
-  #   meanVal <- mean(outputDailyCounts$dailyVisitorCounts$visitorCount,
-  #       na.rm = TRUE)
-  #
-  #   # rangeYscaleBreak <- c(meanVal, maxVal)
-  #   rangeYscaleBreak <- c(0, 0)
-  # } else {
-  #   rangeYscaleBreak <- c(scaleBreakYAxisMin,
-  #                         scaleBreakYAxisMax)
-  # }
+  # Daily count line bar with facet
+  dailyOuputLine <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = day,
+                        y = visitorCount,
+                        group = monthAbb)) +
+    ggplot2::geom_line(linetype = "dashed",
+                       size = 0.5,
+                       aes(color = monthAbb)) +
+    geom_point(size = 0.5, aes(color = monthAbb)) +
+    ggplot2::labs(y = "Visitor count", x = "Day",
+                  title = paste("Daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggplot2::scale_fill_manual(values = colorPaletteCustom) +
+    ggplot2::facet_wrap(vars(monthAbb))
 
+  # Currently not in use
+  if((is.na(scaleBreakYAxisMin)) == TRUE &&
+     (is.na(scaleBreakYAxisMax) == TRUE)) {
+    # trying to introduce scale break for y-axis, if user haven't done so
+
+    maxVal <- max(outputDailyCounts$dailyVisitorCounts$visitorCount,
+        na.rm = TRUE)
+    meanVal <- mean(outputDailyCounts$dailyVisitorCounts$visitorCount,
+        na.rm = TRUE)
+
+    # rangeYscaleBreak <- c(meanVal, maxVal)
+    rangeYscaleBreak <- c(0, 0)
+  } else {
+    # Use user set values
+    rangeYscaleBreak <- c(scaleBreakYAxisMin,
+                          scaleBreakYAxisMax)
+  }
+
+  # Daily count line bar without facet
   dailyOuputLine2 <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = day,
                         y = visitorCount,
@@ -181,8 +192,10 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::labs(y = "Visitor count",
                   x = "Day",
                   color = "Month",
-                  title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
@@ -190,10 +203,11 @@ gateCountsVisDaily <- function(outputDailyCounts,
     # ggplot2::scale_color_brewer(palette = "Paired")
     scale_color_manual(values = colorPaletteCustom)
 
+
   ###
   # Log-transforming to better visualize trends
-  # Daily count
-  dailyOuputLog <- outputDailyCounts$dailyVisitorCounts %>%
+  # Daily count bar plot with facet
+  dailyOuputStackedLog <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = factor(day),
                         y = log(visitorCount + 1),
                         fill = monthAbb)) +
@@ -201,23 +215,29 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::labs(y = "Log-transformed visitor count",
                   x = "Day",
                   fill = "Month",
-                  title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Log-transformed daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     # ggbreak::scale_y_break(c(110000, 190000)) +
-    ggplot2::scale_fill_manual(values = colorPaletteCustom) +
-    ggplot2::facet_wrap(vars(monthAbb))
+    ggplot2::scale_fill_manual(values = colorPaletteCustom)
 
-  dailyOuputStackedLog <- outputDailyCounts$dailyVisitorCounts %>%
+
+  # Bar plot with facet
+  dailyOuputLog <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = factor(day),
                         y = log(visitorCount + 1),
                         fill = monthAbb)) +
     ggplot2::geom_bar(stat = "identity", width = 0.5) +
     ggplot2::labs(y = "Log-transformed visitor count", x = "Day",
-                  title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  fill = "Month",
+                  title = paste("Log-transformed daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
@@ -226,21 +246,22 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::facet_wrap(vars(monthAbb))
 
 
-  # Line log plots
-
+  # Line plot with facet
   dailyOuputLineLog <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = day,
                         y = log(visitorCount + 1),
                         group = monthAbb)) +
     ggplot2::geom_line(linetype = "dashed",
-                       size = 0.5,
+                       size = 0.7,
                        aes(color = monthAbb)) +
     ggplot2::geom_point(size = 0.5, aes(color = monthAbb)) +
     ggplot2::labs(y = "Log-transformed visitor count",
                   x = "Day",
                   color = "Month",
-                  title = paste("Daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
@@ -249,6 +270,7 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::facet_wrap(vars(monthAbb))
 
 
+  # Line plot without facet
   dailyOuputLine2Log <- outputDailyCounts$dailyVisitorCounts %>%
     ggplot2::ggplot(aes(x = day,
                         y = log(visitorCount + 1))) +
@@ -259,8 +281,10 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::labs(y = "Log-transformed visitor count",
                   x = "Day",
                   color = "Month",
-                  title = paste("Log-transformed daily visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Log-transformed daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
@@ -269,14 +293,32 @@ gateCountsVisDaily <- function(outputDailyCounts,
     ggplot2::scale_color_manual(values = colorPaletteCustom)
 
 
+  # Heatmap
+  dailyHeatmap <- outputDailyCounts$dailyVisitorCounts %>%
+    ggplot2::ggplot(aes(x = "",
+                        y = date,
+                        fill = log(visitorCount + 1))) +
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_gradient(low = "white", high = "red") +
+    ggplot2::theme_bw() +
+    ggplot2::labs(y = "Date",
+                  x = "",
+                  fill = "Log-transformed visitor count",
+                  title = paste("Log-transformed daily visitor counts for period of",
+                                range(outputDailyCounts$dailyVisitorCounts$date)[1],
+                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2]))
+
+
+
 
   return(list(dailyOuput = dailyOuput,
-           # dailyOuputLine = dailyOuputLine,
+           dailyOuputLine = dailyOuputLine,
            dailyOuputLine2 = dailyOuputLine2,
            dailyOuputLog = dailyOuputLog,
            dailyOuputStackedLog = dailyOuputStackedLog,
            dailyOuputLineLog = dailyOuputLineLog,
-           dailyOuputLine2Log = dailyOuputLine2Log))
+           dailyOuputLine2Log = dailyOuputLine2Log,
+           dailyHeatmap = dailyHeatmap))
  }
 
 # END
