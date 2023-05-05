@@ -451,23 +451,23 @@ gateCountSummary <- function(rawGateCounts,
 
   # Busiest and least busiest day, week, month vs. visitor counts
   leastBusiestDay <- dailyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::filter(visitorCount == min(visitorCount, na.rm = TRUE))
 
   leastBusiestWeek <- weeklyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::filter(totalVisitorCount == min(totalVisitorCount, na.rm = TRUE))
 
   leastBusiestMonth <- monthlyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::filter(totalVisitorCount == min(totalVisitorCount, na.rm = TRUE))
 
   busiestDay <- dailyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::filter(visitorCount == max(visitorCount, na.rm = TRUE))
 
   busiestWeek <- weeklyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::filter(totalVisitorCount == max(totalVisitorCount, na.rm = TRUE))
 
   busiestMonth <- monthlyVisitorCount %>%
@@ -482,20 +482,20 @@ gateCountSummary <- function(rawGateCounts,
     dplyr::summarise(dailyMean = median(visitorCount, na.rm = TRUE))
 
   weeklyAverage <- weeklyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::summarise(weeklyMean = mean(totalVisitorCount, na.rm = TRUE))
 
   weeklyMedian <- weeklyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::summarise(weeklyMedian = median(totalVisitorCount, na.rm = TRUE))
 
 
   monthlyAverage <- monthlyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::summarise(monthlyMean = mean(totalVisitorCount, na.rm = TRUE))
 
   monthlyMedian <- monthlyVisitorCount %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::summarise(montlyMedian = median(totalVisitorCount, na.rm = TRUE))
 
   returnValues <- list(gateType = gateType,
