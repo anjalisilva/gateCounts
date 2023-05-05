@@ -12,7 +12,7 @@ gateCountsVisDaily(
 }
 \arguments{
 \item{outputDailyCounts}{The output from running gateCounts::gateCountSummary()
-function.}
+function should be provided here. See examples.}
 
 \item{scaleBreakYAxisMin}{Numeric value indicating the minimum
 in the range for a scale break to be introduced on y-axis.
@@ -30,7 +30,8 @@ Returns three plots summarizing daily visitor counts by
    log-transformed counts to better visualize trends.
 }
 \description{
-A function that permit to create a plot showing daily visitor counts.
+A function that permit to create plots showing daily visitor counts. Plots
+include line
 }
 \examples{
 set.seed(1234)

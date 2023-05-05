@@ -20,45 +20,63 @@ dates and should contain column name "dates". Dates must be in the
 format of date-month-year. The second column must contain the gate
 count reading for the given date and should be called "counts".}
 
-\item{gateType}{A character string with options "Unidirectional" or}
+\item{gateType}{A character string with options "Unidirectional" or
+"Bidirectional", to indicate gate type. If the gate is one-way only,
+then enter "Unidirectional". If the gate permits visitors in and out,
+then enter "Bidirectional". Bidirectional selection will lead to
+count sum being divided by two. The default value is "Unidirectional".}
 
 \item{gatecounterMaxValue}{A numeric value greater than 0 indicating the
 gate counter max value, before it is reset. The default value is
 999,999. This number is crucial for calculations.}
 
-\item{printMessages}{An logical indicating TRUE or FALSE as to whether
+\item{printMessages}{A logical indicating TRUE or FALSE as to whether
 progress messages should be printed. The default value is TRUE. Setting
-to FALSE will remove messages from being shown.}
+to FALSE will remove messages from being shown while function is running.}
 }
 \value{
-Returns an S3 object of class InfCriteria with results.
+Returns an S3 object of class gateCounts with results.
 \itemize{
-  \item cumulativeCount - Sum of daily gate counts for the period,
-        adjusted for issues mentioned under details. If gateType was
-        "Bidirectional", the final resulting number would be divided
-        by two.
-  \item dailyCounts - Daily gate counts for the period, adjusted
+  \item dailyVisitorCounts - Daily gate counts for the period, adjusted
         for issues mentioned under details. If gateType was
         "Bidirectional", the visitor count is divided by
         two and ceiling() function from base R is applied.
-  \item monthlyCounts - Monthly gate counts for the period, adjusted
+  \item weeklyVisitorCounts - Weekly gate counts for the period,
+        adjusted for issues mentioned under details.
+  \item monthlyVisitorCounts - Monthly gate counts for the period, adjusted
         for issues mentioned under details.
-  \item gateType - Gate type for which counts are provided by the user.
   \item busiestMonth - Month with the highest visitor count.
   \item leastBusiestMonth - Month with the least visitor count.
+  \item busiestWeek - Week with the highest visitor count.
+  \item leastBusiestWeek - Week with the least visitor count.
   \item busiestDay - Day with the highest visitor count. There
         maybe multiple dates.
   \item leastBusiestDay - Day with the lowest visitor count. There
         maybe multiple dates.
+  \item gateType - Gate type for which counts are provided by the user.
+  \item gatecounterMaxValue - User provided value in the argument
+        gatecounterMaxValue.
+  \item cumulativeVisitorCount - Sum of daily gate counts for the period,
+        adjusted for issues mentioned under details. If gateType was
+        "Bidirectional", the final resulting number would be divided
+        by two.
+  \item dailyAverage - Average daily visitor count for the duration provided.
+  \item dailyMedian - Median daily visitor count for the duration provided.
+  \item weeklyAverage - Average weekly count for the duration provided.
+  \item weeklyMedian - Median weekly count for the duration provided.
+  \item monthlyAverage - Average monthly count for the duration provided.
+  \item monthlyMedian - Median monthly count for the duration provided.
+
 }
 }
 \description{
-A function that calculates, daily, monthly and cumulative visitor
+A function that calculates daily, weekly, monthly and cumulative visitor
 counts, provided a numeric vector or a tibble containing values
-of raw daily gate counts with a specific format (see argument details).
-The function adjusts for several factors outlined under details (see README
-file for examples). This function was developed to improve current
-methodologies for calculating visitor counts from gate counts.
+of raw daily gate counts and date with a specific format (see argument
+details or README file). The function adjusts for several factors
+outlined under details (see README file for examples). This function
+was developed to improve current methodologies for calculating visitor
+counts from gate counts.
 }
 \details{
 The function requires directionality of the gates for which
@@ -83,6 +101,7 @@ The function requires directionality of the gates for which
 
 set.seed(1234)
 # Example 1: Unidirectional gates with daily counts
+# Simulate gate count data using Poisson distribution
 randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
@@ -91,6 +110,7 @@ randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 50, lambda = 100000)))
 
+# Create a tibble with date information
 randomCounts1tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
@@ -98,22 +118,31 @@ randomCounts1tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts1)
 
-# check max value for gate counter maximum
+# Check max value for gate counter maximum
 max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
+# Run gateCountSummary function
 randomCountsSumEx1 <- gateCountSummary(
              rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
-randomCountsSumEx1$dailyCounts # access daily adjusted counts
-randomCountsSumEx1$monthlyCounts # access monthly adjusted counts
+
+randomCountsSumEx1$dailyVisitorCounts# access daily adjusted counts
+randomCountsSumEx1$weeklyVisitorCounts # access weekly adjusted counts
+randomCountsSumEx1$monthlyVisitorCounts # access monthly adjusted counts
+randomCountsSumEx1$cumulativeVisitorCount # cumulative count for duration
 randomCountsSumEx1$busiestMonth # busiest month
 randomCountsSumEx1$leastBusiestMonth # least busiest month
+randomCountsSumEx1$busiestWeek # busiest week
+randomCountsSumEx1$leastBusiestWeek # least busiest week
 randomCountsSumEx1$busiestDay # busiest day
+randomCountsSumEx1$leastBusiestDay # least busiest day
+randomCountsSumEx1$dailyAverage  # daily average fur duration
 
 
 # Example 2: Unidirectional gates with random NA values
+# Simulate gate count data using Poisson distribution
 randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
@@ -122,12 +151,13 @@ randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 50, lambda = 100000)))
 
-# randomly introduce NA and "Gate broken" entries
+# Randomly introduce NA and "Gate broken" entries
 randomPositions <- sample(x = c(1:length(randomCounts2)),
                          size = 8, replace = FALSE)
 randomCounts2[randomPositions[1:4]] <- NA
 randomCounts2[randomPositions[5:8]] <- "Gate broken"
 
+# Create a tibble with date information
 randomCounts2tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
@@ -135,23 +165,31 @@ randomCounts2tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts2)
 
-# check max value for gate counter maximum
+# Check max value for gate counter maximum
 max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
 
+# Run gateCountSummary function
 randomCountsSumEx2 <- gateCountSummary(
              rawGateCounts = randomCounts2tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
-randomCountsSumEx2$dailyCounts # access daily adjusted counts
-randomCountsSumEx2$monthlyCounts # access monthly adjusted counts
+
+randomCountsSumEx2$dailyVisitorCounts# access daily adjusted counts
+randomCountsSumEx2$weeklyVisitorCounts # access weekly adjusted counts
+randomCountsSumEx2$monthlyVisitorCounts # access monthly adjusted counts
+randomCountsSumEx2$cumulativeVisitorCount # cumulative count for duration
 randomCountsSumEx2$busiestMonth # busiest month
 randomCountsSumEx2$leastBusiestMonth # least busiest month
+randomCountsSumEx2$busiestWeek # busiest week
+randomCountsSumEx2$leastBusiestWeek # least busiest week
 randomCountsSumEx2$busiestDay # busiest day
+randomCountsSumEx2$leastBusiestDay # least busiest day
 
 
 
 # Example 3: Unidirectional gates with random entry errors
+# Simulate gate count data using Poisson distribution
 randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
@@ -160,11 +198,12 @@ randomCounts3 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 50, lambda = 100000)))
 
-# randomly introduce smaller counts
+# Randomly introduce smaller counts
 randomPositions <- sample(x = c(1:length(randomCounts3)),
                          size = 4, replace = FALSE)
 randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
 
+# Create a tibble with date information
 randomCounts3tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
@@ -172,16 +211,31 @@ randomCounts3tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts3)
 
-randomCountsSumEx3 <- gateCountCumulative(
+# Check max value for gate counter maximum
+max(as.numeric(randomCounts3tibble$counts), na.rm = TRUE) # 200000
+
+# Run gateCountSummary function
+randomCountsSumEx3 <- gateCountSummary(
              rawGateCounts = randomCounts3tibble,
              gateType = "Unidirectional",
-             gatecounterMaxValue = 200000)
-randomCountsSumEx3$adjustedCountSum # access cumulative count
-randomCountsSumEx3$dailyCounts # access daily adjusted counts
+             gatecounterMaxValue = 200000,
+             printMessages = FALSE)
+
+randomCountsSumEx3$dailyVisitorCounts# access daily adjusted counts
+randomCountsSumEx3$weeklyVisitorCounts # access weekly adjusted counts
+randomCountsSumEx3$monthlyVisitorCounts # access monthly adjusted counts
+randomCountsSumEx3$cumulativeVisitorCount # cumulative count for duration
+randomCountsSumEx3$busiestMonth # busiest month
+randomCountsSumEx3$leastBusiestMonth # least busiest month
+randomCountsSumEx3$busiestWeek # busiest week
+randomCountsSumEx3$leastBusiestWeek # least busiest week
+randomCountsSumEx3$busiestDay # busiest day
+randomCountsSumEx3$leastBusiestDay # least busiest day
 
 
 
 # Example 4: Bidirectional gates with NA values
+# Simulate gate count data using Poisson distribution
 randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
                   sort(rpois(n = 50, lambda = 400000)),
                   sort(rpois(n = 82, lambda = 800000)),
@@ -190,25 +244,40 @@ randomCounts4 <- c(sort(rpois(n = 50, lambda = 10000)),
                   sort(rpois(n = 50, lambda = 450000)),
                   sort(rpois(n = 50, lambda = 850000)))
 
-# randomly introduce NA and "Gate broken" entries
+# Randomly introduce NA and "Gate broken" entries
 randomPositions <- sample(x = c(1:length(randomCounts4)),
                          size = 8, replace = FALSE)
 randomCounts4[randomPositions[1:4]] <- NA
 randomCounts4[randomPositions[5:8]] <- "Gate broken"
 
+# Create a tibble with date information
 randomCounts4tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
                         by='1 day')[1:length(randomCounts4)] \%>\%
                         format('\%d-\%m-\%Y'),
-                        counts = randomCounts)
+                        counts = randomCounts4)
 
-randomCountsSumEx4 <- gateCountCumulative(
+# Check max value for gate counter maximum
+max(as.numeric(randomCounts4tibble$counts), na.rm = TRUE) # 999999
+
+# Run gateCountSummary function
+randomCountsSumEx4 <- gateCountSummary(
              rawGateCounts = randomCounts4tibble,
-             gateType = "Bidirectional",
-             gatecounterMaxValue = 999999)
-randomCountsSumEx4$adjustedCountSum # access cumulative count
-randomCountsSumEx4$dailyCounts # access daily adjusted counts
+             gateType = "Unidirectional",
+             gatecounterMaxValue = 999999,
+             printMessages = FALSE)
+
+randomCountsSumEx4$dailyVisitorCounts# access daily adjusted counts
+randomCountsSumEx4$weeklyVisitorCounts # access weekly adjusted counts
+randomCountsSumEx4$monthlyVisitorCounts # access monthly adjusted counts
+randomCountsSumEx4$cumulativeVisitorCount # cumulative count for duration
+randomCountsSumEx4$busiestMonth # busiest month
+randomCountsSumEx4$leastBusiestMonth # least busiest month
+randomCountsSumEx4$busiestWeek # busiest week
+randomCountsSumEx4$leastBusiestWeek # least busiest week
+randomCountsSumEx4$busiestDay # busiest day
+randomCountsSumEx4$leastBusiestDay # least busiest day
 
 
 
