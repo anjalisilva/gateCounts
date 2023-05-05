@@ -330,7 +330,7 @@ gateCountSummary <- function(rawGateCounts,
             " = ", unlist(collectValue[i + 1]), "\n")
         }
 
-        # 2. Check counts for counter max value or typo
+        # 2. Check counts for counter max value or typo (i.e., decreasing gate count)
         # If not NA and less than zero, then TRUE
         if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
           # detecting if a counter max issue
@@ -369,7 +369,7 @@ gateCountSummary <- function(rawGateCounts,
             # This would be i-c(1:(i-1))
             if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == TRUE) {
               if(printMessages == TRUE) {
-               cat("\n No previous count with numeric value present. \n")
+               cat("\n No previous count with numeric values present. \n")
               }
             } else if(all(is.na(tibbleCounts[i-c(1:(i-1)), ])) == FALSE) {
               # See how many past counts have numeric values
@@ -386,7 +386,7 @@ gateCountSummary <- function(rawGateCounts,
               # After adjustment check if a negative value, in case typo
               if((is.na(collectValue[i + 1]) == FALSE) && (collectValue[i + 1] < 0)) {
                 if(printMessages == TRUE) {
-                   cat("\n The value is negative, so tibbleCounts[i + 1, ] is set to NA \n")
+                   cat("\n The value is negative (likely gate counts going down), so tibbleCounts[i + 1, ] is set to NA \n")
                 }
                 # resetCounter <- 0
                 # while(! resetCounter) {
