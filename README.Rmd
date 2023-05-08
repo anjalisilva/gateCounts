@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # gateCounts
-Calculates Cumulative Visitor Counts Provided Raw Daily Gate Counts
+Calculates Daily, Weekly, Monthly, Cumulative and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts
 
 <!-- badges: start -->
 [![GitHub
@@ -29,7 +29,7 @@ count](https://img.shields.io/github/languages/count/anjalisilva/gateCounts)
 <!-- badges: end -->
 
 ## Description
-`gateCounts` is an R package for calculating daily, weekly, monthly, and cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. For, details see below.
+`gateCounts` is an R package for calculating daily, weekly, monthly, and cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. For details see below.
 
 ## Installation
 
@@ -68,9 +68,9 @@ line, and heatmap) showing daily visitor counts. Both count and log-transformed 
 
 5.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
 
-6.  ***runGateCount*** starts the Shiny app for this R packge.
+6.  ***runGateCount*** starts the Shiny app for this R packge. Under construction. 
 
-7.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
+7.  ***gateCountsVisMultipleInstitutes*** for creating plots comparing visitor counts from multiple institutes. Under construction. 
 
 
 An overview of the package is illustrated below:
@@ -140,8 +140,7 @@ The package checks for any  possible non-numeric characters (e.g., "turned off",
 <div style="text-align:left">
 
 ### Directionality
-If gates are bidirectional, the visitor counts will be divided by two. For cumulative visitor count, our testing has shown that dividing by two after calculating all daily visitor counts helps to provide a better approximation of cumulative gate count, compared to when the daily visitor counts by are divided by two and summed up at the end. Therefore, for cumulative visitor count from bidirectional gates, all daily visitor counts are summed at then divided by two. Hence, users may find slight differences between summing up daily visitor counts produced by the package versus cumulative gate count produced by the packge.
-
+If gates are bidirectional, the visitor counts will be divided by two. For cumulative visitor count, our testing has shown that dividing by two after calculating all daily visitor counts helps to provide a better approximation of cumulative gate count, compared to when the daily visitor counts are divided by two and then summed up at the end. Therefore, for cumulative visitor counts from bidirectional gates, all daily visitor counts are summed at then divided by two. Hence, users may find slight differences between summing up daily visitor counts outputted by the package versus cumulative gate count outputted by the packge.
 
 <div style="text-align:center">
 
