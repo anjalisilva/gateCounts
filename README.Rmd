@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # gateCounts
-Calculates Daily, Weekly, Monthly, Cumulative and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts
+Calculates Daily, Weekly, Monthly, Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts
 
 <!-- badges: start -->
 [![GitHub
@@ -37,7 +37,8 @@ To install the latest version of the package:
 
 ``` r
 require("devtools")
-devtools::install_github("anjalisilva/gateCounts", build_vignettes = TRUE)
+devtools::install_github("anjalisilva/gateCounts",     
+                          build_vignettes = TRUE)
 library("gateCounts")
 ```
 
@@ -57,7 +58,7 @@ ls("package:gateCounts")
 
 `gateCounts` package contains 6 functions. 
 
-1.  ***gateCountSummary*** for calculating daily, weekly, monthly, and cumulative visitor counts, provided a numeric vector or a tibble containing values of raw daily gate counts for one institute. Function also output, mean and median visitor counts, busiest and least busiest day, week, and month for the entire duration for which data is provided. 
+1.  ***gateCountSummary*** for calculating daily, weekly, monthly, and cumulative visitor counts, provided a numeric vector or a tibble containing values of raw daily gate counts for one institute. Function also output the mean and median visitor counts by day, week, and month; busiest and least busiest day, week, and month for the entire duration for which data is provided by user. 
 
 2.  ***gateCountsVisDaily*** permit to create plots (bar,
 line, and heatmap) showing daily visitor counts. Both count and log-transformed count plots are provided to help visualize trends.
@@ -66,11 +67,9 @@ line, and heatmap) showing daily visitor counts. Both count and log-transformed 
 
 4.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
 
-5.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
+5.  ***runGateCount*** starts the Shiny app for this R packge. Under construction. 
 
-6.  ***runGateCount*** starts the Shiny app for this R packge. Under construction. 
-
-7.  ***gateCountsVisMultipleInstitutes*** for creating plots comparing visitor counts from multiple institutes. Under construction. 
+6.  ***gateCountsVisMultipleInstitutes*** for creating plots comparing visitor counts from multiple institutes. Under construction. 
 
 
 An overview of the package is illustrated below:
@@ -88,9 +87,11 @@ An overview of the package is illustrated below:
 ## Details
 
 ### Introduction
+
 `gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. User must provide raw daily gate counts, gate directionality, and gate counter maximum value. The package was developed to improve methodologies for calculating visitor counts, initially using library daily gate count values as an example. However, the package can be applied to calculate  visitor counts from any setting. 
 
 ### Some Issues & How They Are Handled By Package
+
 To calculate visitor counts from raw daily gate counts, today's gate count reading is subtracted from yesterday's reading. Negative visitor counts can result if the gate counter has reset. This package attempts to detect and correct for this.
 
 <div style="text-align:center">
@@ -175,18 +176,19 @@ browseVignettes("gateCounts")
 ```
 
 ## Citation for Package
+
 ``` r
 citation("gateCounts")
 ```
-Silva, A. (2022). R package for Calculation of Cumulative Visitor Counts Provided Raw Daily Gate Counts. Unpublished.
+Silva, A. (2023). R package for Calculating Daily, Weekly, Monthly, Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts. Unpublished.
 
 ``` r
 A BibTeX entry for LaTeX users is
 
   @misc{,
-    title = {R package for Calculation of Cumulative Visitor Counts Provided Raw Daily Gate Counts},
+    title = {R package for Calculating Daily, Weekly, Monthly, Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts},
     author = {A. Silva},
-    year = {2022},
+    year = {2023},
     url = {https://github.com/anjalisilva/gateCounts},
   }
 ```
@@ -216,4 +218,4 @@ A BibTeX entry for LaTeX users is
 
 ## Acknowledgments
 
-* This work was done at University of Toronto, Ontario, Canada.
+* This work was done at University of Toronto Libraries, Ontario, Canada from 2022-2023.

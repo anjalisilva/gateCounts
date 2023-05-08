@@ -3,7 +3,7 @@
 
 # gateCounts
 
-Calculates Daily, Weekly, Monthly, Cumulative and Summary Statistics of
+Calculates Daily, Weekly, Monthly, Cumulative, and Summary Statistics of
 Visitor Counts Provided Raw Daily Gate Counts
 
 <!-- badges: start -->
@@ -31,7 +31,8 @@ To install the latest version of the package:
 
 ``` r
 require("devtools")
-devtools::install_github("anjalisilva/gateCounts", build_vignettes = TRUE)
+devtools::install_github("anjalisilva/gateCounts",     
+                          build_vignettes = TRUE)
 library("gateCounts")
 ```
 
@@ -54,9 +55,9 @@ ls("package:gateCounts")
 1.  ***gateCountSummary*** for calculating daily, weekly, monthly, and
     cumulative visitor counts, provided a numeric vector or a tibble
     containing values of raw daily gate counts for one institute.
-    Function also output, mean and median visitor counts, busiest and
-    least busiest day, week, and month for the entire duration for which
-    data is provided.
+    Function also output the mean and median visitor counts by day,
+    week, and month; busiest and least busiest day, week, and month for
+    the entire duration for which data is provided by user.
 
 2.  ***gateCountsVisDaily*** permit to create plots (bar, line, and
     heatmap) showing daily visitor counts. Both count and
@@ -68,13 +69,10 @@ ls("package:gateCounts")
 4.  ***gateCountsVisMonthly*** for creating a plot showing visitor
     counts by month.
 
-5.  ***gateCountsVisMonthly*** for creating a plot showing visitor
-    counts by month.
-
-6.  ***runGateCount*** starts the Shiny app for this R packge. Under
+5.  ***runGateCount*** starts the Shiny app for this R packge. Under
     construction.
 
-7.  ***gateCountsVisMultipleInstitutes*** for creating plots comparing
+6.  ***gateCountsVisMultipleInstitutes*** for creating plots comparing
     visitor counts from multiple institutes. Under construction.
 
 An overview of the package is illustrated below:
@@ -213,16 +211,17 @@ browseVignettes("gateCounts")
 citation("gateCounts")
 ```
 
-Silva, A. (2022). R package for Calculation of Cumulative Visitor Counts
-Provided Raw Daily Gate Counts. Unpublished.
+Silva, A. (2023). R package for Calculating Daily, Weekly, Monthly,
+Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily
+Gate Counts. Unpublished.
 
 ``` r
 A BibTeX entry for LaTeX users is
 
   @misc{,
-    title = {R package for Calculation of Cumulative Visitor Counts Provided Raw Daily Gate Counts},
+    title = {R package for Calculating Daily, Weekly, Monthly, Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts},
     author = {A. Silva},
-    year = {2022},
+    year = {2023},
     url = {https://github.com/anjalisilva/gateCounts},
   }
 ```
@@ -257,4 +256,5 @@ issues](https://github.com/anjalisilva/gateCounts).
 
 ## Acknowledgments
 
-- This work was done at University of Toronto, Ontario, Canada.
+- This work was done at University of Toronto Libraries, Ontario, Canada
+  from 2022-2023.
