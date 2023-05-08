@@ -29,8 +29,7 @@ count](https://img.shields.io/github/languages/count/anjalisilva/gateCounts)
 <!-- badges: end -->
 
 ## Description
-`gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality and gate counter maximum value. The package was developed for calculating cumulative visitor counts in libraries using daily gate counts. However, the package can be applied to calculate cumulative visitor counts from any setting. 
-
+`gateCounts` is an R package for calculating daily, weekly, monthly, and cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. For, details see below.
 
 ## Installation
 
@@ -56,7 +55,23 @@ To list all functions available in the package:
 ls("package:gateCounts")
 ```
 
-`gateCounts` package contains 2 functions. The *gateCountCumulative* function calculates cumulative visitor counts, provided a numeric vector or a tibble containing values of raw daily gate counts. The Shiny app employing *gateCountCumulative* function could be run and results could be visualized using *runGateCount()*. For more information, see details section below. 
+`gateCounts` package contains 6 functions. 
+
+1.  ***gateCountSummary*** for calculating daily, weekly, monthly, and cumulative visitor counts, provided a numeric vector or a tibble containing values of raw daily gate counts for one institute. Function also output, mean and median visitor counts, busiest and least busiest day, week, and month for the entire duration for which data is provided. 
+
+2.  ***gateCountsVisDaily*** permit to create plots (bar,
+line, and heatmap) showing daily visitor counts. Both count and log-transformed count plots are provided to help visualize trends.
+
+3.  ***gateCountsVisWeekly*** for creating plots showing visitor counts by week.
+
+4.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
+
+5.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
+
+6.  ***runGateCount*** starts the Shiny app for this R packge.
+
+7.  ***gateCountsVisMonthly*** for creating a plot showing visitor counts by month.
+
 
 An overview of the package is illustrated below:
 
@@ -73,10 +88,10 @@ An overview of the package is illustrated below:
 ## Details
 
 ### Introduction
-`gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. The package was developed to improve methodologies for calculating cumulative visitor counts. 
+`gateCounts` is an R package for calculating cumulative visitor counts, provided raw daily gate counts, gate directionality, and gate counter maximum value. User must provide raw daily gate counts, gate directionality, and gate counter maximum value. The package was developed to improve methodologies for calculating visitor counts, initially using library daily gate count values as an example. However, the package can be applied to calculate  visitor counts from any setting. 
 
-### Issues
-Negative visitor counts can result from calculation if the gate counter has reset. This package attempts to correct for this.
+### Some Issues & How They Are Handled By Package
+To calculate visitor counts from raw daily gate counts, today's gate count reading is subtracted from yesterday's reading. Negative visitor counts can result if the gate counter has reset. This package attempts to detect and correct for this.
 
 <div style="text-align:center">
 
@@ -88,7 +103,7 @@ Negative visitor counts can result from calculation if the gate counter has rese
 
 <div style="text-align:left">
 
-Negative visitor counts can also result from a lower gate count value has been entered compared to previous day. This package attempts to correct for this.
+Negative visitor counts can also result from a lower gate count value that has been entered compared to previous day. This may result from manual entry or system errors. This package attempts to detect and correct for this.
 
 <div style="text-align:center">
 
@@ -100,7 +115,7 @@ Negative visitor counts can also result from a lower gate count value has been e
 
 <div style="text-align:left">
 
-The package attempts to account for when the daily gate count has been forgotten to be reported. This method doesn’t assign counts for missed days, but rather adjust for cumulative visitor count sum.
+The package attempts to account for when the daily gate count has been forgotten to be reported or days are skipped. This method doesn’t assign counts for missed days, but rather adjust for cumulative visitor count sum. See below for details:
 
 <div style="text-align:center">
 
@@ -112,7 +127,7 @@ The package attempts to account for when the daily gate count has been forgotten
 
 <div style="text-align:left">
 
-The package checks for any  possible non-numeric characters (e.g., "turned off", "Diag 5", "Diag 9",  "closed", "Clean filter"), then adjusts for visitor count by taking past reported gate counts.
+The package checks for any  possible non-numeric characters (e.g., "turned off", "Diagnosis", "closed", "Clean filter"), then adjusts for visitor count by taking past, last reported gate count.
 
 <div style="text-align:center">
 
@@ -125,7 +140,8 @@ The package checks for any  possible non-numeric characters (e.g., "turned off",
 <div style="text-align:left">
 
 ### Directionality
-If gates are bidirectional, the cumulative visitor sum calculated will be divided by two. Testing has shown that this method of dividing at the end of calculation will help reduce issues with visitor counts that result from division of daily gate counts by two and rounding up or down.
+If gates are bidirectional, the visitor counts will be divided by two. For cumulative visitor count, our testing has shown that dividing by two after calculating all daily visitor counts helps to provide a better approximation of cumulative gate count, compared to when the daily visitor counts by are divided by two and summed up at the end. Therefore, for cumulative visitor count from bidirectional gates, all daily visitor counts are summed at then divided by two. Hence, users may find slight differences between summing up daily visitor counts produced by the package versus cumulative gate count produced by the packge.
+
 
 <div style="text-align:center">
 
