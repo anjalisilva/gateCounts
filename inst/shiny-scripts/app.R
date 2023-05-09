@@ -6,7 +6,7 @@ library(shinyalert)
 ui <- fluidPage(
 
   # App title ----
-  titlePanel(tags$h1(tags$b("gateCounts:"),"Calculates Cumulative Visitor Counts Using Daily Gate Counts")),
+  titlePanel(tags$h1(tags$b("gateCounts:"),"Calculates Visitor Count Summaries Using Daily Gate Counts")),
 
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -15,10 +15,10 @@ ui <- fluidPage(
     sidebarPanel(
 
       tags$p("Description: This is a simple Shiny App that is part of the
-             gateCounts package. Provided a csv file containing raw daily
+             gateCounts R package. Provided a csv file containing raw daily
              gate counts in the specified format, the Shiny app will
-             calculate the cumulative count sum adjusted for several
-             factors outlined under package details. The package was developed
+             calculate the daily, weekly, monthly visitor count summaries
+             adjusted for several factors outlined under package details. The package was developed
              to improve current methodologies for calculating cumulative gate
              counts."),
 

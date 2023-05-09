@@ -311,7 +311,7 @@ gateCountSummary <- function(rawGateCounts,
          present. This should not happpen. Correct and rerun.")
   }
 
-  tibbleCounts <- tibble(tibbleCounts)
+  tibbleCounts <- tibble::tibble(tibbleCounts)
 
   # Begin calculations
   # Empty vector to capture visitor counts via calculation
@@ -324,10 +324,12 @@ gateCountSummary <- function(rawGateCounts,
         collectValue[i + 1] <- tibbleCounts[i + 1, ] - tibbleCounts[i, ]
 
         if(printMessages == TRUE) {
-           cat("\n Entry", i, "date ", rawGateCounts$dates[i+1], "minus", rawGateCounts$dates[i], "is:",
-            unlist(tibbleCounts[i + 1, ], ),
-            "-", unlist(tibbleCounts[i, ], ),
-            " = ", unlist(collectValue[i + 1]), "\n")
+           cat("\n Entry", i, "date ",
+               rawGateCounts$dates[i+1], "minus",
+               rawGateCounts$dates[i], "is:",
+               unlist(tibbleCounts[i + 1, ], ),
+               "-", unlist(tibbleCounts[i, ], ),
+               " = ", unlist(collectValue[i + 1]), "\n")
         }
 
         # 2. Check counts for counter max value or typo (i.e., decreasing gate count)

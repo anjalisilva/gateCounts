@@ -55,25 +55,27 @@ ls("package:gateCounts")
 1.  ***gateCountSummary*** for calculating daily, weekly, monthly, and
     cumulative visitor counts, provided a numeric vector or a tibble
     containing values of raw daily gate counts for one institute.
-    Function also output the mean and median visitor counts by day,
-    week, and month; busiest and least busiest day, week, and month for
-    the entire duration for which data is provided by user.
+    Function also output the mean and median visitor counts on daily,
+    weekly, and monthly basis; busiest and least busiest day, week, and
+    month for the entire duration for which data is provided by user.
 
 2.  ***gateCountsVisDaily*** permit to create plots (bar, line, and
     heatmap) showing daily visitor counts. Both count and
     log-transformed count plots are provided to help visualize trends.
 
 3.  ***gateCountsVisWeekly*** for creating plots showing visitor counts
-    by week.
+    by week. Both count and log-transformed count plots are provided to
+    help visualize trends.
 
-4.  ***gateCountsVisMonthly*** for creating a plot showing visitor
-    counts by month.
+4.  ***gateCountsVisMonthly*** for creating plots showing visitor counts
+    by month. Both count and log-transformed count plots are provided to
+    help visualize trends.
 
-5.  ***runGateCount*** starts the Shiny app for this R packge. Under
+5.  ***runGateCount*** starts the Shiny app for this R package. Under
     construction.
 
-6.  ***gateCountsVisMultipleInstitutes*** for creating plots comparing
-    visitor counts from multiple institutes. Under construction.
+6.  ***gateCountsVisMultiple*** for creating plots comparing visitor
+    counts from multiple institutes. Under construction.
 
 An overview of the package is illustrated below:
 
@@ -91,13 +93,13 @@ An overview of the package is illustrated below:
 
 ### Introduction
 
-`gateCounts` is an R package for calculating cumulative visitor counts,
-provided raw daily gate counts, gate directionality, and gate counter
-maximum value. User must provide raw daily gate counts, gate
+`gateCounts` is an R package for calculating daily, weekly, monthly, and
+cumulative visitor counts, provided raw daily gate counts, gate
 directionality, and gate counter maximum value. The package was
-developed to improve methodologies for calculating visitor counts,
-initially using library daily gate count values as an example. However,
-the package can be applied to calculate visitor counts from any setting.
+developed to improve methodologies for calculating visitor counts from
+gate counts, initially using library daily gate count values as an
+example. However, the package can be applied to calculate visitor counts
+from any setting. The factors adjusted for are outlined below.
 
 ### Some Issues & How They Are Handled By Package
 
@@ -171,7 +173,7 @@ Therefore, for cumulative visitor counts from bidirectional gates, all
 daily visitor counts are summed at then divided by two. Hence, users may
 find slight differences between summing up daily visitor counts
 outputted by the package versus cumulative gate count outputted by the
-packge.
+package.
 
 <div style="text-align:center">
 
