@@ -18,18 +18,23 @@ ui <- fluidPage(
              gateCounts R package. Provided a csv file containing raw daily
              gate counts in the specified format, the Shiny app will
              calculate the daily, weekly, monthly visitor count summaries
-             adjusted for several factors outlined under package details. The package was developed
-             to improve current methodologies for calculating cumulative gate
-             counts."),
+             and statistics adjusted for several factors outlined under
+             in README file. The package was developed to improve
+             methodologies for calculating visitor counts from gate
+             counts, initially using library daily gate count values as
+             an example. However, the package can be applied to calculate
+             visitor counts from any setting. The factors adjusted for
+             are outlined below."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
       br(),
 
       # input
-      tags$b("Instructions: Below, enter or select values required to perform the analysis.
-              Default values are shown. Then press 'Run'. Navigate through
-              the different tabs to the right to explore the results."),
+      tags$b("Instructions: Below, enter or select values required to perform
+              the analysis. Default values are shown. Then press 'Run'.
+              Navigate through the different tabs to the right to explore
+              the results."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -41,7 +46,17 @@ ui <- fluidPage(
       actionButton(inputId = "data1",
                    label = "Data 1 Details"),
       fileInput(inputId = "file1",
-                label = "Select a gate count dataset for analysis. Important: The file should be in .csv format with rows corresponding to dates and only one column, containing daily raw gate counts. There should be no header.",
+                label = "Select a gate count dataset for analysis.
+                The file should be in .csv format only. The file
+                should have number of rows equaling to length of
+                days and columns equaling to two, such that the
+                dimension is: days x 2. Here days is the number of
+                days for which raw gate counts are present. First
+                column must contain the dates and should contain
+                column name 'dates'. Dates must be in the format
+                of date-month-year. The second column must contain
+                the gate count reading for the given date and should
+                be called 'counts'.",
                 accept = c(".csv")),
       selectInput(inputId = 'gateType',
                   label = 'Select the gate type method:',
@@ -49,6 +64,10 @@ ui <- fluidPage(
                               "Bidirectional")),
       textInput(inputId = "gatecounterMaxValue",
                 label = "Enter a numeric value greater than 0 indicating the gate counter max value:", "999999"),
+      selectInput(inputId = 'printMessages',
+                  label = 'Select TRUE or FALSE for printing messages:',
+                  choices = c("TRUE",
+                              "FALSE")),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -68,11 +87,11 @@ ui <- fluidPage(
 
       # Output: Tabet
       tabsetPanel(type = "tabs",
-                  tabPanel("Plot of Raw Data",
+                  tabPanel("Plot of Daily Data",
                            h3("Instructions: Enter values on the left side and click 'Run' at the bottom."),
                            h3("Plot of Raw Count Data Provided By User:"),
                            br(),
-                           plotOutput("lineplot")),
+                           plotOutput("lineplot1")),
                   tabPanel("Input Summary",
                            h3("Instructions: Enter values on the left side and click 'Run' at the bottom."),
                            h3("Summary of Input Data Provided By User:"),
@@ -101,15 +120,14 @@ server <- function(input, output) {
     if (! is.null(input$file1))
       read.csv(input$file1$datapath,
                          sep = ",",
-                         header = FALSE,
-                         row.names = 1)$V2
+                         header = TRUE1)
   })
 
   startcalculating <- eventReactive(eventExpr = input$button2, {
     withProgress(message = 'Calculating', value = 1, {
       # Number of times we'll go through the loop
 
-      gateCountCumulative(
+      gateCountSummary(
         rawGateCounts = as.vector(dataInput()),
         gateType = as.character(input$gateType),
         gatecounterMaxValue = as.numeric(input$gatecounterMaxValue),
@@ -121,23 +139,21 @@ server <- function(input, output) {
   # Textoutput - Raw data summary
   output$textOut <- renderPrint({
     if (! is.null(startcalculating()))
-      turnNumeric <- as.numeric(dataInput())
-      summary(turnNumeric)
+      startcalculating()$monthlyVisitorCounts
   })
 
   # Visualize raw counts
   output$lineplot <- renderPlot({
     if (! is.null(startcalculating()))
-      turnNumeric <- as.numeric(dataInput())
-      plot(turnNumeric, type = "l", lty=5, xlab = "day",
-           ylab = "raw daily counts", main = "Raw gate counts")
+      gateCountsVisDaily(
+        outputDailyCounts = startcalculating())[[4]]
   })
 
 
   # Step II: calculating
   output$calculating <- renderText({
     if (! is.null(startcalculating()))
-      startcalculating()$adjustedCountSum
+      startcalculating()$monthlyVisitorCounts
   })
 
 
