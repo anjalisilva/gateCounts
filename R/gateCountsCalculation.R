@@ -91,25 +91,18 @@
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
 #'
-#' randomCountsSumEx1$dailyVisitorCounts# access daily adjusted counts
-#' randomCountsSumEx1$weeklyVisitorCounts # access weekly adjusted counts
-#' randomCountsSumEx1$monthlyVisitorCounts # access monthly adjusted counts
+#' randomCountsSumEx1$dailyVisitorCounts # access daily adjusted counts
 #' randomCountsSumEx1$cumulativeVisitorCount # cumulative count for duration
-#' randomCountsSumEx1$busiestMonth # busiest month
-#' randomCountsSumEx1$leastBusiestMonth # least busiest month
-#' randomCountsSumEx1$busiestWeek # busiest week
-#' randomCountsSumEx1$leastBusiestWeek # least busiest week
-#' randomCountsSumEx1$busiestDay # busiest day
-#' randomCountsSumEx1$leastBusiestDay # least busiest day
-#' randomCountsSumEx1$dailyAverage  # daily average fur duration
+#' randomCountsSumEx1$gatecounterMaxValue  # gate counter maximum
+#' randomCountsSumEx1$gateType # type of gate
 #'
-#'
+#
 #' # Example 2: Unidirectional gates with random NA values
 #' # Simulate gate count data using Poisson distribution
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100000)),
-#'                        200000, # max value
+#'                   200000, # max value
 #'                   sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
@@ -138,16 +131,10 @@
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
 #'
-#' randomCountsSumEx2$dailyVisitorCounts# access daily adjusted counts
-#' randomCountsSumEx2$weeklyVisitorCounts # access weekly adjusted counts
-#' randomCountsSumEx2$monthlyVisitorCounts # access monthly adjusted counts
+#' randomCountsSumEx2$dailyVisitorCounts # access daily adjusted counts
 #' randomCountsSumEx2$cumulativeVisitorCount # cumulative count for duration
-#' randomCountsSumEx2$busiestMonth # busiest month
-#' randomCountsSumEx2$leastBusiestMonth # least busiest month
-#' randomCountsSumEx2$busiestWeek # busiest week
-#' randomCountsSumEx2$leastBusiestWeek # least busiest week
-#' randomCountsSumEx2$busiestDay # busiest day
-#' randomCountsSumEx2$leastBusiestDay # least busiest day
+#' randomCountsSumEx2$gatecounterMaxValue  # gate counter maximum
+#' randomCountsSumEx2$gateType # type of gate
 #'
 #'
 #'
@@ -184,17 +171,11 @@
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
 #'
-#' randomCountsSumEx3$dailyVisitorCounts# access daily adjusted counts
-#' randomCountsSumEx3$weeklyVisitorCounts # access weekly adjusted counts
-#' randomCountsSumEx3$monthlyVisitorCounts # access monthly adjusted counts
-#' randomCountsSumEx3$cumulativeVisitorCount # cumulative count for duration
-#' randomCountsSumEx3$busiestMonth # busiest month
-#' randomCountsSumEx3$leastBusiestMonth # least busiest month
-#' randomCountsSumEx3$busiestWeek # busiest week
-#' randomCountsSumEx3$leastBusiestWeek # least busiest week
-#' randomCountsSumEx3$busiestDay # busiest day
-#' randomCountsSumEx3$leastBusiestDay # least busiest day
 #'
+#' randomCountsSumEx3$dailyVisitorCounts # access daily adjusted counts
+#' randomCountsSumEx3$cumulativeVisitorCount # cumulative count for duration
+#' randomCountsSumEx3$gatecounterMaxValue  # gate counter maximum
+#' randomCountsSumEx3$gateType # type of gate
 #'
 #'
 #' # Example 4: Bidirectional gates with NA values
@@ -231,17 +212,10 @@
 #'              gatecounterMaxValue = 999999,
 #'              printMessages = FALSE)
 #'
-#' randomCountsSumEx4$dailyVisitorCounts# access daily adjusted counts
-#' randomCountsSumEx4$weeklyVisitorCounts # access weekly adjusted counts
-#' randomCountsSumEx4$monthlyVisitorCounts # access monthly adjusted counts
+#' randomCountsSumEx4$dailyVisitorCounts # access daily adjusted counts
 #' randomCountsSumEx4$cumulativeVisitorCount # cumulative count for duration
-#' randomCountsSumEx4$busiestMonth # busiest month
-#' randomCountsSumEx4$leastBusiestMonth # least busiest month
-#' randomCountsSumEx4$busiestWeek # busiest week
-#' randomCountsSumEx4$leastBusiestWeek # least busiest week
-#' randomCountsSumEx4$busiestDay # busiest day
-#' randomCountsSumEx4$leastBusiestDay # least busiest day
-#'
+#' randomCountsSumEx4$gatecounterMaxValue  # gate counter maximum
+#' randomCountsSumEx4$gateType # type of gate
 #'
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
@@ -461,6 +435,10 @@ gateCountsToVisitorCounts <- function(rawGateCounts,
 #'         for issues mentioned under details. If gateType was
 #'         "Bidirectional", the visitor count is divided by
 #'         two and ceiling() function from base R is applied.
+#'   \item cumulativeVisitorCount - Sum of daily gate counts for the period,
+#'         adjusted for issues mentioned under details. If gateType was
+#'         "Bidirectional", the final resulting number would be divided
+#'         by two.
 #'   \item weeklyVisitorCounts - Weekly gate counts for the period,
 #'         adjusted for issues mentioned under details.
 #'   \item monthlyVisitorCounts - Monthly gate counts for the period, adjusted
@@ -709,6 +687,8 @@ visitorCountSummary <- function(dailyVisitorCount) {
     tibble::add_column(year = lubridate::year(dailyVisitorCountTibble$dateFormat)) %>%
     dplyr::select(dateFormat, counts, day, weekDay, week, month, monthAbb, year)
 
+  # cumulative count
+  cumulativeVisitorCount <- sum(dailyVisitorCountTibble$counts, na.rm = TRUE)
 
   # summarizing by weekly count
   weeklyVisitorCount <- dailyVisitorCountTibble %>%
@@ -750,7 +730,7 @@ visitorCountSummary <- function(dailyVisitorCount) {
     dplyr::summarise(dailyMean = mean(counts, na.rm = TRUE))
 
   dailyMedian  <- dailyVisitorCountTibble %>%
-    dplyr::summarise(dailyMean = median(counts, na.rm = TRUE))
+    dplyr::summarise(dailyMedian = median(counts, na.rm = TRUE))
 
   weeklyAverage <- weeklyVisitorCount %>%
     dplyr::ungroup() %>%
@@ -770,6 +750,7 @@ visitorCountSummary <- function(dailyVisitorCount) {
     dplyr::summarise(montlyMedian = median(totalVisitorCount, na.rm = TRUE))
 
   returnValues <- list(dailyVisitorCounts = dailyVisitorCountTibble,
+                       cumulativeVisitorCount = cumulativeVisitorCount,
                        weeklyVisitorCounts = weeklyVisitorCount,
                        monthlyVisitorCounts = monthlyVisitorCount,
                        busiestMonth = busiestMonth,

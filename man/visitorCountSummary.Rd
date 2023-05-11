@@ -23,6 +23,10 @@ Returns an S3 object of class gateCounts with results.
         for issues mentioned under details. If gateType was
         "Bidirectional", the visitor count is divided by
         two and ceiling() function from base R is applied.
+  \item cumulativeVisitorCount - Sum of daily gate counts for the period,
+        adjusted for issues mentioned under details. If gateType was
+        "Bidirectional", the final resulting number would be divided
+        by two.
   \item weeklyVisitorCounts - Weekly gate counts for the period,
         adjusted for issues mentioned under details.
   \item monthlyVisitorCounts - Monthly gate counts for the period, adjusted
