@@ -4,34 +4,48 @@
 \alias{gateCountsVisDaily}
 \title{Visualize Daily Visitor Counts}
 \usage{
-gateCountsVisDaily(
-  outputDailyCounts,
-  scaleBreakYAxisMin = NA,
-  scaleBreakYAxisMax = NA
-)
+gateCountsVisDaily(dailyVisitorCount)
 }
 \arguments{
-\item{outputDailyCounts}{The output from running gateCounts::gateCountSummary()
-function should be provided here. See examples.}
-
-\item{scaleBreakYAxisMin}{Numeric value indicating the minimum
-in the range for a scale break to be introduced on y-axis.
-The range requires both a minimum and maximum (next argument).
-Default value is NA, so no scale break introduced on y-axis.}
-
-\item{scaleBreakYAxisMax}{Numeric value indicating the maximum
-in the range for a scale break to be introduced on y-axis.
-The range requires both a minimum (previous argument) and maximum.
-Default value is NA, so no scale break introduced on y-axis.}
+\item{dailyVisitorCount}{A numeric vector or a tibble, with
+number of rows equaling to length of days and columns equaling
+to two, such that the dimension is: days x 2. Here
+days is the number of days for which visitor counts are present.
+First column must contain the dates and should contain column name
+"dates". Dates must be in the format of date-month-year. The second
+column must contain the visitor count for the given date and
+should be called "counts". This input could be obtained from
+running gateCounts::gateCountsToVisitorCounts() or
+gateCounts::visitorCountSummary() functions.}
 }
 \value{
 Returns three plots summarizing daily visitor counts by
    week, month and day. Another three plots are produced with
    log-transformed counts to better visualize trends.
+\itemize{
+  \item dailyOuput - A bar plot of daily visitor count values
+        by month.
+  \item dailyOuputLine - A line plot of daily visitor count values
+        by month.
+  \item dailyOuputLine2 - A line plot of daily visitor count values
+        by month, laid over in one view.
+  \item dailyOuputLog - A bar plot of daily visitor count values
+        by month.
+  \item dailyOuputStackedLog - A bar plot of log-transformed daily
+  visitor count values by month.
+  \item dailyOuputLineLog - A line plot of log-transformed daily
+  visitor count values by month.
+  \item dailyOuputLine2Log - A line plot of log-transformed daily
+  visitor count values by month, laid over in one view.
+  \item dailyHeatmap - A heatmap of log-transformed daily
+  visitor count values
+}
 }
 \description{
-A function that permit to create plots showing daily visitor counts. Plots
-include line
+A function that permit to create plots showing daily visitor counts.
+Plots include line plots and barplots of month vs daily
+counts. Plots with log-transformed counts are also provided
+to better visualize trends with outliers.
 }
 \examples{
 set.seed(1234)

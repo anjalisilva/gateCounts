@@ -35,11 +35,12 @@ progress messages should be printed. The default value is TRUE. Setting
 to FALSE will remove messages from being shown while function is running.}
 }
 \value{
-Returns an S3 object of class gateCounts with results.
+Returns an S3 object of class gateCountsToVisitorCounts with results.
 \itemize{
-  \item dailyVisitorCounts - Daily gate counts for the period, adjusted
-        for issues mentioned under details. If gateType was
-        "Bidirectional", the visitor count is divided by
+  \item dailyVisitorCounts - A table of dates, daily gate counts
+        provided by user, and daily visitor counts calculated using
+        gate counts adjusted for issues mentioned under details. If
+        gateType was "Bidirectional", the visitor count is divided by
         two and ceiling() function from base R is applied.
   \item gateType - Gate type for which counts are provided by the user.
   \item gatecounterMaxValue - User provided value in the argument
@@ -103,16 +104,16 @@ randomCounts1tibble <- tibble::tibble(
 max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsSumEx1 <- gateCountsToVisitorCounts(
+randomCountsEx1 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
 
-randomCountsSumEx1$dailyVisitorCounts # access daily adjusted counts
-randomCountsSumEx1$cumulativeVisitorCount # cumulative count for duration
-randomCountsSumEx1$gatecounterMaxValue  # gate counter maximum
-randomCountsSumEx1$gateType # type of gate
+randomCountsEx1$dailyVisitorCounts # access daily adjusted counts
+randomCountsEx1$cumulativeVisitorCount # cumulative count for duration
+randomCountsEx1$gatecounterMaxValue  # gate counter maximum
+randomCountsEx1$gateType # type of gate
 
 # Example 2: Unidirectional gates with random NA values
 # Simulate gate count data using Poisson distribution
@@ -142,16 +143,16 @@ randomCounts2tibble <- tibble::tibble(
 max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsSumEx2 <- gateCountsToVisitorCounts(
+randomCountsEx2 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts2tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
 
-randomCountsSumEx2$dailyVisitorCounts # access daily adjusted counts
-randomCountsSumEx2$cumulativeVisitorCount # cumulative count for duration
-randomCountsSumEx2$gatecounterMaxValue  # gate counter maximum
-randomCountsSumEx2$gateType # type of gate
+randomCountsEx2$dailyVisitorCounts # access daily adjusted counts
+randomCountsEx2$cumulativeVisitorCount # cumulative count for duration
+randomCountsEx2$gatecounterMaxValue  # gate counter maximum
+randomCountsEx2$gateType # type of gate
 
 
 
@@ -182,17 +183,17 @@ randomCounts3tibble <- tibble::tibble(
 max(as.numeric(randomCounts3tibble$counts), na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsSumEx3 <- gateCountsToVisitorCounts(
+randomCountsEx3 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts3tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
 
 
-randomCountsSumEx3$dailyVisitorCounts # access daily adjusted counts
-randomCountsSumEx3$cumulativeVisitorCount # cumulative count for duration
-randomCountsSumEx3$gatecounterMaxValue  # gate counter maximum
-randomCountsSumEx3$gateType # type of gate
+randomCountsEx3$dailyVisitorCounts # access daily adjusted counts
+randomCountsEx3$cumulativeVisitorCount # cumulative count for duration
+randomCountsEx3$gatecounterMaxValue  # gate counter maximum
+randomCountsEx3$gateType # type of gate
 
 
 # Example 4: Bidirectional gates with NA values
@@ -223,16 +224,16 @@ randomCounts4tibble <- tibble::tibble(
 max(as.numeric(randomCounts4tibble$counts), na.rm = TRUE) # 999999
 
 # Run gateCountsToVisitorCounts function
-randomCountsSumEx4 <- gateCountsToVisitorCounts(
+randomCountsEx4 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts4tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 999999,
              printMessages = FALSE)
 
-randomCountsSumEx4$dailyVisitorCounts # access daily adjusted counts
-randomCountsSumEx4$cumulativeVisitorCount # cumulative count for duration
-randomCountsSumEx4$gatecounterMaxValue  # gate counter maximum
-randomCountsSumEx4$gateType # type of gate
+randomCountsEx4$dailyVisitorCounts # access daily adjusted counts
+randomCountsEx4$cumulativeVisitorCount # cumulative count for duration
+randomCountsEx4$gatecounterMaxValue  # gate counter maximum
+randomCountsEx4$gateType # type of gate
 
 
 }
