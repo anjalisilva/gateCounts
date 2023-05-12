@@ -7,6 +7,12 @@
 #'    function.
 #'
 #' @return Returns plot of daily visitor counts.
+#' \itemize{
+#'   \item weeklyOuput - A bar plot of visitor count values
+#'         by week.
+#'   \item weeklyOuputLog - A bar plot of log-transformed daily
+#'   visitor count values by week.
+#' }
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
@@ -90,27 +96,69 @@
 #'
 #' @export
 #' @import ggplot2
-gateCountsVisWeekly <- function(outputDailyCounts) {
+gateCountsVisWeekly <- function(dailyVisitorCount) {
 
+  # checking
+  if(is.vector(dailyVisitorCount) == FALSE &&
+     tibble::is_tibble(dailyVisitorCount) == FALSE) {
+    stop("\n dailyVisitorCount should be a numeric vector or tibble.")
+  }
+
+  if(ncol(dailyVisitorCount) != 2L) {
+    stop("\n dailyVisitorCount should be a numeric vector or tibble with
+         2 columns: dates and counts.")
+  }
+
+  if(all(colnames(dailyVisitorCount) != c("dates", "counts"))) {
+    stop("\n dailyVisitorCount should be a numeric vector or tibble with
+         2 columns each named 'dates' and 'counts'.")
+  }
 
   # set color palette
   colorPaletteCustom <- c(
-    '#a6cee3',
-    '#1f78b4',
-    '#b2df8a',
     '#33a02c',
+    '#9e0142',
+    '#fee08b',
+    '#66c2a5',
+    '#3288bd',
+    '#e6f598',
+    '#5e4fa2',
+    '#a6cee3',
     '#c51b7d',
+    '#fde0ef',
     '#e31a1c',
-    '#fdbf6f',
-    '#ff7f00',
     '#cab2d6',
-    '#6a3d9a',
+    '#ff7f00',
     '#b15928',
-    '#dfc27d')
+    '#dfc27d',
+    '#8dd3c7',
+    '#ccebc5',
+    '#f1b6da')
+
+  # convert to a tibble
+  dailyVisitorCountTibble <- tibble::tibble(dailyVisitorCount)
+
+  dailyVisitorCountTibble <- dailyVisitorCountTibble %>%
+    tibble::add_column(dateFormat = lubridate::dmy(dailyVisitorCountTibble$dates))
+
+  # date summary
+  dailyVisitorCountTibble <- dailyVisitorCountTibble %>%
+    tibble::add_column(day = lubridate::day(dailyVisitorCountTibble$dateFormat)) %>%
+    tibble::add_column(weekDay = lubridate::wday(dailyVisitorCountTibble$dateFormat, label = TRUE)) %>%
+    tibble::add_column(week = lubridate::week(dailyVisitorCountTibble$dateFormat)) %>%
+    tibble::add_column(month = lubridate::month(dailyVisitorCountTibble$dateFormat)) %>%
+    tibble::add_column(monthAbb = lubridate::month(dailyVisitorCountTibble$dateFormat, label = TRUE)) %>%
+    tibble::add_column(year = lubridate::year(dailyVisitorCountTibble$dateFormat)) %>%
+    dplyr::select(dateFormat, counts, day, weekDay, week, month, monthAbb, year)
+
+  # summarizing by weekly count
+  weeklyVisitorCount <- dailyVisitorCountTibble %>%
+    dplyr::group_by(week, monthAbb, year) %>%
+    dplyr::summarise(totalVisitorCount = sum(counts, na.rm = TRUE))
 
 
   # Weekly count
-  weeklyOuput <- outputDailyCounts$weeklyVisitorCounts %>%
+  weeklyOuput <- weeklyVisitorCount %>%
     ggplot2::ggplot(aes(x = factor(week),
                         y = totalVisitorCount,
                         fill = monthAbb)) +
@@ -118,8 +166,9 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
     ggplot2::labs(y = "Visitor count",
                   x = "Week",
                   fill = "Month",
-                  title = paste("Weekly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Weekly visitor counts for period of",
+                                range(dailyVisitorCountTibble$dateFormat)[1],
+                                "to", range(dailyVisitorCountTibble$dateFormat)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(aspect.ratio = 0.3,
                    text = element_text(size = 10),
@@ -129,7 +178,7 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
 
 
   # Weekly log-transformed count
-  weeklyOuputLog <- outputDailyCounts$weeklyVisitorCounts %>%
+  weeklyOuputLog <- weeklyVisitorCount %>%
     ggplot2::ggplot(aes(x = factor(week),
                         y = log(totalVisitorCount + 1),
                         fill = monthAbb)) +
@@ -137,8 +186,9 @@ gateCountsVisWeekly <- function(outputDailyCounts) {
     ggplot2::labs(y = "Log-transformed visitor count",
                   x = "Week",
                   fill = "Month",
-                  title = paste("Weekly visitor counts for period of", range(outputDailyCounts$dailyVisitorCounts$date)[1],
-                                "to", range(outputDailyCounts$dailyVisitorCounts$date)[2])) +
+                  title = paste("Weekly visitor counts for period of",
+                                range(dailyVisitorCountTibble$dateFormat)[1],
+                                "to", range(dailyVisitorCountTibble$dateFormat)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(aspect.ratio = 0.3,
                    text = element_text(size = 10),

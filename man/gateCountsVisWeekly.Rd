@@ -4,7 +4,7 @@
 \alias{gateCountsVisWeekly}
 \title{Visualize Weekly Visitor Counts}
 \usage{
-gateCountsVisWeekly(outputDailyCounts)
+gateCountsVisWeekly(dailyVisitorCount)
 }
 \arguments{
 \item{outputDailyCounts}{The output from running gateCounts::gateCountSummary()
@@ -12,6 +12,12 @@ function.}
 }
 \value{
 Returns plot of daily visitor counts.
+\itemize{
+  \item weeklyOuput - A bar plot of visitor count values
+        by week.
+  \item weeklyOuputLog - A bar plot of log-transformed daily
+  visitor count values by week.
+}
 }
 \description{
 A function that permit to create a plot showing visitor
