@@ -23,7 +23,9 @@ count](https://img.shields.io/github/languages/count/anjalisilva/gateCounts)
 
 `gateCounts` is an R package for calculating daily, weekly, monthly, and
 cumulative visitor counts, provided raw daily gate counts, gate
-directionality, and gate counter maximum value. For details see below.
+directionality, and gate counter maximum value. Calculated visitor
+counts or user provided visitor counts can be visualized using multiple
+plot types. For details see below.
 
 ## Installation
 
@@ -52,29 +54,31 @@ ls("package:gateCounts")
 
 `gateCounts` package contains 6 functions.
 
-1.  ***gateCountSummary*** for calculating daily, weekly, monthly, and
-    cumulative visitor counts, provided a numeric vector or a tibble
-    containing values of raw daily gate counts for one institute.
-    Function also output the mean and median visitor counts on daily,
-    weekly, and monthly basis; busiest and least busiest day, week, and
-    month for the entire duration for which data is provided by user.
+1.  ***gateCountsToVisitorCounts*** for calculating daily visitor
+    counts, provided a numeric vector or a tibble containing values of
+    raw daily gate counts for one institute.
 
-2.  ***gateCountsVisDaily*** permit to create plots (bar, line, and
+2.  ***visitorCountSummary*** for calculating weekly, monthly visitor
+    counts and summary statistics like daily, weekly, monthly mean and
+    median, busiest and least busiest day, week, and month for the
+    entire duration for which visitor count data is provided by user.
+
+3.  ***gateCountsVisDaily*** permit to create plots (bar, line, and
     heatmap) showing daily visitor counts. Both count and
     log-transformed count plots are provided to help visualize trends.
 
-3.  ***gateCountsVisWeekly*** for creating plots showing visitor counts
+4.  ***gateCountsVisWeekly*** for creating plots showing visitor counts
     by week. Both count and log-transformed count plots are provided to
     help visualize trends.
 
-4.  ***gateCountsVisMonthly*** for creating plots showing visitor counts
+5.  ***gateCountsVisMonthly*** for creating plots showing visitor counts
     by month. Both count and log-transformed count plots are provided to
     help visualize trends.
 
-5.  ***runGateCount*** starts the Shiny app for this R package. Under
+6.  ***runGateCount*** starts the Shiny app for this R package. Under
     construction.
 
-6.  ***gateCountsVisMultiple*** for creating plots comparing visitor
+7.  ***gateCountsVisMultiple*** for creating plots comparing visitor
     counts from multiple institutes. Under construction.
 
 An overview of the package is illustrated below:
