@@ -50,6 +50,7 @@ to better visualize trends with outliers.
 \examples{
 set.seed(1234)
 # Example 1: Unidirectional gates with daily counts
+# Simulate gate count data using Poisson distribution
 randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 82, lambda = 100000)),
@@ -58,6 +59,7 @@ randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
                   sort(rpois(n = 50, lambda = 1000)),
                   sort(rpois(n = 50, lambda = 100000)))
 
+# Create a tibble with date information
 randomCounts1tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
@@ -65,35 +67,47 @@ randomCounts1tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts1)
 
-# check max value for gate counter maximum
+# Check max value for gate counter maximum
 max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
-randomCountsSumEx1 <- gateCountSummary(
+# Run gateCountsToVisitorCounts function
+randomCountsEx1 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
-randomCountsSumEx1$dailyCounts # access daily adjusted counts
 
-# Visualize counts from Example 1
-visOne <- gateCountsVisDaily(
-             outputDailyCounts = randomCountsSumEx1)
+randomCountsEx1$dailyVisitorCounts # access daily adjusted counts
 
-# Example 2: Unidirectional gates with random NA values
-randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
-                  sort(rpois(n = 50, lambda = 1000)),
-                  sort(rpois(n = 82, lambda = 100000)),
-                       200000, # max value
-                  sort(rpois(n = 50, lambda = 100)),
-                  sort(rpois(n = 50, lambda = 1000)),
-                  sort(rpois(n = 50, lambda = 100000)))
+# Visualize visitor counts using visitorCountSummary function
+# First, format the table
+visitorCountsEx1 <-
+  randomCountsEx1$dailyVisitorCounts \%>\%
+  dplyr::rename("counts" = "visitorCount") \%>\%
+  dplyr::select("dates", "counts")
 
-# randomly introduce NA and "Gate broken" entries
+# Visualize
+visPutEx1 <-
+   gateCountsVisDaily(dailyVisitorCount = visitorCountsEx1)
+
+
+# Example 2: Bidirectional gates with NA values
+# Simulate gate count data using Poisson distribution
+randomCounts2 <- c(sort(rpois(n = 50, lambda = 10000)),
+                  sort(rpois(n = 50, lambda = 400000)),
+                  sort(rpois(n = 82, lambda = 800000)),
+                  999999, # max value
+                  sort(rpois(n = 50, lambda = 10000)),
+                  sort(rpois(n = 50, lambda = 450000)),
+                  sort(rpois(n = 50, lambda = 850000)))
+
+# Randomly introduce NA and "Gate broken" entries
 randomPositions <- sample(x = c(1:length(randomCounts2)),
                          size = 8, replace = FALSE)
 randomCounts2[randomPositions[1:4]] <- NA
 randomCounts2[randomPositions[5:8]] <- "Gate broken"
 
+# Create a tibble with date information
 randomCounts2tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
@@ -101,19 +115,28 @@ randomCounts2tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts2)
 
-# check max value for gate counter maximum
-max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
+# Check max value for gate counter maximum
+max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 999999
 
-randomCountsSumEx2 <- gateCountSummary(
+# Run gateCountsToVisitorCounts function
+randomCountsEx2 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts2tibble,
              gateType = "Unidirectional",
-             gatecounterMaxValue = 200000,
+             gatecounterMaxValue = 999999,
              printMessages = FALSE)
-randomCountsSumEx2$dailyCounts # access daily adjusted counts
 
-# Visualize counts from Example 2
-visTwo <- gateCountsVisDaily(
-             outputDailyCounts = randomCountsSumEx2)
+randomCountsEx2$dailyVisitorCounts # access daily adjusted counts
+
+# Visualize visitor counts using visitorCountSummary function
+# First, format the table
+visitorCountsEx2 <-
+  randomCountsEx2$dailyVisitorCounts \%>\%
+  dplyr::rename("counts" = "visitorCount") \%>\%
+  dplyr::select("dates", "counts")
+
+# Visualize
+visPutEx2 <-
+   gateCountsVisDaily(dailyVisitorCount = visitorCountsEx2)
 
 }
 \references{

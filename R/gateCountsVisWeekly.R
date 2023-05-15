@@ -3,7 +3,7 @@
 #' A function that permit to create a plot showing visitor
 #' counts by week.
 #'
-#' @param outputDailyCounts The output from running gateCounts::gateCountSummary()
+#' @param outputDailyCounts The output from running gateCounts::gateCountsToVisitorCounts()
 #'    function.
 #'
 #' @return Returns plot of daily visitor counts.
@@ -45,7 +45,7 @@
 #' # check max value for gate counter maximum
 #' max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 #'
-#' randomCountsSumEx1 <- gateCountSummary(
+#' randomCountsSumEx1 <- gateCountsToVisitorCounts(
 #'              rawGateCounts = randomCounts1tibble,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
@@ -81,7 +81,7 @@
 #' # check max value for gate counter maximum
 #' max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
 #'
-#' randomCountsSumEx2 <- gateCountSummary(
+#' randomCountsSumEx2 <- gateCountsToVisitorCounts(
 #'              rawGateCounts = randomCounts2tibble,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,

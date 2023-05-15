@@ -7,7 +7,7 @@
 gateCountsVisMonthly(outputDailyCounts)
 }
 \arguments{
-\item{outputDailyCounts}{The output from running gateCounts::gateCountSummary()
+\item{outputDailyCounts}{The output from running gateCounts::gateCountsToVisitorCounts()
 function.}
 }
 \value{
@@ -38,7 +38,7 @@ randomCounts1tibble <- tibble::tibble(
 # check max value for gate counter maximum
 max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
-randomCountsSumEx1 <- gateCountSummary(
+randomCountsSumEx1 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
@@ -74,7 +74,7 @@ randomCounts2tibble <- tibble::tibble(
 # check max value for gate counter maximum
 max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
 
-randomCountsSumEx2 <- gateCountSummary(
+randomCountsSumEx2 <- gateCountsToVisitorCounts(
              rawGateCounts = randomCounts2tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
