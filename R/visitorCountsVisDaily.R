@@ -1,8 +1,8 @@
 #' Visualize Daily Visitor Counts
 #'
-#' A function that permit to create plots showing daily visitor counts.
-#' Plots include line plots and barplots of month vs daily
-#' counts. Plots with log-transformed counts are also provided
+#' A function that permit to create plots showing daily visitor counts
+#' for one institute. Plots include line plots and barplots of month
+#' vs daily counts. Plots with log-transformed counts are also provided
 #' to better visualize trends with outliers.
 #'
 #' @param dailyVisitorCount A numeric vector or a tibble, with

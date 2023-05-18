@@ -1,7 +1,7 @@
 #' Visualize Monthly Visitor Counts
 #'
 #' A function that permit to create a plot showing visitor
-#' counts by month.
+#' counts by month for one institute.
 #'
 #' @param outputDailyCounts The output from running gateCounts::gateCountsToVisitorCounts()
 #'    function.

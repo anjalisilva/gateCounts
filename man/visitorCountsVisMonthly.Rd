@@ -15,7 +15,7 @@ Returns plot of daily visitor counts.
 }
 \description{
 A function that permit to create a plot showing visitor
-counts by month.
+counts by month for one institute.
 }
 \examples{
 set.seed(1234)

@@ -1,7 +1,7 @@
 #' Visualize Weekly Visitor Counts
 #'
 #' A function that permit to create a plot showing visitor
-#' counts by week.
+#' counts by week for one institute.
 #'
 #' @param outputDailyCounts The output from running gateCounts::gateCountsToVisitorCounts()
 #'    function.

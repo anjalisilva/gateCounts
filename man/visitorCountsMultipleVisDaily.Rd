@@ -102,7 +102,8 @@ max(multipleTibble$institute3, na.rm = TRUE) # 20357
 
 # Visualize
 visPutEx1 <-
-   visitorCountsMultipleVisDaily(visitorCountMultiple = multipleTibble)
+   visitorCountsMultipleVisDaily(
+   visitorCountMultiple = multipleTibble)
 
 
 }
