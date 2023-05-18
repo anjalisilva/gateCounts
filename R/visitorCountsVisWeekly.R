@@ -53,7 +53,7 @@
 #' randomCountsSumEx1$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 1
-#' visOne <- gateCountsVisWeekly(
+#' visOne <- visitorCountsVisWeekly(
 #'              outputDailyCounts = randomCountsSumEx1)
 #'
 #' # Example 2: Unidirectional gates with random NA values
@@ -89,7 +89,7 @@
 #' randomCountsSumEx2$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 2
-#' visTwo <- gateCountsVisWeekly(
+#' visTwo <- visitorCountsVisWeekly(
 #'              outputDailyCounts = randomCountsSumEx2)
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
@@ -97,7 +97,7 @@
 #' @export
 #' @import ggplot2
 #' @import tidyverse
-gateCountsVisWeekly <- function(dailyVisitorCount) {
+visitorCountsVisWeekly <- function(dailyVisitorCount) {
 
   # checking
   if(is.vector(dailyVisitorCount) == FALSE &&

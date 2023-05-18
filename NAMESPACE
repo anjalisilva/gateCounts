@@ -2,11 +2,11 @@
 
 export(gateCountsToVisitorCounts)
 export(gateCountsVisDaily)
-export(gateCountsVisWeekly)
 export(runGateCount)
 export(visitorCountSummary)
 export(visitorCountsVisDaily)
 export(visitorCountsVisMonthly)
+export(visitorCountsVisWeekly)
 import(dplyr)
 import(ggplot2)
 import(lubridate)
