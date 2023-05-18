@@ -144,7 +144,7 @@
 #'
 #' @export
 #' @import ggplot2
-#' @import ggbreak
+#' @import tidyverse
 gateCountsVisDaily <- function(dailyVisitorCount) {
 
   # checking
@@ -168,10 +168,10 @@ gateCountsVisDaily <- function(dailyVisitorCount) {
     '#33a02c',
     '#9e0142',
     '#fee08b',
+    '#5e4fa2',
     '#66c2a5',
     '#3288bd',
     '#e6f598',
-    '#5e4fa2',
     '#a6cee3',
     '#c51b7d',
     '#fde0ef',

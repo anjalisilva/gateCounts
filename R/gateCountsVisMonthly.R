@@ -92,20 +92,26 @@
 #' @import ggplot2
 gateCountsVisMonthly <- function(outputDailyCounts) {
 
-  # set color palette
   colorPaletteCustom <- c(
-  '#a6cee3',
-  '#1f78b4',
-  '#b2df8a',
-  '#33a02c',
-  '#c51b7d',
-  '#e31a1c',
-  '#fdbf6f',
-  '#ff7f00',
-  '#cab2d6',
-  '#6a3d9a',
-  '#b15928',
-  '#dfc27d')
+    '#33a02c',
+    '#9e0142',
+    '#fee08b',
+    '#5e4fa2',
+    '#66c2a5',
+    '#3288bd',
+    '#e6f598',
+    '#a6cee3',
+    '#c51b7d',
+    '#fde0ef',
+    '#e31a1c',
+    '#cab2d6',
+    '#ff7f00',
+    '#b15928',
+    '#dfc27d',
+    '#8dd3c7',
+    '#ccebc5',
+    '#f1b6da')
+
 
   # Monthly count
 
