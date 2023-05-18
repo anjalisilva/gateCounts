@@ -47,7 +47,7 @@
 #' randomCountsSumEx1$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 1
-#' visOne <- gateCountsVisMonthly(
+#' visOne <- visitorCountsVisMonthly(
 #'              outputDailyCounts = randomCountsSumEx1)
 #'
 #' # Example 2: Unidirectional gates with random NA values
@@ -83,14 +83,14 @@
 #' randomCountsSumEx2$dailyCounts # access daily adjusted counts
 #'
 #' # Visualize counts from Example 2
-#' visTwo <- gateCountsVisMonthly(
+#' visTwo <- visitorCountsVisMonthly(
 #'              outputDailyCounts = randomCountsSumEx2)
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import ggplot2
-gateCountsVisMonthly <- function(outputDailyCounts) {
+visitorCountsVisMonthly <- function(outputDailyCounts) {
 
   colorPaletteCustom <- c(
     '#33a02c',
