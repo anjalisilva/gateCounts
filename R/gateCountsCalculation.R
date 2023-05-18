@@ -684,8 +684,8 @@ visitorCountSummary <- function(dailyVisitorCount) {
     dplyr::ungroup() %>%
     dplyr::summarise(montlyMedian = median(totalVisitorCount, na.rm = TRUE))
 
-  returnValues <- list(dailyVisitorCounts = dailyVisitorCountTibble,
-                       cumulativeVisitorCount = cumulativeVisitorCount,
+  returnValues <- list(cumulativeVisitorCount = cumulativeVisitorCount,
+                       dailyVisitorCounts = dailyVisitorCountTibble,
                        weeklyVisitorCounts = weeklyVisitorCount,
                        monthlyVisitorCounts = monthlyVisitorCount,
                        busiestMonth = busiestMonth,
