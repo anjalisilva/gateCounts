@@ -183,7 +183,7 @@ visitorCountsMultipleVisDaily <- function(visitorCountMultiple) {
     ggplot2::ggplot(aes(x = factor(day),
                         y = value,
                         fill = factor(variable))) +
-    geom_bar(stat = "identity", position = "dodge", width = 1) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge", width = 1) +
     ggplot2::labs(y = "Visitor count",
                   x = "Day",
                   fill = "Institute",
@@ -196,4 +196,103 @@ visitorCountsMultipleVisDaily <- function(visitorCountMultiple) {
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     ggplot2::scale_fill_manual(values = colorPaletteCustom) +
     ggplot2::facet_wrap(vars(monthAbb))
+
+
+
+  # Daily count line bar with facet
+  dailyOuputLine <- visitorCountMultipleTibbleMeltData %>%
+    ggplot2::ggplot(aes(x = factor(day),
+                        y = value,
+                        group =  factor(variable))) +
+    ggplot2::geom_line(linetype = "dashed",
+                       linewidth = 0.5,
+                       aes(color =  factor(variable))) +
+    ggplot2::geom_point(size = 0.5, aes(color =  factor(variable))) +
+    ggplot2::scale_color_manual(values = colorPaletteCustom) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  color = "Institute",
+                  group = "Institute",
+                  title = paste("Daily visitor counts for period of",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[1],
+                                "to",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggplot2::facet_wrap(vars(monthAbb))
+
+  ###
+  # Log-transforming to better visualize trends
+  # Daily count bar plot with facet
+  dailyOuputStackedLog <- visitorCountMultipleTibbleMeltData %>%
+    ggplot2::ggplot(aes(x = factor(day),
+                        y = log(value + 1),
+                        fill = factor(variable))) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge", width = 1) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  fill = "Institute",
+                  title = paste("Daily visitor counts for period of",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[1],
+                                "to",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggplot2::scale_fill_manual(values = colorPaletteCustom) +
+    ggplot2::facet_wrap(vars(monthAbb))
+
+
+  # Line plot with facet
+  dailyOuputLineLog <- visitorCountMultipleTibbleMeltData %>%
+    ggplot2::ggplot(aes(x = factor(day),
+                        y = log(value + 1),
+                        group =  factor(variable))) +
+    ggplot2::geom_line(linetype = "dashed",
+                       linewidth = 0.5,
+                       aes(color =  factor(variable))) +
+    ggplot2::geom_point(size = 0.5, aes(color =  factor(variable))) +
+    ggplot2::scale_color_manual(values = colorPaletteCustom) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Day",
+                  color = "Institute",
+                  group = "Institute",
+                  title = paste("Daily visitor counts for period of",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[1],
+                                "to",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10),
+                   axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    ggplot2::facet_wrap(vars(monthAbb))
+
+
+
+  # Heatmap
+  dailyHeatmap <- visitorCountMultipleTibbleMeltData %>%
+    ggplot2::ggplot(aes(x = factor(variable),
+                        y = dateFormat,
+                        fill = log(value + 1))) +
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_gradient(low = "white", high = "red") +
+    ggplot2::theme_bw() +
+    ggplot2::labs(y = "Date",
+                  x = "Institute",
+                  fill = "Log-transformed \n visitor count",
+                  title = paste("Log-transformed daily visitor counts for period of",
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[1],
+                                "to", range(visitorCountMultipleTibbleMeltData$dateFormat)[2])) +
+    ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    ggplot2::scale_y_date(date_labels = "%d-%m-%Y", breaks = scales::breaks_pretty(10))
+
+
+
+  return(list(dailyOuput = dailyOuput,
+              dailyOuputLine = dailyOuputLine,
+              dailyOuputStackedLog = dailyOuputStackedLog,
+              dailyOuputLineLog = dailyOuputLineLog,
+              dailyHeatmap = dailyHeatmap))
 }
+
+# [END]

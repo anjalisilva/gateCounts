@@ -228,7 +228,7 @@ visitorCountsVisDaily <- function(dailyVisitorCount) {
                         y = counts,
                         group = monthAbb)) +
     ggplot2::geom_line(linetype = "dashed",
-                       size = 0.5,
+                       linewidth = 0.5,
                        aes(color = monthAbb)) +
     geom_point(size = 0.5, aes(color = monthAbb)) +
     ggplot2::scale_color_manual(values = colorPaletteCustom) +
@@ -375,8 +375,6 @@ visitorCountsVisDaily <- function(dailyVisitorCount) {
                                 "to", range(dailyVisitorCountTibble$dateFormat)[2])) +
     ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     ggplot2::scale_y_date(date_labels = "%d-%m-%Y", breaks = scales::breaks_pretty(10))
-
-
 
 
   return(list(dailyOuput = dailyOuput,
