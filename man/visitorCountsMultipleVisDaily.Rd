@@ -9,13 +9,13 @@ visitorCountsMultipleVisDaily(visitorCountMultiple)
 \arguments{
 \item{visitorCountMultiple}{A numeric vector or a tibble, with
 number of rows equaling to length of days and columns equaling
-to 1 + number of institutes, such that the dimension is: days x 1
-+ number of institutes. Here, days is the number of days for
-which visitor counts are present.
-First column must contain the dates and should contain column name
-"dates". Dates must be in the format of date-month-year. The second
-column must contain the visitor count for the given date and
-should be called "counts1".}
+to 1 + number of institutes, such that the dimension is: days x (1
++ number of institutes). Here, days is the number of days for
+which visitor counts are present. First column must contain the
+dates and should contain column name "dates". Dates must be in
+the format of date-month-year. The second column and nex columns,
+must contain the visitor count for the given date for respective
+institute. User may choose customize column name. See example.}
 }
 \value{
 Returns three plots summarizing daily visitor counts by
@@ -100,7 +100,11 @@ max(multipleTibble$institute1, na.rm = TRUE) # 1107
 max(multipleTibble$institute2, na.rm = TRUE) # 5141
 max(multipleTibble$institute3, na.rm = TRUE) # 20357
 
-# Visualize
+# colnames
+colnames(multipleTibble)
+# "dates" "institute1" "institute2" "institute3"
+
+# Visualize counts for multiple institutes
 visPutEx1 <-
    visitorCountsMultipleVisDaily(
    visitorCountMultiple = multipleTibble)
