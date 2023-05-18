@@ -90,7 +90,7 @@
 #'
 #' # Visualize
 #' visPutEx1 <-
-#'    gateCountsVisDaily(dailyVisitorCount = visitorCountsEx1)
+#'    visitorCountsVisDaily(dailyVisitorCount = visitorCountsEx1)
 #'
 #'
 #' # Example 2: Bidirectional gates with NA values
@@ -138,14 +138,14 @@
 #'
 #' # Visualize
 #' visPutEx2 <-
-#'    gateCountsVisDaily(dailyVisitorCount = visitorCountsEx2)
+#'    visitorCountsVisDaily(dailyVisitorCount = visitorCountsEx2)
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import ggplot2
 #' @import tidyverse
-gateCountsVisDaily <- function(dailyVisitorCount) {
+visitorCountsVisDaily <- function(dailyVisitorCount) {
 
   # checking
   if(is.vector(dailyVisitorCount) == FALSE &&
