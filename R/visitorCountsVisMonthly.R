@@ -114,7 +114,6 @@ visitorCountsVisMonthly <- function(outputDailyCounts) {
 
 
   # Monthly count
-
   monthlyOuput <- outputDailyCounts$monthlyVisitorCounts %>%
     ggplot2::ggplot(aes(x = monthAbb,
                         y = totalVisitorCount,

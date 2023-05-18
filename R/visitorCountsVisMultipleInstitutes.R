@@ -281,12 +281,30 @@ visitorCountsMultipleVisDaily <- function(visitorCountMultiple) {
     ggplot2::scale_y_date(date_labels = "%d-%m-%Y", breaks = scales::breaks_pretty(10))
 
 
+  # monthly counts
+  monthlyOuput <- visitorCountMultipleTibbleMeltData %>%
+    ggplot2::ggplot(aes(x = monthAbb,
+                        y = value,
+                        fill = factor(variable))) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge", width = 1) +
+    ggplot2::scale_fill_manual(values = colorPaletteCustom) +
+    ggplot2::labs(y = "Visitor count",
+                  x = "Month",
+                  color = "Institute",
+                  fill = "Institute",
+                  title = paste("Monthly visitor counts for period of", range(visitorCountMultipleTibbleMeltData$dateFormat)[1],
+                                "to", range(visitorCountMultipleTibbleMeltData$dateFormat)[2])) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = element_text(size = 10))
+
+
 
   return(list(dailyOuput = dailyOuput,
               dailyOuputLine = dailyOuputLine,
               dailyOuputStackedLog = dailyOuputStackedLog,
               dailyOuputLineLog = dailyOuputLineLog,
-              dailyHeatmap = dailyHeatmap))
+              dailyHeatmap = dailyHeatmap,
+              monthlyOuput = monthlyOuput))
 }
 
 # [END]
