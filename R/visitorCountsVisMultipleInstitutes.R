@@ -6,7 +6,7 @@
 #' counts. Plots with log-transformed counts are also provided
 #' to better visualize trends with outliers.
 #'
-#' @param dailyVisitorCount A numeric vector or a tibble, with
+#' @param visitorCountMultiple A numeric vector or a tibble, with
 #'    number of rows equaling to length of days and columns equaling
 #'    to 1 + number of institutes, such that the dimension is: days x 1
 #'    + number of institutes. Here, days is the number of days for
@@ -44,12 +44,12 @@
 #' set.seed(1234)
 #' # Example 1: Unidirectional gates with daily counts
 #' # Simulate gate count data using Poisson distribution
-#' randomCounts1 <- c(sort(rpois(n = 50, lambda = 10000)),
+#' randomCounts1 <- c(sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 10)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
-#'                   sort(rpois(n = 50, lambda = 10000)))
+#'                   sort(rpois(n = 50, lambda = 200)))
 #'
 #' # Create a tibble with date information
 #' randomCounts1tibble <- tibble::tibble(
@@ -57,15 +57,15 @@
 #'                         lubridate::dmy('31-12-2022'),
 #'                         by='1 day')[1:length(randomCounts1)] %>%
 #'                         format('%d-%m-%Y'),
-#'                         counts = randomCounts1)
+#'                         institute1 = randomCounts1)
 #'
 #' set.seed(2345)
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 10)),
-#'                   sort(rpois(n = 50, lambda = 50)),
-#'                   sort(rpois(n = 82, lambda = 100)),
-#'                   sort(rpois(n = 50, lambda = 10)),
-#'                   sort(rpois(n = 50, lambda = 3)),
-#'                   sort(rpois(n = 50, lambda = 10000)))
+#'                   sort(rpois(n = 50, lambda = 5000)),
+#'                   sort(rpois(n = 82, lambda = 500)),
+#'                   sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 3000)),
+#'                   sort(rpois(n = 50, lambda = 1000)))
 #'
 #' # Create a tibble with date information
 #' randomCounts2tibble <- tibble::tibble(
@@ -73,52 +73,68 @@
 #'                         lubridate::dmy('31-12-2022'),
 #'                         by='1 day')[1:length(randomCounts2)] %>%
 #'                         format('%d-%m-%Y'),
-#'                         counts2 = randomCounts2)
+#'                         institute2 = randomCounts2)
+#'
+#' set.seed(3456)
+#' randomCounts3 <- c(sort(rpois(n = 50, lambda = 20000)),
+#'                   sort(rpois(n = 50, lambda = 5000)),
+#'                   sort(rpois(n = 82, lambda = 500)),
+#'                   sort(rpois(n = 50, lambda = 100)),
+#'                   sort(rpois(n = 50, lambda = 3000)),
+#'                   sort(rpois(n = 50, lambda = 1000)))
+#'
+#' # Create a tibble with date information
+#' randomCounts3tibble <- tibble::tibble(
+#'                         dates = seq(lubridate::dmy('01-01-2022'),
+#'                         lubridate::dmy('31-12-2022'),
+#'                         by='1 day')[1:length(randomCounts3)] %>%
+#'                         format('%d-%m-%Y'),
+#'                         institute3 = randomCounts3)
 #'
 #' # combine data
 #' multipleTibble <- randomCounts1tibble %>%
-#'   dplyr::left_join(randomCounts2tibble)
+#'   dplyr::left_join(randomCounts2tibble) %>%
+#'   dplyr::left_join(randomCounts3tibble)
 #'
 #' # Check max value for gate counter maximum
-#' max(multipleTibble$counts, na.rm = TRUE) # 10,254
-#' max(multipleTibble$counts2, na.rm = TRUE) # 10,197
+#' max(multipleTibble$institute1, na.rm = TRUE) # 1107
+#' max(multipleTibble$institute2, na.rm = TRUE) # 5141
+#' max(multipleTibble$institute3, na.rm = TRUE) # 20357
 #'
 #' # Visualize
 #' visPutEx1 <-
-#'    gateCountsVisDaily(dailyVisitorCount = visitorCountsEx1)
+#'    visitorCountsMultipleVisDaily(visitorCountMultiple = multipleTibble)
 #'
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import ggplot2
-#'
-#' @export
-#' @import ggplot2
 #' @import tidyverse
-gateCountsVisDaily <- function(dailyVisitorCount) {
+#' @import reshape2
+visitorCountsMultipleVisDaily <- function(visitorCountMultiple) {
 
   # checking
-  if(is.vector(dailyVisitorCount) == FALSE &&
-     tibble::is_tibble(dailyVisitorCount) == FALSE) {
-    stop("\n dailyVisitorCount should be a numeric vector or tibble.")
+  if(is.vector(visitorCountMultiple) == FALSE &&
+     tibble::is_tibble(visitorCountMultiple) == FALSE) {
+    stop("\n visitorCountMultiple should be a numeric vector or tibble.")
   }
 
-  if(ncol(dailyVisitorCount) != 2L) {
-    stop("\n dailyVisitorCount should be a numeric vector or tibble with
+  if(ncol(visitorCountMultiple) <= 2) {
+    stop("\n visitorCountMultiple should be a numeric vector or tibble with
          2 columns: dates and counts.")
   }
 
-  if(all(colnames(dailyVisitorCount) != c("dates", "counts"))) {
-    stop("\n dailyVisitorCount should be a numeric vector or tibble with
-         2 columns each named 'dates' and 'counts'.")
+  if(colnames(visitorCountMultiple[, 1]) != c("dates")) {
+    stop("\n visitorCountMultiple should be a numeric vector or tibble with
+         first column named 'dates'.")
   }
 
   # set color palette
   colorPaletteCustom <- c(
     '#33a02c',
+    '#ff7f00',
     '#9e0142',
-    '#fee08b',
     '#5e4fa2',
     '#66c2a5',
     '#3288bd',
@@ -128,7 +144,6 @@ gateCountsVisDaily <- function(dailyVisitorCount) {
     '#fde0ef',
     '#e31a1c',
     '#cab2d6',
-    '#ff7f00',
     '#b15928',
     '#dfc27d',
     '#8dd3c7',
@@ -136,39 +151,49 @@ gateCountsVisDaily <- function(dailyVisitorCount) {
     '#f1b6da')
 
   # convert to a tibble
-  dailyVisitorCountTibble <- tibble::tibble(dailyVisitorCount)
+  visitorCountMultipleTibble <-
+    tibble::tibble(visitorCountMultiple)
 
-  dailyVisitorCountTibble <- dailyVisitorCountTibble %>%
-    tibble::add_column(dateFormat = lubridate::dmy(dailyVisitorCountTibble$dates))
+  # save the number of columns provided by user
+  ncolProvided <- ncol(visitorCountMultipleTibble)
+
+  # melt data
+  visitorCountMultipleTibbleMelt <-
+    reshape2::melt(visitorCountMultipleTibble,
+                  id = c("dates"))
+
+  # add date format
+  visitorCountMultipleTibbleMelt <- visitorCountMultipleTibbleMelt %>%
+    tibble::add_column(dateFormat = lubridate::dmy(visitorCountMultipleTibbleMelt$dates))
+
+
 
   # date summary
-  dailyVisitorCountTibble <- dailyVisitorCountTibble %>%
-    tibble::add_column(day = lubridate::day(dailyVisitorCountTibble$dateFormat)) %>%
-    tibble::add_column(weekDay = lubridate::wday(dailyVisitorCountTibble$dateFormat, label = TRUE)) %>%
-    tibble::add_column(week = lubridate::week(dailyVisitorCountTibble$dateFormat)) %>%
-    tibble::add_column(month = lubridate::month(dailyVisitorCountTibble$dateFormat)) %>%
-    tibble::add_column(monthAbb = lubridate::month(dailyVisitorCountTibble$dateFormat, label = TRUE)) %>%
-    tibble::add_column(year = lubridate::year(dailyVisitorCountTibble$dateFormat)) %>%
-    dplyr::select(dateFormat, counts, day, weekDay, week, month, monthAbb, year)
+  visitorCountMultipleTibbleMeltData <- visitorCountMultipleTibbleMelt %>%
+    tibble::add_column(day = lubridate::day(visitorCountMultipleTibbleMelt$dateFormat)) %>%
+    tibble::add_column(weekDay = lubridate::wday(visitorCountMultipleTibbleMelt$dateFormat, label = TRUE)) %>%
+    tibble::add_column(week = lubridate::week(visitorCountMultipleTibbleMelt$dateFormat)) %>%
+    tibble::add_column(month = lubridate::month(visitorCountMultipleTibbleMelt$dateFormat)) %>%
+    tibble::add_column(monthAbb = lubridate::month(visitorCountMultipleTibbleMelt$dateFormat, label = TRUE)) %>%
+    tibble::add_column(year = lubridate::year(visitorCountMultipleTibbleMelt$dateFormat))
 
 
   # Daily count bar plot
-  dailyOuput <-  dailyVisitorCountTibble %>%
+  dailyOuput <-  visitorCountMultipleTibbleMeltData %>%
     ggplot2::ggplot(aes(x = factor(day),
-                        y = counts,
-                        fill = monthAbb)) +
-    geom_bar(stat = "identity", width = 0.5) +
+                        y = value,
+                        fill = factor(variable))) +
+    geom_bar(stat = "identity", position = "dodge", width = 1) +
     ggplot2::labs(y = "Visitor count",
                   x = "Day",
-                  fill = "Month",
+                  fill = "Institute",
                   title = paste("Daily visitor counts for period of",
-                                range(dailyVisitorCountTibble$dateFormat)[1],
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[1],
                                 "to",
-                                range(dailyVisitorCountTibble$dateFormat)[2])) +
+                                range(visitorCountMultipleTibbleMeltData$dateFormat)[2])) +
     ggplot2::theme_bw() +
     ggplot2::theme(text = element_text(size = 10),
                    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    # ggbreak::scale_y_break(c(110000, 190000)) +
     ggplot2::scale_fill_manual(values = colorPaletteCustom) +
     ggplot2::facet_wrap(vars(monthAbb))
 }
