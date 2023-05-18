@@ -1,9 +1,8 @@
 #' Visualize Daily Visitor Counts of Multiple Institutes
 #'
 #' A function that permit to create plots showing daily visitor counts
-#' for multiple insitutes.
-#' Plots include line plots and barplots of month vs daily
-#' counts. Plots with log-transformed counts are also provided
+#' for multiple institutes. Plots include line plots and barplots.
+#' Plots with log-transformed counts are also provided
 #' to better visualize trends with outliers.
 #'
 #' @param visitorCountMultiple A numeric vector or a tibble, with
@@ -23,16 +22,10 @@
 #'         by month.
 #'   \item dailyOuputLine - A line plot of daily visitor count values
 #'         by month.
-#'   \item dailyOuputLine2 - A line plot of daily visitor count values
-#'         by month, laid over in one view.
-#'   \item dailyOuputLog - A bar plot of daily visitor count values
-#'         by month.
 #'   \item dailyOuputStackedLog - A bar plot of log-transformed daily
 #'   visitor count values by month.
 #'   \item dailyOuputLineLog - A line plot of log-transformed daily
 #'   visitor count values by month.
-#'   \item dailyOuputLine2Log - A line plot of log-transformed daily
-#'   visitor count values by month, laid over in one view.
 #'   \item dailyHeatmap - A heatmap of log-transformed daily
 #'   visitor count values
 #' }
@@ -103,7 +96,8 @@
 #'
 #' # Visualize
 #' visPutEx1 <-
-#'    visitorCountsMultipleVisDaily(visitorCountMultiple = multipleTibble)
+#'    visitorCountsMultipleVisDaily(
+#'    visitorCountMultiple = multipleTibble)
 #'
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
