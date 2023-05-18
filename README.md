@@ -3,8 +3,8 @@
 
 # gateCounts
 
-Calculates Daily, Weekly, Monthly, Cumulative, and Summary Statistics of
-Visitor Counts Provided Raw Daily Gate Counts
+Calculates Daily Visitor Counts From Raw Daily Gate Counts, Summarize
+Visitor Counts and Visualize
 
 <!-- badges: start -->
 
@@ -21,11 +21,11 @@ count](https://img.shields.io/github/languages/count/anjalisilva/gateCounts)
 
 ## Description
 
-`gateCounts` is an R package for calculating daily, weekly, monthly, and
-cumulative visitor counts, provided raw daily gate counts, gate
-directionality, and gate counter maximum value. Calculated visitor
-counts or user provided visitor counts can be visualized using multiple
-plot types. For details see below.
+`gateCounts` is an R package for calculating daily visitor counts,
+provided raw daily gate counts, gate directionality, and gate counter
+maximum value. Calculated visitor counts or user provided visitor counts
+can be summarized on daily, weekly, monthly basis and visualized. For
+details see below.
 
 ## Installation
 
@@ -56,7 +56,8 @@ ls("package:gateCounts")
 
 1.  ***gateCountsToVisitorCounts*** for calculating daily visitor
     counts, provided a numeric vector or a tibble containing values of
-    raw daily gate counts for one institute.
+    raw daily gate counts for one institute, gate directionality and
+    gate counter maximum value.
 
 2.  ***visitorCountSummary*** for calculating weekly, monthly visitor
     counts and summary statistics like daily, weekly, monthly mean and
@@ -107,64 +108,27 @@ from any setting. The factors adjusted for are outlined below.
 
 ### Some Issues & How They Are Handled By Package
 
-To calculate visitor counts from raw daily gate counts, today’s gate
-count reading is subtracted from yesterday’s reading. Negative visitor
-counts can result if the gate counter has reset. This package attempts
-to detect and correct for this.
+1.  To calculate visitor counts from raw daily gate counts, today’s gate
+    count reading is subtracted from yesterday’s reading. Negative
+    visitor counts can result if the gate counter has reset. This
+    package attempts to detect and correct for this.
 
-<div style="text-align:center">
+2.  Negative visitor counts can also result from a lower gate count
+    value that has been entered compared to previous day. This may
+    result from manual entry or system errors. This package attempts to
+    detect and correct for this.
 
-<img src="inst/extdata/1.png" width="650" height="300"/>
+3.  The package attempts to account for when the daily gate count has
+    been forgotten to be reported or days are skipped. This method
+    doesn’t assign counts for missed days, but rather adjust for
+    cumulative visitor count sum.
 
-<div style="text-align:left">
+4.  The package checks for any possible non-numeric characters (e.g.,
+    “turned off”, “Diagnosis”, “closed”, “Clean filter”), then adjusts
+    for visitor count by taking past, last reported gate count.
 
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-Negative visitor counts can also result from a lower gate count value
-that has been entered compared to previous day. This may result from
-manual entry or system errors. This package attempts to detect and
-correct for this.
-
-<div style="text-align:center">
-
-<img src="inst/extdata/2.png" width="650" height="300"/>
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-The package attempts to account for when the daily gate count has been
-forgotten to be reported or days are skipped. This method doesn’t assign
-counts for missed days, but rather adjust for cumulative visitor count
-sum. See below for details:
-
-<div style="text-align:center">
-
-<img src="inst/extdata/3.png" width="650" height="300"/>
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-The package checks for any possible non-numeric characters (e.g.,
-“turned off”, “Diagnosis”, “closed”, “Clean filter”), then adjusts for
-visitor count by taking past, last reported gate count.
-
-<div style="text-align:center">
-
-<img src="inst/extdata/4.png" width="650" height="300"/>
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-<div style="text-align:left">
+Refer to vignette where these issues and solutions are explained with
+visuals.
 
 ### Directionality
 
@@ -177,17 +141,8 @@ Therefore, for cumulative visitor counts from bidirectional gates, all
 daily visitor counts are summed at then divided by two. Hence, users may
 find slight differences between summing up daily visitor counts
 outputted by the package versus cumulative gate count outputted by the
-package.
-
-<div style="text-align:center">
-
-<img src="inst/extdata/5.png" width="650" height="300"/>
-
-<div style="text-align:left">
-
-<div style="text-align:left">
-
-<div style="text-align:left">
+package. Refer to vignette where these issues and solutions are
+explained with visuals.
 
 ## Shiny App
 
@@ -205,7 +160,7 @@ gateCounts::runGateCount()
 
 ## Tutorials
 
-For tutorials, refer to the vignette: currently under construction.
+For tutorials, refer to the vignette:
 
 ``` r
 browseVignettes("gateCounts") 
