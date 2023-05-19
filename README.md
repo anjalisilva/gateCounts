@@ -25,7 +25,7 @@ count](https://img.shields.io/github/languages/count/anjalisilva/gateCounts)
 provided raw daily gate counts, gate directionality, and gate counter
 maximum value. Calculated visitor counts or user provided visitor counts
 can be summarized on daily, weekly, monthly basis and visualized. Users
-may choose to visualize data for one institute or multiple institute.
+may choose to visualize data for one institute or multiple institutes.
 For details see below and refer to vignette.
 
 ## Installation
