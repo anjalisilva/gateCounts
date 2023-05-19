@@ -109,7 +109,7 @@ Refer to vignette where these issues and solutions are explained with visuals fo
 ### Directionality
 If gates are bidirectional, the visitor counts will be divided by two. For cumulative visitor count, our testing has shown that dividing by two after calculating all daily visitor counts helps to provide a better approximation of cumulative gate count, compared to when the daily visitor counts are divided by two and then summed up at the end. Therefore, for cumulative visitor counts from bidirectional gates, all daily visitor counts are summed at then divided by two. Hence, users may find slight differences between summing up daily visitor counts outputted by the package versus cumulative gate count outputted by the package. Refer to vignette where these issues and solutions are explained with visuals for more information. 
 
-## Shiny App  
+## Shiny App (Under Construction)  
 
 The Shiny app employing could be run and results could be visualized:
 

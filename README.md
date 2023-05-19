@@ -146,7 +146,7 @@ outputted by the package versus cumulative gate count outputted by the
 package. Refer to vignette where these issues and solutions are
 explained with visuals for more information.
 
-## Shiny App
+## Shiny App (Under Construction)
 
 The Shiny app employing could be run and results could be visualized:
 
@@ -174,15 +174,14 @@ browseVignettes("gateCounts")
 citation("gateCounts")
 ```
 
-Silva, A. (2023). R package for Calculating Daily, Weekly, Monthly,
-Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily
-Gate Counts. Unpublished.
+Silva, A. (2023). gateCounts: An R package for Calculating and
+Visualizing Visitor Counts Provided Raw Daily Gate Counts. Unpublished.
 
 ``` r
 A BibTeX entry for LaTeX users is
 
   @misc{,
-    title = {R package for Calculating Daily, Weekly, Monthly, Cumulative, and Summary Statistics of Visitor Counts Provided Raw Daily Gate Counts},
+    title = {gateCounts: An R package for Calculating and Visualizing Visitor Counts Provided Raw Daily Gate Counts},
     author = {A. Silva},
     year = {2023},
     url = {https://github.com/anjalisilva/gateCounts},
