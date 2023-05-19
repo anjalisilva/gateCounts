@@ -172,7 +172,6 @@ visitorCountsEx4Summary$weeklyMedian # median based on weekly counts
 visitorCountsEx4Summary$monthlyAverage # average based on monthly counts
 visitorCountsEx4Summary$monthlyMedian # median based on monthly counts
 
-
 }
 \author{
 Anjali Silva, \email{anjali@alumni.uoguelph.ca}

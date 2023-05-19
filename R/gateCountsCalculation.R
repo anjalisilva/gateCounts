@@ -78,7 +78,7 @@
 #' randomCounts1tibble <- tibble::tibble(
 #'                         dates = seq(lubridate::dmy('01-01-2022'),
 #'                         lubridate::dmy('31-12-2022'),
-#'                         by='1 day')[1:length(randomCounts1)] %>%
+#'                         by = '1 day')[1:length(randomCounts1)] %>%
 #'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts1)
 #'
@@ -97,7 +97,7 @@
 #' randomCountsEx1$gatecounterMaxValue  # gate counter maximum
 #' randomCountsEx1$gateType # type of gate
 #'
-#
+#'
 #' # Example 2: Unidirectional gates with random NA values
 #' # Simulate gate count data using Poisson distribution
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -118,7 +118,7 @@
 #' randomCounts2tibble <- tibble::tibble(
 #'                         dates = seq(lubridate::dmy('01-01-2022'),
 #'                         lubridate::dmy('31-12-2022'),
-#'                         by='1 day')[1:length(randomCounts2)] %>%
+#'                         by = '1 day')[1:length(randomCounts2)] %>%
 #'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts2)
 #'
@@ -158,7 +158,7 @@
 #' randomCounts3tibble <- tibble::tibble(
 #'                         dates = seq(lubridate::dmy('01-01-2022'),
 #'                         lubridate::dmy('31-12-2022'),
-#'                         by='1 day')[1:length(randomCounts3)] %>%
+#'                         by = '1 day')[1:length(randomCounts3)] %>%
 #'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts3)
 #'
@@ -171,7 +171,6 @@
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
-#'
 #'
 #' randomCountsEx3$dailyVisitorCounts # access daily adjusted counts
 #' randomCountsEx3$cumulativeVisitorCount # cumulative count for duration
@@ -199,7 +198,7 @@
 #' randomCounts4tibble <- tibble::tibble(
 #'                         dates = seq(lubridate::dmy('01-01-2022'),
 #'                         lubridate::dmy('31-12-2022'),
-#'                         by='1 day')[1:length(randomCounts4)] %>%
+#'                         by = '1 day')[1:length(randomCounts4)] %>%
 #'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts4)
 #'
@@ -234,6 +233,7 @@
 #' @import tibble
 #' @import tidyverse
 #' @import lubridate
+#' @import magrittr
 gateCountsToVisitorCounts <- function(rawGateCounts,
                              gateType = "Unidirectional",
                              gatecounterMaxValue = 999999,
@@ -580,7 +580,6 @@ gateCountsToVisitorCounts <- function(rawGateCounts,
 #' visitorCountsEx4Summary$monthlyAverage # average based on monthly counts
 #' visitorCountsEx4Summary$monthlyMedian # median based on monthly counts
 #'
-#'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
@@ -588,6 +587,7 @@ gateCountsToVisitorCounts <- function(rawGateCounts,
 #' @import tidyverse
 #' @import lubridate
 #' @import dplyr
+#' @import stats
 visitorCountSummary <- function(dailyVisitorCount) {
 
   # checking
@@ -665,7 +665,7 @@ visitorCountSummary <- function(dailyVisitorCount) {
     dplyr::summarise(dailyMean = mean(counts, na.rm = TRUE))
 
   dailyMedian  <- dailyVisitorCountTibble %>%
-    dplyr::summarise(dailyMedian = median(counts, na.rm = TRUE))
+    dplyr::summarise(dailyMedian = stats::median(counts, na.rm = TRUE))
 
   weeklyAverage <- weeklyVisitorCount %>%
     dplyr::ungroup() %>%
@@ -673,7 +673,7 @@ visitorCountSummary <- function(dailyVisitorCount) {
 
   weeklyMedian <- weeklyVisitorCount %>%
     dplyr::ungroup() %>%
-    dplyr::summarise(weeklyMedian = median(totalVisitorCount, na.rm = TRUE))
+    dplyr::summarise(weeklyMedian = stats::median(totalVisitorCount, na.rm = TRUE))
 
 
   monthlyAverage <- monthlyVisitorCount %>%
@@ -682,7 +682,7 @@ visitorCountSummary <- function(dailyVisitorCount) {
 
   monthlyMedian <- monthlyVisitorCount %>%
     dplyr::ungroup() %>%
-    dplyr::summarise(montlyMedian = median(totalVisitorCount, na.rm = TRUE))
+    dplyr::summarise(montlyMedian = stats::median(totalVisitorCount, na.rm = TRUE))
 
   returnValues <- list(cumulativeVisitorCount = cumulativeVisitorCount,
                        dailyVisitorCounts = dailyVisitorCountTibble,

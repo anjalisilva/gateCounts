@@ -20,7 +20,8 @@ Imports:
    ggplot2,
    lubridate,
    reshape2,
-   tidyverse
+   tidyverse,
+   magrittr
 RoxygenNote: 7.2.2
 Suggests: 
     knitr,

@@ -96,7 +96,7 @@ randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 randomCounts1tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
-                        by='1 day')[1:length(randomCounts1)] \%>\%
+                        by = '1 day')[1:length(randomCounts1)] \%>\%
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts1)
 
@@ -114,6 +114,7 @@ randomCountsEx1$dailyVisitorCounts # access daily adjusted counts
 randomCountsEx1$cumulativeVisitorCount # cumulative count for duration
 randomCountsEx1$gatecounterMaxValue  # gate counter maximum
 randomCountsEx1$gateType # type of gate
+
 
 # Example 2: Unidirectional gates with random NA values
 # Simulate gate count data using Poisson distribution
@@ -135,7 +136,7 @@ randomCounts2[randomPositions[5:8]] <- "Gate broken"
 randomCounts2tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
-                        by='1 day')[1:length(randomCounts2)] \%>\%
+                        by = '1 day')[1:length(randomCounts2)] \%>\%
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts2)
 
@@ -175,7 +176,7 @@ randomCounts3[randomPositions] <- randomCounts3[randomPositions[1:4]] - 10
 randomCounts3tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
-                        by='1 day')[1:length(randomCounts3)] \%>\%
+                        by = '1 day')[1:length(randomCounts3)] \%>\%
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts3)
 
@@ -188,7 +189,6 @@ randomCountsEx3 <- gateCounts::gateCountsToVisitorCounts(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
-
 
 randomCountsEx3$dailyVisitorCounts # access daily adjusted counts
 randomCountsEx3$cumulativeVisitorCount # cumulative count for duration
@@ -216,7 +216,7 @@ randomCounts4[randomPositions[5:8]] <- "Gate broken"
 randomCounts4tibble <- tibble::tibble(
                         dates = seq(lubridate::dmy('01-01-2022'),
                         lubridate::dmy('31-12-2022'),
-                        by='1 day')[1:length(randomCounts4)] \%>\%
+                        by = '1 day')[1:length(randomCounts4)] \%>\%
                         format('\%d-\%m-\%Y'),
                         counts = randomCounts4)
 
