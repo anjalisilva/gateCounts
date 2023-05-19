@@ -151,6 +151,7 @@ visitorCountsEx1Summary <-
     gateCounts::visitorCountSummary(
     dailyVisitorCount = visitorCountsEx1)
 
+# See the output
 visitorCountsEx1Summary$dailyVisitorCounts # access daily counts
 visitorCountsEx1Summary$weeklyVisitorCounts # access weekly counts
 visitorCountsEx1Summary$monthlyVisitorCounts # access monthly  counts
@@ -189,24 +190,64 @@ visCountsEx1daily <-
 # Navigate using arrows to look through different plots.
 ```
 
+<div style="text-align:center"><img src="Figure1.png" alt="Figure1" width="500"/>
+
+<div style="text-align:left">
+Figure of bar plots showing the visitor count (left, above) and log-transformed visitor count (right, above) by month. Log-transformed plots are better for identifying trends.
+
+<div style="text-align:center"><img src="Figure2.png" alt="Figure2" width="500"/>
+
+<div style="text-align:left">
+Figure of line plots showing the visitor count (left, above) and log-transformed visitor count (right, above) by month. Log-transformed plots are better for identifying trends.
+
+<div style="text-align:center"><img src="Figure3.png" alt="Figure3" width="500"/>
+
+<div style="text-align:left">
+Figure of line plots showing the visitor count (left, above) and log-transformed visitor count (right, above). Log-transformed plots are better for identifying trends.
+
+<div style="text-align:center"><img src="Figure4.png" alt="Figure4" width="500"/>
+
+<div style="text-align:left">
+Figure of stacked bar plot of log-transformed visitor count (above) by day of month.
+
+<div style="text-align:center"><img src="Figure5.png" alt="Figure5" width="500"/>
+
+<div style="text-align:left">
+Figure of heatmap of log-transformed visitor count (above) by month.
+
+<div style="text-align:left">
+
 ## Visualize Weekly Visitor Counts For One Institute
 
 ``` r
 # Visualize weekly values
 visCountsEx1weekly <- 
       gateCounts::visitorCountsVisWeekly(
-      outputDailyCounts = visitorCountsEx1)
+      dailyVisitorCount = visitorCountsEx1)
 # Navigate using arrows to look through different plots.
 ```
+<div style="text-align:center"><img src="Figure6.png" alt="Figure5" width="500"/>
+
+<div style="text-align:left">
+Figure of bar plot of visitor counts (left, above) and log-transformed visitor counts (right, above) by week (above).  
+
+<div style="text-align:left">
 
 ## Visualize Monthly Visitor Counts For One Institute
 
 ``` r
 # Visualize weekly values
 visCountsEx1month <- gateCounts::visitorCountsVisMonthly(
-      outputDailyCounts = visitorCountsEx1)
+      dailyVisitorCount = visitorCountsEx1)
 # Navigate using arrows to look through different plots.
 ```
+
+<div style="text-align:center"><img src="Figure7.png" alt="Figure5" width="500"/>
+
+<div style="text-align:left">
+Figure of bar plot of visitor counts by month (above).
+
+<div style="text-align:left">
 
 ## Visualize Daily Visitor Counts of Multiple Institutes
 
@@ -279,9 +320,36 @@ colnames(multipleTibble)
 
 # Visualize counts for multiple institutes
 visPutEx1 <-
-    visitorCountsMultipleVisDaily(
+    gateCounts::visitorCountsMultipleVisDaily(
     visitorCountMultiple = multipleTibble)
 ```
+
+<div style="text-align:center"><img src="Figure8.png" alt="Figure5" width="700"/>
+
+<div style="text-align:left">
+Figure of line plot of visitor counts (left, above) and log-transformed visitor counts (right, above) by month and institute.
+
+<div style="text-align:left">
+
+<div style="text-align:center"><img src="Figure9.png" alt="Figure5" width="700"/>
+
+<div style="text-align:left">
+Figure of bar plot of visitor counts (left, above) and log-transformed visitor counts (right, above) by month and institute.
+<div style="text-align:left">
+
+<div style="text-align:center"><img src="Figure10.png" alt="Figure5" width="500"/>
+
+<div style="text-align:left">
+Heatmap of log-transformed visitor counts by institute (above).
+
+<div style="text-align:left">
+
+<div style="text-align:center"><img src="Figure11.png" alt="Figure5" width="500"/>
+
+<div style="text-align:left">
+Figure of bar plot of visitor counts by month and institute (above).
+
+<div style="text-align:left">
 
 ## Package References
 

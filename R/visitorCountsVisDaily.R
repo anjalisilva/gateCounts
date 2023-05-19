@@ -73,7 +73,7 @@
 #' max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 #'
 #' # Run gateCountsToVisitorCounts function
-#' randomCountsEx1 <- gateCountsToVisitorCounts(
+#' randomCountsEx1 <- gateCounts::gateCountsToVisitorCounts(
 #'              rawGateCounts = randomCounts1tibble,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
@@ -88,10 +88,11 @@
 #'   dplyr::rename("counts" = "visitorCount") %>%
 #'   dplyr::select("dates", "counts")
 #'
-#' # Visualize
+#' # Visualize daily visitor counts
 #' visPutEx1 <-
-#'    visitorCountsVisDaily(dailyVisitorCount = visitorCountsEx1)
-#'
+#'    gateCounts::visitorCountsVisDaily(
+#'    dailyVisitorCount = visitorCountsEx1)
+#' # Navigate plots using arrows
 #'
 #' # Example 2: Bidirectional gates with NA values
 #' # Simulate gate count data using Poisson distribution
@@ -120,8 +121,8 @@
 #' # Check max value for gate counter maximum
 #' max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 999999
 #'
-#' # Run gateCountsToVisitorCounts function
-#' randomCountsEx2 <- gateCountsToVisitorCounts(
+#' # Turn gate counts to visitor counts
+#' randomCountsEx2 <- gateCounts::gateCountsToVisitorCounts(
 #'              rawGateCounts = randomCounts2tibble,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 999999,
@@ -136,9 +137,11 @@
 #'   dplyr::rename("counts" = "visitorCount") %>%
 #'   dplyr::select("dates", "counts")
 #'
-#' # Visualize
+#' # Visualize daily visitor counts
 #' visPutEx2 <-
-#'    visitorCountsVisDaily(dailyVisitorCount = visitorCountsEx2)
+#'    gateCounts::visitorCountsVisDaily(
+#'    dailyVisitorCount = visitorCountsEx2)
+#' # Navigate plots using arrows
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
@@ -369,7 +372,7 @@ visitorCountsVisDaily <- function(dailyVisitorCount) {
     ggplot2::theme_bw() +
     ggplot2::labs(y = "Date",
                   x = "Institute",
-                  fill = "Log-transformed visitor count",
+                  fill = "Log-transformed \n visitor count",
                   title = paste("Log-transformed daily visitor counts for period of",
                                 range(dailyVisitorCountTibble$dateFormat)[1],
                                 "to", range(dailyVisitorCountTibble$dateFormat)[2])) +

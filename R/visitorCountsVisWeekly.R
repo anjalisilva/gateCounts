@@ -3,10 +3,18 @@
 #' A function that permit to create a plot showing visitor
 #' counts by week for one institute.
 #'
-#' @param outputDailyCounts The output from running gateCounts::gateCountsToVisitorCounts()
-#'    function.
+#' @param dailyVisitorCount A numeric vector or a tibble, with
+#'    number of rows equaling to length of days and columns equaling
+#'    to two, such that the dimension is: days x 2. Here
+#'    days is the number of days for which visitor counts are present.
+#'    First column must contain the dates and should contain column name
+#'    "dates". Dates must be in the format of date-month-year. The second
+#'    column must contain the visitor count for the given date and
+#'    should be called "counts". This input could be obtained from
+#'    running gateCounts::gateCountsToVisitorCounts() or
+#'    gateCounts::visitorCountSummary() functions.
 #'
-#' @return Returns plot of daily visitor counts.
+#' @return Returns plots of weekly visitor counts.
 #' \itemize{
 #'   \item weeklyOuput - A bar plot of visitor count values
 #'         by week.
@@ -42,19 +50,21 @@
 #'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts1)
 #'
-#' # check max value for gate counter maximum
+#' # Check max value for gate counter maximum
 #' max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 #'
-#' randomCountsSumEx1 <- gateCountsToVisitorCounts(
+#' # Turn gate counts to visitor counts
+#' randomCountsSumEx1 <- gateCounts::gateCountsToVisitorCounts(
 #'              rawGateCounts = randomCounts1tibble,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
 #' randomCountsSumEx1$dailyCounts # access daily adjusted counts
 #'
-#' # Visualize counts from Example 1
-#' visOne <- visitorCountsVisWeekly(
-#'              outputDailyCounts = randomCountsSumEx1)
+#' # Visualize visitor counts from Example 1
+#' visOne <- gateCounts::visitorCountsVisWeekly(
+#'              dailyVisitorCount = randomCountsSumEx1)
+#' # Navigate plots using arrows
 #'
 #' # Example 2: Unidirectional gates with random NA values
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -65,7 +75,7 @@
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 100000)))
 #'
-#' # randomly introduce NA and "Gate broken" entries
+#' # Randomly introduce NA and "Gate broken" entries
 #' randomPositions <- sample(x = c(1:length(randomCounts2)),
 #'                          size = 8, replace = FALSE)
 #' randomCounts2[randomPositions[1:4]] <- NA
@@ -78,19 +88,20 @@
 #'                         format('%d-%m-%Y'),
 #'                         counts = randomCounts2)
 #'
-#' # check max value for gate counter maximum
+#' # Check max value for gate counter maximum
 #' max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
 #'
-#' randomCountsSumEx2 <- gateCountsToVisitorCounts(
+#' # Turn gate counts to visitor counts
+#' randomCountsSumEx2 <- gateCounts::gateCountsToVisitorCounts(
 #'              rawGateCounts = randomCounts2tibble,
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
 #' randomCountsSumEx2$dailyCounts # access daily adjusted counts
 #'
-#' # Visualize counts from Example 2
-#' visTwo <- visitorCountsVisWeekly(
-#'              outputDailyCounts = randomCountsSumEx2)
+#' # Visualize visitor counts from Example 2
+#' visTwo <- gateCounts::visitorCountsVisWeekly(
+#'              dailyVisitorCount = randomCountsSumEx2)
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
@@ -200,7 +211,5 @@ visitorCountsVisWeekly <- function(dailyVisitorCount) {
   return(list(weeklyOuput = weeklyOuput,
               weeklyOuputLog = weeklyOuputLog))
 }
-
-
 
 # END

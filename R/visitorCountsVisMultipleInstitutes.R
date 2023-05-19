@@ -35,8 +35,8 @@
 #'
 #' @examples
 #' set.seed(1234)
-#' # Example 1: Unidirectional gates with daily counts
-#' # Simulate gate count data using Poisson distribution
+#' # Example 1: Simulate visitor count data using Poisson distribution
+#' # for institute 1
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
 #'                   sort(rpois(n = 82, lambda = 100)),
@@ -53,6 +53,8 @@
 #'                         institute1 = randomCounts1)
 #'
 #' set.seed(2345)
+#' # Simulate visitor count data using Poisson distribution
+#' # for institute 2
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 10)),
 #'                   sort(rpois(n = 50, lambda = 5000)),
 #'                   sort(rpois(n = 82, lambda = 500)),
@@ -69,6 +71,8 @@
 #'                         institute2 = randomCounts2)
 #'
 #' set.seed(3456)
+#' # Simulate visitor count data using Poisson distribution
+#' # for institute 3
 #' randomCounts3 <- c(sort(rpois(n = 50, lambda = 20000)),
 #'                   sort(rpois(n = 50, lambda = 5000)),
 #'                   sort(rpois(n = 82, lambda = 500)),
@@ -84,23 +88,23 @@
 #'                         format('%d-%m-%Y'),
 #'                         institute3 = randomCounts3)
 #'
-#' # Combine data
+#' # Combine data for visitor counts for all three institutes
 #' multipleTibble <- randomCounts1tibble %>%
 #'   dplyr::left_join(randomCounts2tibble) %>%
 #'   dplyr::left_join(randomCounts3tibble)
 #'
-#' # Check max value for gate counter maximum
-#' max(multipleTibble$institute1, na.rm = TRUE) # 1107
-#' max(multipleTibble$institute2, na.rm = TRUE) # 5141
-#' max(multipleTibble$institute3, na.rm = TRUE) # 20357
+#' # Check range for visitor count
+#' range(multipleTibble$institute1, na.rm = TRUE) # 4 1107
+#' range(multipleTibble$institute2, na.rm = TRUE) # 6 5141
+#' range(multipleTibble$institute3, na.rm = TRUE) # 76 20357
 #'
-#' # colnames
+#' # Check colnames
 #' colnames(multipleTibble)
 #' # "dates" "institute1" "institute2" "institute3"
 #'
 #' # Visualize counts for multiple institutes
 #' visPutEx1 <-
-#'    visitorCountsMultipleVisDaily(
+#'    gateCounts::visitorCountsMultipleVisDaily(
 #'    visitorCountMultiple = multipleTibble)
 #'
 #'
@@ -228,7 +232,7 @@ visitorCountsMultipleVisDaily <- function(visitorCountMultiple) {
                         y = log(value + 1),
                         fill = factor(variable))) +
     ggplot2::geom_bar(stat = "identity", position = "dodge", width = 1) +
-    ggplot2::labs(y = "Visitor count",
+    ggplot2::labs(y = "Log-transformed \n Visitor count",
                   x = "Day",
                   fill = "Institute",
                   title = paste("Daily visitor counts for period of",
@@ -252,7 +256,7 @@ visitorCountsMultipleVisDaily <- function(visitorCountMultiple) {
                        aes(color =  factor(variable))) +
     ggplot2::geom_point(size = 0.5, aes(color =  factor(variable))) +
     ggplot2::scale_color_manual(values = colorPaletteCustom) +
-    ggplot2::labs(y = "Visitor count",
+    ggplot2::labs(y = "Log-transformed \n Visitor count",
                   x = "Day",
                   color = "Institute",
                   group = "Institute",

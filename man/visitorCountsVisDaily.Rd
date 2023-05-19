@@ -71,7 +71,7 @@ randomCounts1tibble <- tibble::tibble(
 max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsEx1 <- gateCountsToVisitorCounts(
+randomCountsEx1 <- gateCounts::gateCountsToVisitorCounts(
              rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
@@ -86,10 +86,11 @@ visitorCountsEx1 <-
   dplyr::rename("counts" = "visitorCount") \%>\%
   dplyr::select("dates", "counts")
 
-# Visualize
+# Visualize daily visitor counts
 visPutEx1 <-
-   visitorCountsVisDaily(dailyVisitorCount = visitorCountsEx1)
-
+   gateCounts::visitorCountsVisDaily(
+   dailyVisitorCount = visitorCountsEx1)
+# Navigate plots using arrows
 
 # Example 2: Bidirectional gates with NA values
 # Simulate gate count data using Poisson distribution
@@ -118,8 +119,8 @@ randomCounts2tibble <- tibble::tibble(
 # Check max value for gate counter maximum
 max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 999999
 
-# Run gateCountsToVisitorCounts function
-randomCountsEx2 <- gateCountsToVisitorCounts(
+# Turn gate counts to visitor counts
+randomCountsEx2 <- gateCounts::gateCountsToVisitorCounts(
              rawGateCounts = randomCounts2tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 999999,
@@ -134,9 +135,11 @@ visitorCountsEx2 <-
   dplyr::rename("counts" = "visitorCount") \%>\%
   dplyr::select("dates", "counts")
 
-# Visualize
+# Visualize daily visitor counts
 visPutEx2 <-
-   visitorCountsVisDaily(dailyVisitorCount = visitorCountsEx2)
+   gateCounts::visitorCountsVisDaily(
+   dailyVisitorCount = visitorCountsEx2)
+# Navigate plots using arrows
 
 }
 \references{
