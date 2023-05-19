@@ -56,6 +56,9 @@ of daily visitor counts and date with a specific format
 (see argument details or README file).
 }
 \examples{
+library("magrittr")
+library("lubridate")
+library("tibble")
 set.seed(1234)
 # Example 1: Unidirectional gates with daily counts
 # Simulate gate count data using Poisson distribution
