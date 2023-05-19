@@ -129,7 +129,7 @@ from any setting. The factors adjusted for are outlined below.
     for visitor count by taking past, last reported gate count.
 
 Refer to vignette where these issues and solutions are explained with
-visuals.
+visuals for more information.
 
 ### Directionality
 
@@ -143,7 +143,7 @@ daily visitor counts are summed at then divided by two. Hence, users may
 find slight differences between summing up daily visitor counts
 outputted by the package versus cumulative gate count outputted by the
 package. Refer to vignette where these issues and solutions are
-explained with visuals.
+explained with visuals for more information.
 
 ## Shiny App
 
