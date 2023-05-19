@@ -26,6 +26,9 @@ A function that permit to create a plot showing visitor
 counts by month for one institute.
 }
 \examples{
+library("magrittr")
+library("lubridate")
+library("tibble")
 set.seed(1234)
 # Example 1: Unidirectional gates with daily counts
 randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -52,11 +55,18 @@ randomCountsSumEx1 <- gateCountsToVisitorCounts(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
-randomCountsSumEx1$dailyCounts # access daily adjusted counts
+randomCountsSumEx1$dailyVisitorCounts # access daily adjusted counts
+
+# Visualize visitor counts using visitorCountSummary function
+# First, format the table
+visitorCountsEx1 <-
+  randomCountsSumEx1$dailyVisitorCounts \%>\%
+  dplyr::rename("counts" = "visitorCount") \%>\%
+  dplyr::select("dates", "counts")
 
 # Visualize visitor counts from Example 1
-visOne <- visitorCountsVisMonthly(
-             dailyVisitorCount = randomCountsSumEx1)
+visOne <- gateCounts::visitorCountsVisMonthly(
+             dailyVisitorCount = visitorCountsEx1)
 
 # Example 2: Unidirectional gates with random NA values
 randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -89,11 +99,18 @@ randomCountsSumEx2 <- gateCounts::gateCountsToVisitorCounts(
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
              printMessages = FALSE)
-randomCountsSumEx2$dailyCounts # access daily adjusted counts
+randomCountsSumEx2$dailyVisitorCounts # access daily adjusted counts
+
+# Visualize visitor counts using visitorCountSummary function
+# First, format the table
+visitorCountsEx2 <-
+  randomCountsSumEx2$dailyVisitorCounts \%>\%
+  dplyr::rename("counts" = "visitorCount") \%>\%
+  dplyr::select("dates", "counts")
 
 # Visualize visitor counts from Example 2
 visTwo <- gateCounts::visitorCountsVisMonthly(
-             dailyVisitorCount = randomCountsSumEx2)
+             dailyVisitorCount = visitorCountsEx2)
 
 }
 \references{

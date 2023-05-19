@@ -34,6 +34,9 @@
 #'
 #' @examples
 #' set.seed(1234)
+#' library("magrittr")
+#' library("lubridate")
+#' library("tibble")
 #' # Example 1: Unidirectional gates with daily counts
 #' randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
 #'                   sort(rpois(n = 50, lambda = 1000)),
@@ -59,12 +62,20 @@
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
-#' randomCountsSumEx1$dailyCounts # access daily adjusted counts
+#' randomCountsSumEx1$dailyVisitorCounts # access daily adjusted counts
 #'
-#' # Visualize visitor counts from Example 1
+#' # Visualize visitor counts using visitorCountSummary function
+#' # First, format the table
+#' visitorCountsEx1 <-
+#'   randomCountsSumEx1$dailyVisitorCounts %>%
+#'   dplyr::rename("counts" = "visitorCount") %>%
+#'   dplyr::select("dates", "counts")
+#'
+#' # Visualize
 #' visOne <- gateCounts::visitorCountsVisWeekly(
-#'              dailyVisitorCount = randomCountsSumEx1)
+#'              dailyVisitorCount = visitorCountsEx1)
 #' # Navigate plots using arrows
+#'
 #'
 #' # Example 2: Unidirectional gates with random NA values
 #' randomCounts2 <- c(sort(rpois(n = 50, lambda = 100)),
@@ -97,11 +108,18 @@
 #'              gateType = "Unidirectional",
 #'              gatecounterMaxValue = 200000,
 #'              printMessages = FALSE)
-#' randomCountsSumEx2$dailyCounts # access daily adjusted counts
+#' randomCountsSumEx2$dailyVisitorCounts # access daily adjusted counts
 #'
-#' # Visualize visitor counts from Example 2
+#' # Visualize visitor counts using visitorCountSummary function
+#' # First, format the table
+#' visitorCountsEx2 <-
+#'   randomCountsSumEx2$dailyVisitorCounts %>%
+#'   dplyr::rename("counts" = "visitorCount") %>%
+#'   dplyr::select("dates", "counts")
+#'
+#' # Visualize
 #' visTwo <- gateCounts::visitorCountsVisWeekly(
-#'              dailyVisitorCount = randomCountsSumEx2)
+#'              dailyVisitorCount = visitorCountsEx2)
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'

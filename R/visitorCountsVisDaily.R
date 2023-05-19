@@ -50,6 +50,9 @@
 #' \href{https://groups.google.com/a/arl.org/g/arl-assess/c/JQyllZN4gaE}{Link}.
 #'
 #' @examples
+#' library("magrittr")
+#' library("lubridate")
+#' library("tibble")
 #' set.seed(1234)
 #' # Example 1: Unidirectional gates with daily counts
 #' # Simulate gate count data using Poisson distribution
