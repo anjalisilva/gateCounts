@@ -1,19 +1,26 @@
 Package: gateCounts
 Type: Package
-Title: Calculates Cumulative Visitor Counts Provided Raw Daily Gate Counts
+Title: Calculates and Visualize the Visitor Counts Provided Raw Daily Gate Counts
 Version: 0.1.0
 Authors@R: c(
     person("Anjali", "Silva", email = "anjali@alumni.uoguelph.ca", role = c("aut", "cre")))
 Maintainer: Anjali Silva <anjali@alumni.uoguelph.ca>
-Description: Calculates cumulative visitor counts, provided raw daily
-    gate counts, gate directionality and gate counter maximum value.
+Description: Calculate daily visitor counts, provided raw daily gate counts, gate directionality, and 
+    gate counter maximum value. Calculated visitor counts or user provided visitor counts can be
+    summarized on daily, weekly, monthly basis and visualized. Users may choose to visualize data
+    for one institute or multiple institutes. For details see README and refer to Vignette.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.4.0)
 Imports: 
    shiny,
-   tibble
+   tibble,
+   dplyr,
+   ggplot2,
+   lubridate,
+   reshape2,
+   tidyverse
 RoxygenNote: 7.2.2
 Suggests: 
     knitr,
