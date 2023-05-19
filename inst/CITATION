@@ -1,0 +1,12 @@
+citHeader("To cite gateCounts in publications use:")
+
+citEntry(entry = "Unpublished",
+  title        = "gateCounts: An R package for Calculating and Visualizing Visitor Counts Provided Raw Daily Gate Counts",
+  author       = "Anjali Silva",
+  note         = "Unpublished",
+  year         = "2023",
+
+  textVersion  =
+  paste("Silva, A. (2023) gateCounts: An R package for Calculating and Visualizing   Visitor Counts Provided Raw Daily Gate Counts. Unpublished.
+  URL https://github.com/anjalisilva/gateCounts.")
+)
