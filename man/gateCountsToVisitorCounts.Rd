@@ -104,7 +104,7 @@ randomCounts1tibble <- tibble::tibble(
 max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsEx1 <- gateCountsToVisitorCounts(
+randomCountsEx1 <- gateCounts::gateCountsToVisitorCounts(
              rawGateCounts = randomCounts1tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
@@ -143,7 +143,7 @@ randomCounts2tibble <- tibble::tibble(
 max(as.numeric(randomCounts2tibble$counts), na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsEx2 <- gateCountsToVisitorCounts(
+randomCountsEx2 <- gateCounts::gateCountsToVisitorCounts(
              rawGateCounts = randomCounts2tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
@@ -183,7 +183,7 @@ randomCounts3tibble <- tibble::tibble(
 max(as.numeric(randomCounts3tibble$counts), na.rm = TRUE) # 200000
 
 # Run gateCountsToVisitorCounts function
-randomCountsEx3 <- gateCountsToVisitorCounts(
+randomCountsEx3 <- gateCounts::gateCountsToVisitorCounts(
              rawGateCounts = randomCounts3tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 200000,
@@ -224,7 +224,7 @@ randomCounts4tibble <- tibble::tibble(
 max(as.numeric(randomCounts4tibble$counts), na.rm = TRUE) # 999999
 
 # Run gateCountsToVisitorCounts function
-randomCountsEx4 <- gateCountsToVisitorCounts(
+randomCountsEx4 <- gateCounts::gateCountsToVisitorCounts(
              rawGateCounts = randomCounts4tibble,
              gateType = "Unidirectional",
              gatecounterMaxValue = 999999,
