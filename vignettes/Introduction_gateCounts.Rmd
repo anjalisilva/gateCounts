@@ -33,7 +33,7 @@ ls("package:gateCounts")
 
 ### Some Issues & How They Are Handled By Package
 
-To calculate visitor counts from raw daily gate counts, today's gate count reading is subtracted from yesterday's reading. Negative visitor counts can result if the gate counter has reset. This package attempts to detect and correct for this.
+To calculate visitor counts from raw daily gate counts, today's gate count reading is subtracted from yesterday's reading. Negative visitor counts can result if the gate counter has reset. This package attempts to detect and correct for this. See below for visual explanation. The visuals also compare methodology used by this package against a previous method done using Miscrosoft Excel formulas to calculate gate counts. 
 
 <div style="text-align:center">
 
@@ -45,7 +45,7 @@ To calculate visitor counts from raw daily gate counts, today's gate count readi
 
 <div style="text-align:left">
 
-Negative visitor counts can also result from a lower gate count value that has been entered compared to previous day. This may result from manual entry or system errors. This package attempts to detect and correct for this.
+Negative visitor counts can also result from a lower gate count value that has been entered compared to previous day. This may result from manual entry or system errors. This package attempts to detect and correct for this. See below image for an example. 
 
 <div style="text-align:center">
 
@@ -95,7 +95,7 @@ If gates are bidirectional, the visitor counts will be divided by two. For cumul
 <div style="text-align:left">
 
 
-## Calculates Daily Visitor Counts From Raw Daily Gate Counts
+## Calculate Daily Visitor Counts From Raw Daily Gate Counts
 
 This package offers a function called **gateCountsToVisitorCounts** that calculates daily and cumulative visitor counts, provided a numeric vector or a tibble containing values of raw daily gate counts and date with a specific format. The function adjusts for several factors outlined above. 
 
