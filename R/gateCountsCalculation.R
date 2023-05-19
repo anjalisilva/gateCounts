@@ -234,6 +234,7 @@
 #' @import tidyverse
 #' @import lubridate
 #' @import magrittr
+#'
 gateCountsToVisitorCounts <- function(rawGateCounts,
                              gateType = "Unidirectional",
                              gatecounterMaxValue = 999999,
@@ -414,7 +415,7 @@ gateCountsToVisitorCounts <- function(rawGateCounts,
     return(returnValues)
   }
 
-#'
+
 #' Provide Visitor Count Summaries From Daily Visitor Counts
 #'
 #' A function that calculates weekly, monthly visitor counts and
@@ -588,6 +589,7 @@ gateCountsToVisitorCounts <- function(rawGateCounts,
 #' @import lubridate
 #' @import dplyr
 #' @import stats
+#'
 visitorCountSummary <- function(dailyVisitorCount) {
 
   # checking
