@@ -65,22 +65,23 @@ ls("package:gateCounts")
     entire duration for which visitor count data is provided by user.
 
 3.  ***gateCountsVisDaily*** permit to create plots (bar, line, and
-    heatmap) showing daily visitor counts. Both count and
-    log-transformed count plots are provided to help visualize trends.
+    heatmap) showing daily visitor counts for one institute. Both count
+    and log-transformed count plots are provided to help visualize
+    trends.
 
 4.  ***gateCountsVisWeekly*** for creating plots showing visitor counts
-    by week. Both count and log-transformed count plots are provided to
-    help visualize trends.
+    by week for one institute. Both count and log-transformed count
+    plots are provided to help visualize trends.
 
 5.  ***gateCountsVisMonthly*** for creating plots showing visitor counts
-    by month. Both count and log-transformed count plots are provided to
-    help visualize trends.
+    by month for one institute. Both count and log-transformed count
+    plots are provided to help visualize trends.
 
 6.  ***runGateCount*** starts the Shiny app for this R package. Under
     construction.
 
 7.  ***gateCountsVisMultiple*** for creating plots comparing visitor
-    counts from multiple institutes. Under construction.
+    counts from multiple institutes.
 
 An overview of the package is illustrated below:
 
