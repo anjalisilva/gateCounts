@@ -95,7 +95,193 @@ If gates are bidirectional, the visitor counts will be divided by two. For cumul
 <div style="text-align:left">
 
 
-## Data Simulation
+## Calculates Daily Visitor Counts From Raw Daily Gate Counts
+
+This package offers a function called **gateCountsToVisitorCounts** that calculates daily and cumulative visitor counts, provided a numeric vector or a tibble containing values of raw daily gate counts and date with a specific format. The function adjusts for several factors outlined above. 
+
+``` r
+set.seed(1234)
+# Example 1: Unidirectional gates with daily counts
+# Simulate gate count data using Poisson distribution
+randomCounts1 <- c(sort(rpois(n = 50, lambda = 100)),
+                  sort(rpois(n = 50, lambda = 1000)),
+                  sort(rpois(n = 82, lambda = 100000)),
+                  200000, # max value
+                  sort(rpois(n = 50, lambda = 100)),
+                  sort(rpois(n = 50, lambda = 1000)),
+                  sort(rpois(n = 50, lambda = 100000)))
+
+# Create a tibble with date information
+randomCounts1tibble <- tibble::tibble(
+                         dates = seq(lubridate::dmy('01-01-2022'),
+                         lubridate::dmy('31-12-2022'),
+                         by = '1 day')[1:length(randomCounts1)] %>%
+                         format('%d-%m-%Y'),
+                         counts = randomCounts1)
+
+# Check max value for gate counter maximum
+max(randomCounts1tibble$counts, na.rm = TRUE) # 200000
+
+# Run gateCountsToVisitorCounts function to get visitor counts from gate counts
+randomCountsEx1 <- gateCounts::gateCountsToVisitorCounts(
+                    rawGateCounts = randomCounts1tibble,
+                    gateType = "Unidirectional",
+                    gatecounterMaxValue = 200000,
+                    printMessages = FALSE)
+
+randomCountsEx1$dailyVisitorCounts # access daily adjusted counts
+randomCountsEx1$cumulativeVisitorCount # cumulative count for duration
+randomCountsEx1$gatecounterMaxValue  # gate counter maximum
+randomCountsEx1$gateType # type of gate
+
+```
+## Provide Visitor Count Summaries From Daily Visitor Counts
+
+Now that visitor counts are present, either this or any user provided visitor count data could be used in the next function to generate summaries. The **visitorCountSummary** function can be used to calculate weekly, monthly visitor counts and summary statistics like daily, weekly, monthly mean and median, busiest and least busiest day, week, and month for the entire duration for which visitor count data is provided by user. Input should be a numeric vector or a tibble containing values of daily visitor counts and date with a specific format. See argument details using ?visitorCountSummary for more information.
+
+``` r
+# Check output and rename column for visitorCountSummary() function
+# from above example
+visitorCountsEx1<- randomCountsEx1$dailyVisitorCounts %>%
+                   dplyr::rename("counts" = "visitorCount") %>%
+                   dplyr::select(dates, counts)
+
+# Use visitor counts to get summaries
+visitorCountsEx1Summary <-
+    gateCounts::visitorCountSummary(
+    dailyVisitorCount = visitorCountsEx1)
+
+visitorCountsEx1Summary$dailyVisitorCounts # access daily counts
+visitorCountsEx1Summary$weeklyVisitorCounts # access weekly counts
+visitorCountsEx1Summary$monthlyVisitorCounts # access monthly  counts
+visitorCountsEx1Summary$cumulativeVisitorCount # cumulative count for duration
+visitorCountsEx1Summary$busiestMonth # busiest month
+visitorCountsEx1Summary$leastBusiestMonth # least busiest month
+visitorCountsEx1Summary$busiestWeek # busiest week
+visitorCountsEx1Summary$leastBusiestWeek # least busiest week
+visitorCountsEx1Summary$busiestDay # busiest day
+visitorCountsEx1Summary$leastBusiestDay # least busiest day
+visitorCountsEx1Summary$dailyAverage  # daily average for duration
+visitorCountsEx1Summary$dailyMedian  # daily median for duration
+visitorCountsEx1Summary$weeklyAverage # average based on weekly counts
+visitorCountsEx1Summary$weeklyMedian # median based on weekly counts
+visitorCountsEx1Summary$monthlyAverage # average based on monthly counts
+visitorCountsEx1Summary$monthlyMedian # median based on monthly counts
+```
+
+## Visualize Daily Visitor Counts For One Institute
+
+The **visitorCountsVisDaily** function that permit to create plots showing daily visitor counts for one institute. Plots include line plots and barplots of month vs daily counts. Plots with log-transformed counts are also provided to better visualize trends with outliers.
+
+``` r
+# Visualize visitor counts using visitorCountSummary() function
+# First, format the table
+visitorCountsEx1 <-
+       randomCountsEx1$dailyVisitorCounts %>%
+       dplyr::rename("counts" = "visitorCount") %>%
+       dplyr::select("dates", "counts")
+       
+# Visualize daily values
+visCountsEx1daily <-
+    gateCounts::visitorCountsVisDaily(
+    dailyVisitorCount = visitorCountsEx1)
+       
+# Navigate using arrows to look through different plots.
+```
+
+## Visualize Weekly Visitor Counts For One Institute
+
+``` r
+# Visualize weekly values
+visCountsEx1weekly <- 
+      gateCounts::visitorCountsVisWeekly(
+      outputDailyCounts = visitorCountsEx1)
+# Navigate using arrows to look through different plots.
+```
+
+## Visualize Monthly Visitor Counts For One Institute
+
+``` r
+# Visualize weekly values
+visCountsEx1month <- gateCounts::visitorCountsVisMonthly(
+      outputDailyCounts = visitorCountsEx1)
+# Navigate using arrows to look through different plots.
+```
+
+## Visualize Daily Visitor Counts of Multiple Institutes
+
+If the visitor counts are available for multiple institutes over the same date range, the **visitorCountsMultipleVisDaily** function can be used to create plots showing daily visitor counts for multiple institutes. Plots include line plots and barplots. Plots with log-transformed counts are also provided to better visualize trends with outliers.
+
+``` r
+set.seed(1234)
+# Example 1: Unidirectional gates with daily counts
+# Simulate gate count data using Poisson distribution
+randomCounts1 <- c(sort(rpois(n = 50, lambda = 1000)),
+                   sort(rpois(n = 50, lambda = 1000)),
+                   sort(rpois(n = 82, lambda = 100)),
+                   sort(rpois(n = 50, lambda = 10)),
+                   sort(rpois(n = 50, lambda = 1000)),
+                   sort(rpois(n = 50, lambda = 200)))
+
+# Create a tibble with date information
+randomCounts1tibble <- tibble::tibble( 
+                  dates = seq(lubridate::dmy('01-01-2022'),
+                  lubridate::dmy('31-12-2022'),
+                  by = '1 day')[1:length(randomCounts1)] %>%
+                  format('%d-%m-%Y'),
+                  institute1 = randomCounts1)
+
+set.seed(2345)
+randomCounts2 <- c(sort(rpois(n = 50, lambda = 10)),
+                   sort(rpois(n = 50, lambda = 5000)),
+                   sort(rpois(n = 82, lambda = 500)),
+                   sort(rpois(n = 50, lambda = 100)),
+                   sort(rpois(n = 50, lambda = 3000)),
+                   sort(rpois(n = 50, lambda = 1000)))
+
+# Create a tibble with date information
+randomCounts2tibble <- tibble::tibble(
+                  dates = seq(lubridate::dmy('01-01-2022'),
+                  lubridate::dmy('31-12-2022'),
+                  by = '1 day')[1:length(randomCounts2)] %>%
+                  format('%d-%m-%Y'), 
+                  institute2 = randomCounts2)
+
+set.seed(3456)
+randomCounts3 <- c(sort(rpois(n = 50, lambda = 20000)),
+                   sort(rpois(n = 50, lambda = 5000)),
+                   sort(rpois(n = 82, lambda = 500)),
+                   sort(rpois(n = 50, lambda = 100)),
+                   sort(rpois(n = 50, lambda = 3000)),
+                   sort(rpois(n = 50, lambda = 1000)))
+
+# Create a tibble with date information
+randomCounts3tibble <- tibble::tibble(   
+                 dates = seq(lubridate::dmy('01-01-2022'),
+                 lubridate::dmy('31-12-2022'),
+                 by='1 day')[1:length(randomCounts3)] %>%
+                 format('%d-%m-%Y'),
+                 institute3 = randomCounts3)
+
+# Combine data
+multipleTibble <- randomCounts1tibble %>%
+     dplyr::left_join(randomCounts2tibble) %>%
+     dplyr::left_join(randomCounts3tibble)
+
+# Check max value for gate counter maximum
+max(multipleTibble$institute1, na.rm = TRUE) # 1107
+max(multipleTibble$institute2, na.rm = TRUE) # 5141
+max(multipleTibble$institute3, na.rm = TRUE) # 20357
+
+# colnames
+colnames(multipleTibble)
+# "dates" "institute1" "institute2" "institute3"
+
+# Visualize counts for multiple institutes
+visPutEx1 <-
+    visitorCountsMultipleVisDaily(
+    visitorCountMultiple = multipleTibble)
+```
 
 ## Package References
 

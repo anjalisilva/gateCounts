@@ -90,7 +90,7 @@ randomCounts3tibble <- tibble::tibble(
                         format('\%d-\%m-\%Y'),
                         institute3 = randomCounts3)
 
-# combine data
+# Combine data
 multipleTibble <- randomCounts1tibble \%>\%
   dplyr::left_join(randomCounts2tibble) \%>\%
   dplyr::left_join(randomCounts3tibble)
