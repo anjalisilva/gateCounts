@@ -1,8 +1,10 @@
 ---
 title: "Introduction to gateCounts"
+author: "Anjali Silva"
+date: "`r format(Sys.time(), '%d %b %Y')`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction_gateCounts}
+  %\VignetteIndexEntry{Introduction to gateCounts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
