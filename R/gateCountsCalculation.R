@@ -595,6 +595,7 @@ gateCountsToVisitorCounts <- function(rawGateCounts,
 #' @import lubridate
 #' @import dplyr
 #' @import stats
+#' @import magrittr
 #'
 visitorCountSummary <- function(dailyVisitorCount) {
 
